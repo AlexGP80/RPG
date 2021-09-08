@@ -16,8 +16,10 @@ class Roll(object):
     
     def __str__(self):
         output = f'{self.date_time}: {self.descr} = {self.result_total} ( '
-        for i in range(len(self.result_list)):
-            output += str(self.result_list[i]) + " "
+        
+        for k,v in self.result_list.items():
+#        for i in range(len(self.result_list)):
+            output += k + str(v) + ", "
         output += ')'
         return output
 
@@ -39,9 +41,11 @@ class Roller(object):
         roll_parts = list()
         roll_parts = re.split(" ", roll_str_curated)
         result_total = 0
-        result_list = list()
+        result_list = dict()
+        num_part = 0
         
         for part in roll_parts:
+            part_r_list = list()
             if ('d' in part):
                 num, dice = part.split('d')
                 num = int(num)
@@ -52,14 +56,16 @@ class Roller(object):
                 dice = int(dice)
                 for i in range(num):
                     die_result = mult * random.randint(1, dice)
-                    result_list.append(die_result)
+                    part_r_list.append(die_result)
                     result_total += die_result
             else:
                 result_total += int(part)
-                result_list.append(int(part))
+                part_r_list.append(int(part))
+            result_list[str(part)] = part_r_list
+            num_part += 1
         self.roll_log.append(Roll(roll_str, result_list, result_total))    
         return result_total
 
 r = Roller()
-print(r.roll("1d8+1"))
+print(r.roll("4d6+1"))
 print(str(r))
