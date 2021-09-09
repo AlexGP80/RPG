@@ -34,16 +34,34 @@ class Roller(object):
         return str(self)
     
     def roll(self, roll_str):
-        roll_str = roll_str.lower()
-        num_dice, sides = roll_str.split('d')
-        num_dice = int(num_dice)
-        sides = int(sides)
-        result_list = list()
+        roll_str_curated = roll_str.lower().replace(" ","").replace("+"," ").replace("-"," -")
+        roll_parts = list()
+        roll_parts = roll_str_curated.split(" ")
         result_total = 0
-        for i in range(num_dice):
-            die_result = random.randint(1, sides)
-            result_list.append(die_result)
-            result_total += die_result
+        result_list = dict()
+        num_part = 0
+        
+        for part in roll_parts:
+            if (part == ""):
+                continue
+            part_r_list = list()
+            if ('d' in part):
+                num, dice = part.split('d')
+                num = int(num)
+                mult = 1
+                if (num<0):
+                    mult = -1
+                    num = abs(num)
+                dice = int(dice)
+                for i in range(num):
+                    die_result = mult * random.randint(1, dice)
+                    part_r_list.append(die_result)
+                    result_total += die_result
+            else:
+                result_total += int(part)
+                part_r_list.append(int(part))
+            result_list[str(part)] = part_r_list
+            num_part += 1
         self.roll_log.append(Roll(roll_str, result_list, result_total))    
         return result_total
     
@@ -1248,7 +1266,7 @@ def get_character():
 
 class CharGen:
     def __init__(self):
-        pass
+        self.rlr = Roller()
 
     def get_character(self, c_class="Any"):
 
@@ -1262,14 +1280,382 @@ class CharGen:
             character = Character()
 
         return character
+    
+    def get_alignment(self):
+        roll = self.rlr.roll('1d6')
+        if (roll > 3):
+            return "Lawful"
+        if (roll > 1):
+            return "Neutral"
+        return "Chaotic"
+    
+    def get_trait(self):
+        r = self.rlr.roll('1d100')
+        if (r == 1):
+            return "always bored"
+        if (r == 2):
+            return "angry drunk"
+        if (r == 3):
+            return "annoyingly cryptic"
+        if (r == 4):
+            return "avant-garde"
+        if (r == 5):
+            return "bigoted"
+        if (r == 6):
+            return "bloody-minded"
+        if (r == 7):
+        	return "boastful"
+        if (r == 8):
+        	return "bookworm"
+        if (r == 9):
+        	return "bossy"
+        if (r == 10):
+        	return "bully"
+        if (r == 11):
+        	return "calculating"
+        if (r == 12):
+        	return "can-do attitude"
+        if (r == 13):
+        	return "chatterbox"
+        if (r == 14):
+        	return "chirpy"
+        if (r == 15):
+        	return "collects small animals"
+        if (r == 16):
+        	return "compulsive liar"
+        if (r == 17):
+        	return "condescending"
+        if (r == 18):
+        	return "conniving"
+        if (r == 19):
+        	return "conspiracy theorist"
+        if (r == 20):
+        	return "creep"
+        if (r == 21):
+        	return "decadent"
+        if (r == 22):
+        	return "ditz"
+        if (r == 23):
+        	return "egomaniac"
+        if (r == 24):
+        	return "exquisite dresser"
+        if (r == 25):
+        	return "extravagant"
+        if (r == 26):
+        	return "fanatically loyal"
+        if (r == 27):
+        	return "fast-talker"
+        if (r == 28):
+        	return "femme fatale"
+        if (r == 29):
+        	return "fiercely ambitious"
+        if (r == 30):
+        	return "fits of melancholy"
+        if (r == 31):
+        	return "flamboyant"
+        if (r == 32):
+        	return "folksy wisdom"
+        if (r == 33):
+        	return "gossip"
+        if (r == 34):
+        	return "hard-boiled"
+        if (r == 35):
+        	return "hears voices"
+        if (r == 36):
+        	return "hillbilly"
+        if (r == 37):
+        	return "hothead"
+        if (r == 38):
+        	return "hypochondriac"
+        if (r == 39):
+        	return "iconoclast"
+        if (r == 40):
+        	return "idealistic"
+        if (r == 41):
+        	return "illiterate"
+        if (r == 42):
+        	return "incredibly persistent"
+        if (r == 43):
+        	return "insightful observer"
+        if (r == 44):
+        	return "into crystals"
+        if (r == 45):
+        	return "jack of all trades"
+        if (r == 46):
+        	return "jerk"
+        if (r == 47):
+        	return "klutz"
+        if (r == 48):
+        	return "knows everybody"
+        if (r == 49):
+        	return "life of the party"
+        if (r == 50):
+        	return "love-struck"
+        if (r == 51):
+        	return "mad genius"
+        if (r == 52):
+        	return "magnetic personality"
+        if (r == 53):
+        	return "manic"
+        if (r == 54):
+        	return "master orator"
+        if (r == 55):
+        	return "mililtantly vegan"
+        if (r == 56):
+        	return "misanthrope"
+        if (r == 57):
+        	return "miser"
+        if (r == 58):
+        	return "mopey"
+        if (r == 59):
+        	return "naive"
+        if (r == 60):
+        	return "nerd"
+        if (r == 61):
+        	return "no-nonsense"
+        if (r == 62):
+        	return "obsessive"
+        if (r == 63):
+        	return "old fart"
+        if (r == 64):
+        	return "overeducated"
+        if (r == 65):
+        	return "paranoid"
+        if (r == 66):
+        	return "perfect manners"
+        if (r == 67):
+        	return "pouty"
+        if (r == 68):
+        	return "power-hungry"
+        if (r == 69):
+        	return "prickly"
+        if (r == 70):
+        	return "proseliytizer"
+        if (r == 71):
+        	return "ruthless"
+        if (r == 72):
+        	return "sadist"
+        if (r == 73):
+        	return "self-destructive"
+        if (r == 74):
+        	return "self-important"
+        if (r == 75):
+        	return "self-pitying"
+        if (r == 76):
+        	return "senile"
+        if (r == 77):
+        	return "serene"
+        if (r == 78):
+        	return "shameless flirt"
+        if (r == 79):
+        	return "slacker"
+        if (r == 80):
+        	return "slimy"
+        if (r == 81):
+        	return "slovenly"
+        if (r == 82):
+        	return "snarky"
+        if (r == 83):
+        	return "snitch"
+        if (r == 84):
+        	return "snob"
+        if (r == 85):
+        	return "social butterfly"
+        if (r == 86):
+        	return "sophist"
+        if (r == 87):
+        	return "spacey"
+        if (r == 88):
+        	return "terrible memory"
+        if (r == 89):
+        	return "thick"
+        if (r == 90):
+        	return "toady"
+        if (r == 91):
+        	return "totally unreliable"
+        if (r == 92):
+        	return "twitchy"
+        if (r == 93):
+        	return "vain"
+        if (r == 94):
+        	return "vengeful"
+        if (r == 95):
+        	return "village idiot"
+        if (r == 96):
+        	return "well-travelled"
+        if (r == 97):
+        	return "whiner"
+        if (r == 98):
+        	return "wild child"
+        if (r == 99):
+        	return "wisecracking"
+        if (r == 100):
+        	return "world-weary"
+        return ""            
+    
+    def get_henchman(self, h_class="Torchbearer"):
+        cost = 15
+        wage = 1
+        equipment = ["Backpack", "5 Rations", "2 Waterskins", "Bedroll", "Flint & steel", "3 Torches"]
+        name = Character.get_name(self)
+        STR = self.rlr.roll('3d6')
+        DEX = self.rlr.roll('3d6')
+        CON = self.rlr.roll('3d6')
+        INT = self.rlr.roll('3d6')
+        WIS = self.rlr.roll('3d6')
+        CHA = self.rlr.roll('3d6')
+        
+        alignment = self.get_alignment()
+        
+        to_hit = 0
+        dmg = 0
+        ac_mod = 0
+        hp_mod = 0
+        carry_cap = 75
+        
+        if (CON < 9):
+            hp_mod = -1
+        elif (CON > 12):
+            hp_mod = 1
+        
+        if (STR < 5):
+            to_hit = -2
+            dmg = -1
+            carry_cap -= 10
+        elif (STR < 7):
+            to_hit = -1
+            carry_cap -= 5
+        elif (STR == 18):
+            to_hit = 1
+            dmg = 1
+            carry_cap += 50
+        elif (STR == 17):
+            to_hit = 1
+            dmg = 1
+            carry_cap += 30
+        elif (STR == 16):
+            to_hit = 1
+            carry_cap += 15
+        elif (STR > 12):
+            carry_cap += 10
+        elif (STR > 8):
+            carry_cap += 5
+            
+        
+        if (DEX < 9):
+            ac_mod = -1
+        elif (DEX > 12):
+            ac_mod = 1
+        
+        hp = self.rlr.roll(f'1d6+{hp_mod}')
+        if (hp < 1):
+            hp = 1
+            
+        gender = "Male"
+        if (self.rlr.roll('1d4') == 1):
+            gender = "Female"
+            
+        armor = "None"
+        ac = 10 + ac_mod
+        shield = "no shield"
+        weapon = "club"
+        weapon2 = ""
+       
+        if (h_class == "Man-at-arms"):
+            wage = 2
+            if (self.rlr.roll('1d6') <= 2):
+                armor = "Leather"
+                ac += 2
+                cost += 15
+            if (self.rlr.roll('1d6') <= 2):
+                shield = "shield"
+                ac += 1
+                cost += 15
+        
+            roll = self.rlr.roll('1d6')
+            if (roll == 1):
+                weapon = f"spear(1d6{dmg:+})"
+                cost += 1
+            elif (roll == 2):
+                weapon = f"handaxe(1d6{dmg:+})"
+                cost += 1
+            elif (roll == 3):
+                weapon = f"sling(1d4{dmg:+})"
+                weapon2 = f"club(1d4{dmg:+})"
+                cost += 1
+            elif (roll == 4):
+                weapon = f"club(1d4{dmg:+})"
+            elif (roll == 5):
+                weapon = f"warhammer(1d4{dmg+1:+})"
+                cost += 1
+            else:
+                if (shield == "shield"):
+                    weapon = f"staff(1d6{dmg:+})"
+                else:
+                    weapon = f"club(1d4{dmg:+})"
+
+            if (self.rlr.roll('1d6')<=2):
+                weapon2 = f"dagger(1d4{dmg:+})"
+                cost += 2
+                
+        occupation = ""
+        trait = self.get_trait()
+        roll = self.rlr.roll('1d20')
+        if (roll <= 7):
+            occupation = "farmer"
+        elif (roll <= 11):
+            occupation = "herder"
+        elif (roll == 12):
+            occupation = "barber"
+        elif (roll == 13):
+            occupation = "blacksmith apprentice"
+        elif (roll == 14):
+            occupation = "beggar"
+        elif (roll == 15):
+            occupation = "drunk"
+        elif (roll == 16):
+            occupation = "grave digger"
+        elif (roll == 17):
+            occupation = "woodcutter"
+        elif (roll == 18):
+            occupation = "thug"
+        elif (roll == 19):
+            occupation = "outlaw"
+        elif (roll == 20):
+            occupation = "gambler"
+        
+        output = f"{h_class}: {name}\n"
+        output += f'Human, {gender}, {alignment}\n'
+        output += f'STR:{STR} DEX:{DEX} CON:{CON} INT:{INT} WIS:{WIS} CHA:{CHA}\n'
+        output += f'Former {occupation}, {trait}\n'
+        output += f'HP:{hp} AC:{ac} To-Hit:{to_hit:+} MV:12 Sv:17 '
+        output += f'Carry_Cap:{carry_cap}\n'
+        output += f'Armor:{armor}/{shield}\n'
+        output += f'Weapons:{weapon} {weapon2}\n'
+        output += f'Cost:{cost}gp Upkeep:Rations+Lodgins Wage:{wage}gp/day\n'
+        return output    
 
     
 rlr = Roller()    
-char_str = str(CharGen().get_character("Monk"))
+char_str = str(CharGen().get_character("Any"))
 print(char_str)
 words = char_str.split()
 filename = words[0] + ' ' + words[3] + '.txt'
 with open(filename, 'w') as f:
     f.write(char_str)
+print()
+print("Henchmen for hire in the city after buying drinks, paying for posted notices \nand distributing sword-for-hire pamphlets (total cost: 5gp):")
+print("============================================================================")
+for i in range(rlr.roll('1d4+1')):
+    print(CharGen().get_henchman())
+for i in range(rlr.roll('1d4+1')):
+    print(CharGen().get_henchman("Man-at-arms"))
+print()
+print("Additional henchmen if the group hired a town crier (add 5 gp to cost):")
+print("============================================================================")
+for i in range(rlr.roll('1d4+1')):
+    print(CharGen().get_henchman())
+for i in range(rlr.roll('1d4+1')):
+    print(CharGen().get_henchman("Man-at-arms"))
 #print(rlr)
 #class_distribution()
