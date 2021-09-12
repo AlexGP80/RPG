@@ -1,9 +1,10 @@
 import math
 
 class Cell(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, blocked=False):
         self.x = x
         self.y = y
+        self.blocked = blocked
 
     def distance(self, other_cell):
         if (self.x == other_cell.x and self.y == other_cell.y):
@@ -89,10 +90,15 @@ class Board(object):
     def add_wall(self, start_x, start_y, horizontal, length):
         for i in range(length):
             if (horizontal):
-                self.walls.append(Wall(start_x + i, start_y, True, False))
+                self.walls.append(Wall(start_x + i, start_y, self.HORIZONTAL))
             else:
-                self.walls.append(Wall(start_x, start_y + i, False, True))
+                self.walls.append(Wall(start_x, start_y + i, self.VERTICAL))
 
+    def check_wall(self, another_wall):
+        for wall in self.walls:
+            if (wall.x == another_wall.x and wall.y == another_wall.y and wall.horizontal == another_wall.horizontal):
+                return True
+        return False
 
     def get_cells_reachable(self, cell, range, dist_acum, nodes, cell_path):
         if (dist_acum > range):
@@ -119,58 +125,62 @@ class Board(object):
                 for dy in interval:
                     x = cell.x + dx
                     y = cell.y + dy
-                    if (x > 0 and y > 0 and x < len(self.cells) and y < len(self.cells[0])):
+                    if (x >= 0 and y >= 0 and x < len(self.cells) and y < len(self.cells[0])):
                         # TO-DO: comprobar muros
                         # si dx es 0, no hace falta comprobar muro a izquierda o derecha
                         # si dy es 0, no hace falta comprobar muro arriba o abajo
                         if (dx == 0):
                             if (dy == -1):
-                                pass
+                                if (self.check_wall(Wall(cell.x, cell.y, self.HORIZONTAL))):
+                                    continue
                             elif (dy == 1):
-                                if Wall(cell.x, cell.y+dy, self.HORIZONTAL) in self.walls
+                                if (self.check_wall(Wall(cell.x, cell.y+dy, self.HORIZONTAL))):
+                                    continue
                         elif (dy == 0):
                             if (dx == -1):
-                                pass
+                                if (self.check_wall(Wall(cell.x, cell.y, self.VERTICAL))):
+                                    continue
                             elif (dx == 1):
-                                pass
+                                if (self.check_wall(Wall(cell.x+dx, cell.y, self.VERTICAL))):
+                                    continue
                         else:
                             if (dx == -1):
                                 if (dy == -1):
-                                    pass
+                                    if (self.check_wall(Wall(cell.x, cell.y, self.VERTICAL)) or self.check_wall(Wall(cell.x, cell.y, self.HORIZONTAL))):
+                                        continue
+                                    if (self.check_wall(Wall(cell.x, cell.y+dy, self.VERTICAL)) or self.check_wall(Wall(cell.x+dx, cell.y, self.HORIZONTAL))):
+                                        continue
                                 if (dy == 1):
-                                    pass
+                                    if (self.check_wall(Wall(cell.x, cell.y, self.VERTICAL)) or self.check_wall(Wall(cell.x, cell.y+dy, self.HORIZONTAL))):
+                                        continue
+                                    if (self.check_wall(Wall(cell.x+dx, cell.y+dy, self.HORIZONTAL)) or self.check_wall(Wall(cell.x, cell.y+dy, self.VERTICAL))):
+                                        continue
                             if (dx == 1):
                                 if (dy == -1):
-                                    pass
+                                    if (self.check_wall(Wall(cell.x, cell.y, self.HORIZONTAL)) or self.check_wall(Wall(cell.x+dx, cell.y, self.VERTICAL))):
+                                        continue
+                                    if (self.check_wall(Wall(cell.x+dx, cell.y+dy, self.VERTICAL)) or self.check_wall(Wall(cell.x+dx, cell.y, self.HORIZONTAL))):
+                                        continue
                                 if (dy == 1):
-                                    pass
-
-
-
-                        if (dx == 1 and dy == 0):
-                            # comprobar el muro x+1,y,V
-                        if (dx == 0 and dy == 1):
-                            # comprobar el muro x,y+1,H
-                        if (dx == -1 and dy == 0):
-                            # comprobar muro x,y,V
-                        if (dx == 0 and dy == -1)
-                            # comprobar muro x,y,H
-
-                        if (dx == -1 and dy == -1)
-                            # comprobar muro x,y,V y x,y,H y muros (x-1,y,H + x,y-1,V)
-
+                                    if (self.check_wall(Wall(cell.x+dx, cell.y+dy, self.VERTICAL)) or self.check_wall(Wall(cell.x+dx, cell.y+dy, self.HORIZONTAL))):
+                                        continue
+                                    if (self.check_wall(Wall(cell.x, cell.y+dy, self.HORIZONTAL)) or self.check_wall(Wall(cell.x+dx, cell.y, self.VERTICAL))):
+                                        continue
 
                         c = self.cells[x][y]
-                        dist = cell.distance(c)
-                        if (dist > 0):
-                            cp = cell_path + [c]
-                            print(f'Prospecting cell {c}')
-                            self.get_cells_reachable(c, range, dist_acum + dist, nodes, cp)
+                        if (not c in cell_path and not c.blocked):
+                            dist = cell.distance(c)
+                            if (dist > 0):
+                                cp = cell_path + [c]
+                                print(f'Prospecting cell {c}')
+                                self.get_cells_reachable(c, range, dist_acum + dist, nodes, cp)
             node.processed = True
         # añadir muros, ver a qué celdas se puede llegar con esa cantidad de movimiento
 
 
 b = Board(10, 10)
+b.cells[6][2].blocked = True
+b.cells[7][2].blocked = True
 b.add_wall(2, 2, b.HORIZONTAL, 4)
 b.add_wall(2, 2, b.VERTICAL, 4)
 b.add_wall(6, 2, b.VERTICAL, 2)
@@ -183,7 +193,7 @@ for w in b.walls:
     print(w)
 
 cell = b.cells[2][2]
-range = 40
+range = 400
 dist_acum = 0
 nodes = {}
 cell_path = [cell]
