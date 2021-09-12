@@ -137,32 +137,32 @@ class GEItem(object):
     def __descr__(self):
         return str(self)
         
-BACKPACK = GEItem("Backpack (30-pound capacity)", 5, 2)
-BEDROLL = GEItem("Bedroll", 0.2, 5)
-BELL = GEItem("Bell", 1, 0.1)
-CANDLE = GEItem("Candle", 0.01, 0.01)
-CASE = GEItem("Case (map or scroll)", 1, 0.5)
-CHALK = GEItem("Chalk (1 piece)", 0.05, 0.01)
-CROWBAR = GEItem("Crowbar", 0.2, 10)
-FLINT_STEEL = GEItem("Flint & Steel", 1, 1)
-GRAPPLING_HOOK = GEItem("Grappling hook", 1, 4)
-HAMMER = GEItem("Hammer", 0.5, 2)
-W_HOLY_SYMBOL = GEItem("Holy Symbol, wooden", 1, 0.1)
-INK = GEItem("Ink (1-ounce bottle)", 1, 0.5)
-LAMP_HOODED = GEItem("Lantern, hooded", 7, 2)
-OIL = GEItem("Oil, lamp (1 pint)", 0.1, 1)
-PARCHMENT = GEItem("Parchment (sheet)", 0.2, 0.01)
-POLE = GEItem("Pole (10 foot)", 0.2, 10)
-RATIONS_DRY = GEItem("Rations, dried (per day)", 1, 2)
-ROPE = GEItem("Rope, hemp (50 feet)", 1, 5)
-SHOVEL = GEItem("Shovel", 2, 5)
-WHISTLE = GEItem("Signal whistle", 0.5, 0.01)
-SPELLBOOK = GEItem("Spellbook", 25, 3)
-SPIKE = GEItem("Spike, iron", 0.05, 0.1)
-TORCH = GEItem("Torch", 0.01, 0.16)
-WATERSKIN = GEItem("Waterskin", 1, 2)
-ARROWS = GEItem("Arrows", 0.1, 0.05)
-STONES = GEItem("Stones, sling", 0, 0.25)
+BACKPACK = GEItem("Backpack (300 coin capacity)", 5, 20)
+BEDROLL = GEItem("Bedroll", 0.2, 50)
+BELL = GEItem("Bell", 1, 5)
+CANDLE = GEItem("Candle", 0.01, 1)
+CASE = GEItem("Case (map or scroll)", 1, 2)
+CHALK = GEItem("Chalk (1 piece)", 0.05, 1)
+CROWBAR = GEItem("Crowbar", 0.2, 100)
+FLINT_STEEL = GEItem("Flint & Steel", 1, 10)
+GRAPPLING_HOOK = GEItem("Grappling hook", 1, 40)
+HAMMER = GEItem("Hammer", 0.5, 20)
+W_HOLY_SYMBOL = GEItem("Holy Symbol, wooden", 1, 1)
+INK = GEItem("Ink (1-ounce bottle)", 1, 5)
+LAMP_HOODED = GEItem("Lantern, hooded", 7, 20)
+OIL = GEItem("Oil, lamp (1 pint)", 0.1, 10)
+PARCHMENT = GEItem("Parchment (sheet)", 0.2, 0)
+POLE = GEItem("Pole (10 foot)", 0.2, 100)
+RATIONS_DRY = GEItem("Rations, dried (per day)", 1, 20)
+ROPE = GEItem("Rope, hemp (50 feet)", 1, 50)
+SHOVEL = GEItem("Shovel", 2, 50)
+WHISTLE = GEItem("Signal whistle", 0.5, 1)
+SPELLBOOK = GEItem("Spellbook", 25, 30)
+SPIKE = GEItem("Spike, iron", 0.05, 3)
+TORCH = GEItem("Torch", 0.01, 10)
+WATERSKIN = GEItem("Waterskin", 1, 20)
+ARROWS = GEItem("Arrows", 0.1, 2)
+STONES = GEItem("Stones, sling", 0, 3)
 
 class Armor(GEItem):
     def __init__(self, descr, price, weight, ac_mod):
@@ -170,17 +170,17 @@ class Armor(GEItem):
         self.weight = weight
         self.ac_mod = ac_mod
     def __str__(self):
-        return f'{self.descr} [{self.weight} lbs]'
+        return f'{self.descr} [{self.weight} cns]'
         
 
 NO_ARMOR = Armor("None", 0, 0, 0)
 NO_SHIELD = NO_ARMOR
-SHIELD = Armor("Shield", 15, 10, 1)
-SHIELD_WOODEN = Armor("Shield, wooden", 10, 10, 1)
-LEATHER_ARMOR = Armor("Leather Armor", 15, 25, 2)
-RING_ARMOR = Armor("Ring Armor", 30, 40, 3)
-CHAIN_ARMOR = Armor("Chain Armor", 75, 50, 4)
-PLATE_ARMOR = Armor("Plate Armor", 175, 70, 6)
+SHIELD = Armor("Shield", 15, 100, 1)
+SHIELD_WOODEN = Armor("Shield, wooden", 10, 100, 1)
+LEATHER_ARMOR = Armor("Leather Armor", 15, 250, 2)
+RING_ARMOR = Armor("Ring Armor", 30, 400, 3)
+CHAIN_ARMOR = Armor("Chain Armor", 75, 500, 4)
+PLATE_ARMOR = Armor("Plate Armor", 175, 750, 6)
 
 class Damage(object):
     def __init__(self, dmg):
@@ -229,29 +229,29 @@ class Weapon(GEItem):
         self.vers = vers
         self.melee_and_missile = melee_and_missile
 
-BATTLE_AXE = Weapon("Battle Axe", 5, 15, '1d8', vers=True)
-HAND_AXE = Weapon("Hand Axe", 1, 5, '1d6', 1, 10, melee_and_missile=True)
-CLUB = Weapon("Club", 0, 10, '1d4')
-DAGGER = Weapon("Dagger", 2, 2, '1d4', 1, 10, melee_and_missile=True)
-FLAIL = Weapon("Flail (two-handed)", 8, 10, '1d8')
-WARHAMMER = Weapon("Warhammer", 1, 10, '1d4+1')
-LANCE = Weapon("Lance", 6, 15, '2d4+1')
-HV_MACE = Weapon("Heavy Mace", 10, 10, '1d6')
-POLEARM = Weapon("Polearm (two-handed)", 10, 15, '1d8+1')
-SPEAR = Weapon("Spear", 1, 10, '1d6', 1, 20, vers=True, melee_and_missile=True)
-STAFF = Weapon("Staff (two-handed)", 0, 10, '1d6')
-BASTARD_SWORD = Weapon("Bastard sword", 20, 10, '1d8', vers=True)
-LONGSWORD = Weapon("Longsword", 15, 10, '1d8')
-SHORTSWORD = Weapon("Shortsword", 8, 5, '1d6')
-SICKLE_SWORD = Weapon("Sickle-shaped sword", 8, 5, '1d6')
-TWO_H_SWORD = Weapon("Two-handed Sword", 30, 15, '1d10')
-LONGBOW = Weapon("Longbow", 60, 5, '1d6', 2, 70)
-SHORTBOW = Weapon("Shortbow", 15, 5, '1d6', 2, 50)
-SLING = Weapon("Sling", 0.2, 1, '1d4', 1, 40)
-JAVELIN = Weapon("Javelin", 0.5, 5, '1d6', 1, 20)
-DART = Weapon("Dart", 0.2, 1, '1d3', 3, 15)
-CROSSBOW_LIGHT = Weapon("Light Crossbow", 12, 5, '1d4+1', 1, 60)
-CROSSBOW_HEAVY = Weapon("Heavy Crossbow", 20, 5, '1d6+1', 0.5, 80)
+BATTLE_AXE = Weapon("Battle Axe", 5, 150, '1d8', vers=True)
+HAND_AXE = Weapon("Hand Axe", 1, 50, '1d6', 1, 10, melee_and_missile=True)
+CLUB = Weapon("Club", 0, 100, '1d4')
+DAGGER = Weapon("Dagger", 2, 20, '1d4', 1, 10, melee_and_missile=True)
+FLAIL = Weapon("Flail (two-handed)", 8, 100, '1d8')
+WARHAMMER = Weapon("Warhammer", 1, 100, '1d4+1')
+LANCE = Weapon("Lance", 6, 150, '2d4+1')
+HV_MACE = Weapon("Heavy Mace", 10, 100, '1d6')
+POLEARM = Weapon("Polearm (two-handed)", 10, 150, '1d8+1')
+SPEAR = Weapon("Spear", 1, 100, '1d6', 1, 20, vers=True, melee_and_missile=True)
+STAFF = Weapon("Staff (two-handed)", 0, 100, '1d6')
+BASTARD_SWORD = Weapon("Bastard sword", 20, 100, '1d8', vers=True)
+LONGSWORD = Weapon("Longsword", 15, 100, '1d8')
+SHORTSWORD = Weapon("Shortsword", 8, 50, '1d6')
+SICKLE_SWORD = Weapon("Sickle-shaped sword", 8, 50, '1d6')
+TWO_H_SWORD = Weapon("Two-handed Sword", 30, 150, '1d10')
+LONGBOW = Weapon("Longbow", 60, 50, '1d6', 2, 70)
+SHORTBOW = Weapon("Shortbow", 15, 50, '1d6', 2, 50)
+SLING = Weapon("Sling", 0.2, 10, '1d4', 1, 40)
+JAVELIN = Weapon("Javelin", 0.5, 50, '1d6', 1, 20)
+DART = Weapon("Dart", 0.2, 10, '1d3', 3, 15)
+CROSSBOW_LIGHT = Weapon("Light Crossbow", 12, 50, '1d4+1', 1, 60)
+CROSSBOW_HEAVY = Weapon("Heavy Crossbow", 20, 50, '1d6+1', 0.5, 80)
 
 class EquipEntry(object):
     def __init__(self, item, quantity):
@@ -259,7 +259,7 @@ class EquipEntry(object):
         self.item = item
         
     def __str__(self):
-        return f'{self.quantity} {self.item} [{self.quantity * self.item.weight:.2f} lbs]'
+        return f'{self.quantity} {self.item} [{self.quantity * self.item.weight} cns]'
     
     def __descr__(self):
         return str(self)
@@ -288,15 +288,15 @@ class EquipList(object):
             if (type(it.item).__name__ == 'Weapon'):
                 w = it.item
                 if (w.rof == 0):
-                    output += f": {character.melee_to_hit:+} to hit, {w.damage + character.dmg_mod} damage.\n"
+                    output += f": THAC0 {character.melee_to_hit}, {w.damage + character.dmg_mod} damage.\n"
                 elif (w.melee_and_missile):
-                    output += f": {character.melee_to_hit:+} to hit, {w.damage + character.dmg_mod} damage.\n"
-                    output += f"    (thrown): {character.missile_to_hit:+} to hit, RoF:{w.rof}, Range: {w.w_range}, {w.damage + character.dmg_mod} damage.\n"
+                    output += f": THAC0 {character.melee_to_hit}, {w.damage + character.dmg_mod} damage.\n"
+                    output += f"    (thrown): THAC0 {character.missile_to_hit}, RoF:{w.rof}, Range: {w.w_range}, {w.damage + character.dmg_mod} damage.\n"
                 else:
                     # missile
-                    output += f": {character.missile_to_hit:+} to hit, RoF:{w.rof}, Range: {w.w_range}, {w.damage + character.dmg_mod} damage.\n"
+                    output += f": THAC0 {character.missile_to_hit}, RoF:{w.rof}, Range: {w.w_range}, {w.damage + character.dmg_mod} damage.\n"
                 if (w.vers):
-                    output += f'    (two-handed): {character.melee_to_hit:+} to hit, {w.damage + character.dmg_mod + 1} damage.\n'
+                    output += f'    (two-handed): THAC0 {character.melee_to_hit:+}, {w.damage + character.dmg_mod + 1} damage.\n'
             else:
                 output += '\n'
         return output            
@@ -335,7 +335,7 @@ class Character(object):
         self.dmg_mod = self.get_dmg_mod()
         self.open_doors = self.get_open_doors()
         self.carry_mod = self.get_carry_mod()
-        self.carrying_capacity = 75 + self.carry_mod
+        self.carrying_capacity = 750 + self.carry_mod
         self.missile_to_hit_mod = self.get_missile_to_hit_mod()
         self.ac_mod = self.get_ac_mod()
         self.hp_mod = self.get_hp_mod()
@@ -355,6 +355,13 @@ class Character(object):
         self.total_exp_bonus = self.prime_attr_exp_bonus + self.wis_exp_bonus + self.cha_exp_bonus
         
         self.saving_throw = self.get_saving_throw()
+        self.death_ray_poison_save = self.saving_throw
+        self.wands_save = self.saving_throw
+        self.turned_to_stone_save = self.saving_throw
+        self.dragon_breath_save = self.saving_throw
+        self.spells_staff_save = self.saving_throw
+        
+        self.set_saving_throws()
         
         self.armor_permitted = self.get_armor_permitted()
         self.shield_permitted = self.get_shield_permitted()
@@ -363,11 +370,11 @@ class Character(object):
         self.dr_spell_slots_lev1 = self.get_dr_spell_slots_lev1()
         self.mu_spell_slots_lev1 = self.get_mu_spell_slots_lev1()
         
-        self.base_ac = 10
+        self.base_ac = 9
         self.weaponless_damage = self.get_weaponless_damage()
-        self.base_to_hit = 0
-        self.melee_to_hit = self.base_to_hit + self.to_hit_mod
-        self.missile_to_hit = self.base_to_hit + self.to_hit_mod + self.missile_to_hit_mod
+        self.base_to_hit = 19
+        self.melee_to_hit = self.base_to_hit - self.to_hit_mod
+        self.missile_to_hit = self.base_to_hit - self.to_hit_mod - self.missile_to_hit_mod
         self.xp = 0
         self.alignment = self.get_alignment()
         
@@ -378,15 +385,42 @@ class Character(object):
         self.gold = int(self.gold)
         self.silver = int(pennies / 10)
         self.copper = int(pennies % 10)
-        self.weight_gold = self.gold*0.1
-        self.weight_silver = self.silver*0.1
-        self.weight_copper = self.copper*0.1
+        self.weight_gold = self.gold
+        self.weight_silver = self.silver
+        self.weight_copper = self.copper
         self.weight += self.weight_gold + self.weight_silver + self.weight_copper
-        self.ac = self.base_ac + self.ac_mod + self.armor.ac_mod + self.shield.ac_mod
-        self.weight_thresholds = [x + y for x, y in zip([75, 100, 150, 300], [self.carry_mod, self.carry_mod, self.carry_mod, self.carry_mod])]
+        self.ac = self.base_ac - self.ac_mod - self.armor.ac_mod - self.shield.ac_mod
+        self.weight_thresholds = [x + y for x, y in zip([750, 1000, 1500, 3000], [self.carry_mod, self.carry_mod, self.carry_mod, self.carry_mod])]
         self.mv_rate = self.get_mv_rate()
         self.class_abilities = self.get_class_abilities()
         
+        
+    def set_saving_throws(self):
+        if (self.c_class in ["Cleric", "Druid", "Monk"]):
+            self.death_ray_poison_save = 11
+            self.wands_save = 12
+            self.turned_to_stone_save = 14
+            self.dragon_breath_save = 16
+            self.spells_staff_save = 15
+        elif (self.c_class in ["Fighter", "Ranger"]):
+            self.death_ray_poison_save = 12
+            self.wands_save = 13
+            self.turned_to_stone_save = 14
+            self.dragon_breath_save = 15
+            self.spells_staff_save = 16
+        elif (self.c_class == "Paladin"):
+            self.death_ray_poison_save = 10
+            self.wands_save = 11
+            self.turned_to_stone_save = 12
+            self.dragon_breath_save = 13
+            self.spells_staff_save = 14
+        else:
+            self.death_ray_poison_save = 13
+            self.wands_save = 14
+            self.turned_to_stone_save = 13
+            self.dragon_breath_save = 16
+            self.spells_staff_save = 15
+            
         
     def add_items(self, item, quant=1):
         self.gold -= quant * item.price
@@ -973,21 +1007,21 @@ class Character(object):
     
     def get_carry_mod(self):
         if (self.STR < 5):
-            return -10
+            return -100
         if (self.STR < 7):
-            return -5
+            return -50
         if (self.STR < 9):
             return 0
         if (self.STR < 13):
-            return 5
-        if (self.STR < 16):
-            return 10
-        if (self.STR == 16):
-            return 15
-        if (self.STR == 17):
-            return 30
-        if (self.STR == 18):
             return 50
+        if (self.STR < 16):
+            return 100
+        if (self.STR == 16):
+            return 150
+        if (self.STR == 17):
+            return 300
+        if (self.STR == 18):
+            return 500
         return 0
     
     def get_missile_to_hit_mod(self):
@@ -1012,36 +1046,41 @@ class Character(object):
         output = f'{self.name}\n' 
         output += f'{self.alignment} {self.race} {self.c_class}\n'
         output += f'Experience Points: {self.xp} XP     Level 1\n\n'
-        output += f'STR:{self.STR}   DEX:{self.DEX}   CON:{self.CON}   INT:{self.INT}   WIS:{self.WIS}   CHA:{self.CHA}\n\n'
+        output += f'STR:{self.STR}   INT:{self.INT}   WIS:{self.WIS}   CON:{self.CON}   DEX:{self.DEX}   CHA:{self.CHA}\n\n'
         output += f'STR\n'
         output += f'  To-Hit Modifier: {self.to_hit_mod:+}\n'
         output += f'  Damage Modifier: {self.dmg_mod:+}\n'
         output += f'  Open Doors: {self.open_doors} in 6\n'
         output += f'  Carry Modifier: {self.carry_mod:+}\n\n'
-        output += f'DEX\n'
-        output += f'  Missile To-Hit Modifier: {self.missile_to_hit_mod:+}\n'
-        output += f'  Armor Class Modifier: {self.ac_mod:+}\n\n'
-        output += f'CON\n'
-        output += f'  Hit Point Modifier: {self.hp_mod:+}\n'
-        output += f'  Raise Dead Survival: {self.raise_dead_survival}%\n\n'
         output += f'INT\n'
         output += f'  Maximum Additional Languages: {self.max_additional_languages}\n'
         output += f'  Maximum Spell Level: {self.max_spell_level}\n'
         output += f'  Chance to Understand New Spell: {self.chance_und_new_spell}%\n'
-        output += f'  Min/Max Number of Basic Spells Undertandable per Level: {self.min_max_num_spells_und_level}\n\n'
+        output += f'  Min/Max Number of Basic Spells Understandable per Level: {self.min_max_num_spells_und_level}\n\n'
         output += f'WIS\n'
         output += f'  Additional 1st level Cleric Spells: {self.additional_cleric_1st_level_spells}\n'
         output += f'  Wisdom Experience Bonus: {self.wis_exp_bonus}%\n\n'
+        output += f'CON\n'
+        output += f'  Hit Point Modifier: {self.hp_mod:+}\n'
+        output += f'  Raise Dead Survival: {self.raise_dead_survival}%\n\n'
+        output += f'DEX\n'
+        output += f'  Missile To-Hit Modifier: {self.missile_to_hit_mod:+}\n'
+        output += f'  Armor Class Modifier: {self.ac_mod:+}\n\n'
         output += f'CHA\n'
         output += f'  Maximum Number of Special Hirelings: {self.max_num_special_hirelings}\n'
         output += f'  Charisma Experience Bonus: {self.cha_exp_bonus}%\n\n'
         output += '\n'
         output += f'Armor Class (AC): {self.ac}\n'
         output += f'Hit Points: {self.hp_curr} / {self.hp_max}\n'
-        output += f'Saving Throw: {self.saving_throw}\n'
-        output += f'To-Hit (Melee): {self.melee_to_hit}\n'
-        output += f'To-Hit (Missile): {self.missile_to_hit}\n'
+        output += f'THAC0 (Melee): {self.melee_to_hit}\n'
+        output += f'THAC0 (Missile): {self.missile_to_hit}\n'
         output += f'Weaponless Damage: {self.weaponless_damage}\n\n'
+        output += f'Saving Throws: \n'
+        output += f'    Death Rays and Poison: {self.death_ray_poison_save}\n'
+        output += f'    Wands (all): {self.wands_save}\n'
+        output += f'    Turned to Stone: {self.turned_to_stone_save}\n'
+        output += f"    Dragon's Breath: {self.dragon_breath_save}\n"
+        output += f'    Spells and Staffs: {self.spells_staff_save}\n\n'
         output += f'Prime Attribute(s): '
         for i in range(len(self.prime_attrs)):
             output += self.prime_attrs[i] + " "
@@ -1051,14 +1090,14 @@ class Character(object):
         output += f'Armor Permitted: {self.armor_permitted}\n'
         output += f'Shield Permitted: {self.shield_permitted}\n'
         
-        output += f'\nWealth:\n  {self.gold} gold pieces [{self.weight_gold:.2f} lbs]\n  {self.silver} silver pieces [{self.weight_silver:.2f} lbs]\n  {self.copper} copper pieces [{self.weight_copper:.2f} lbs]\n'
+        output += f'\nWealth:\n  {self.gold} gold pieces [{self.weight_gold} cns]\n  {self.silver} silver pieces [{self.weight_silver} cns]\n  {self.copper} copper pieces [{self.weight_copper} cns]\n'
         #print (self.equipment)
         output += f'\nArmor: {str(self.armor)}\n'
         output += f'Shield: {str(self.shield)}\n'
         output += self.weapons.to_str(self)
         output += str(self.eq_list)
-        output += f'\nWeight carried: {self.weight:.2f}\n'
-        output += f'Carrying Capacity: {self.carrying_capacity} / {self.carrying_capacity + 25} / {self.carrying_capacity + 75} / {self.carrying_capacity + 225}\n' 
+        output += f'\nWeight carried: {self.weight}\n'
+        output += f'Carrying Capacity: {self.carrying_capacity} / {self.carrying_capacity + 250} / {self.carrying_capacity + 750} / {self.carrying_capacity + 2250}\n' 
         output += f'Movement Rate: {self.mv_rate}\n\n'
         if (self.c_class == "Cleric"):
             output += f'Cleric Level 1 Spell Slots: {self.cl_spell_slots_lev1}\n\n'
