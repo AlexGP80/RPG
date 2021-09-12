@@ -102,33 +102,30 @@ class Board(object):
 
     def get_cells_reachable(self, cell, range, dist_acum, nodes, cell_path):
         if (dist_acum > range):
-            print(f"get_cells_reachable: For cell {cell} dist_acum({dist_acum}) > range({range}) - return")
+            #print(f"get_cells_reachable: For cell {cell} dist_acum({dist_acum}) > range({range}) - return")
             return
 
         if (str(cell) in nodes):
-            print(f'get_cells_reachable: Cell {str(cell)} already in nodes')
+            #print(f'get_cells_reachable: Cell {str(cell)} already in nodes')
             node = nodes[str(cell)]
             if (node.distance > dist_acum):
-                print(f'get_cells_reachable: Better path for cell {str(cell)}')
+                #print(f'get_cells_reachable: Better path for cell {str(cell)}')
                 node.distance = dist_acum
                 node.cell_path = cell_path
                 node.processed = False
         else:
             node = Node(cell, dist_acum, cell_path)
             nodes[str(cell)] = node
-            print(f'get_cells_reachable: Cell {str(cell)} not in nodes. Adding it.')
+            #print(f'get_cells_reachable: Cell {str(cell)} not in nodes. Adding it.')
 
         if (not node.processed):
-            print(f'get_cells_reachable: Prospecting cells adjacent to cell {cell}')
+            #print(f'get_cells_reachable: Prospecting cells adjacent to cell {cell}')
             interval = [-1, 0, 1]
             for dx in interval:
                 for dy in interval:
                     x = cell.x + dx
                     y = cell.y + dy
                     if (x >= 0 and y >= 0 and x < len(self.cells) and y < len(self.cells[0])):
-                        # TO-DO: comprobar muros
-                        # si dx es 0, no hace falta comprobar muro a izquierda o derecha
-                        # si dy es 0, no hace falta comprobar muro arriba o abajo
                         if (dx == 0):
                             if (dy == -1):
                                 if (self.check_wall(Wall(cell.x, cell.y, self.HORIZONTAL))):
@@ -172,10 +169,9 @@ class Board(object):
                             dist = cell.distance(c)
                             if (dist > 0):
                                 cp = cell_path + [c]
-                                print(f'Prospecting cell {c}')
+                                #print(f'Prospecting cell {c}')
                                 self.get_cells_reachable(c, range, dist_acum + dist, nodes, cp)
             node.processed = True
-        # añadir muros, ver a qué celdas se puede llegar con esa cantidad de movimiento
 
 
 b = Board(10, 10)
