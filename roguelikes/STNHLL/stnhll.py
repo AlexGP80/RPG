@@ -18,6 +18,10 @@ class Motor(object):
     WINDOW_MAP_HEIGHT = 60
     MAP_WIDTH = 1200
     MAP_HEIGHT = 1200
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
     def __init__(self):
 
@@ -51,6 +55,14 @@ class Motor(object):
         for x in range(595,605,1):
             self.map[x, 595] = 1
 
+        self.map_north = self.map
+        self.map_west = self.turn_map_left()
+        self.map_east = self.turn_map_right()
+        self.map = self.map_east
+        self.map_south = self.turn_map_right()
+        self.map = self.map_north
+        self.orientation = self.NORTH
+
 
 
     def map_refresh(self,px,py):
@@ -79,6 +91,34 @@ class Motor(object):
             for ity in range(self.MAP_HEIGHT):
                 map[itx,ity] = self.map[ity,self.MAP_HEIGHT-itx-1]
         return map
+
+    def turn_left(self):
+        if (self.orientation == self.NORTH):
+            self.map = self.map_west
+            self.orientation = self.WEST
+        elif (self.orientation == self.WEST):
+            self.map = self.map_south
+            self.orientation = self.SOUTH
+        elif (self.orientation == self.SOUTH):
+            self.map = self.map_east
+            self.orientation = self.EAST
+        elif (self.orientation == self.EAST):
+            self.map = self.map_north
+            self.orientation = self.NORTH
+
+    def turn_right(self):
+        if (self.orientation == self.NORTH):
+            self.map = self.map_east
+            self.orientation = self.EAST
+        elif (self.orientation == self.WEST):
+            self.map = self.map_north
+            self.orientation = self.NORTH
+        elif (self.orientation == self.SOUTH):
+            self.map = self.map_west
+            self.orientation = self.WEST
+        elif (self.orientation == self.EAST):
+            self.map = self.map_south
+            self.orientation = self.SOUTH
 
     def erase(self, x, y):
         self.console.rgb[x,y] = ord(' '), tcod.black, tcod.grey
@@ -127,7 +167,8 @@ class Motor(object):
                             # if (x > 1):
                             #     x -= 1
                             #    self.map_refresh(x,y)
-                            self.map = self.turn_map_left()
+                            self.map = self.turn_left()
+                            print(self.map)
                             x, y = y, self.MAP_WIDTH-x
                             self.map_refresh(x, y)
                         elif event.scancode == tcod.event.SCANCODE_RIGHT:
@@ -135,7 +176,8 @@ class Motor(object):
                             #if (x < self.MAP_WIDTH):
                             #    x += 1
                             #    self.map_refresh(x,y)
-                            self.map = self.turn_map_right()
+                            self.map = self.turn_right()
+                            print(self.map)
                             x, y = self.MAP_HEIGHT-y, x
                             self.map_refresh(x, y)
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
