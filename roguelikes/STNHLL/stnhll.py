@@ -14,10 +14,10 @@ class Motor(object):
 
     WIDTH = 150
     HEIGHT = int((WIDTH*9) / 16)  # Console width and height in tiles.
-    WINDOW_MAP_WIDTH = 60
+    WINDOW_MAP_WIDTH = 120
     WINDOW_MAP_HEIGHT = 60
-    MAP_WIDTH = 120
-    MAP_HEIGHT = 120
+    MAP_WIDTH = 1200
+    MAP_HEIGHT = 1200
 
     def __init__(self):
 
@@ -46,25 +46,39 @@ class Motor(object):
         )
         for x in range(self.MAP_WIDTH):
             for y in range(self.MAP_HEIGHT):
-                if (random.random() < 0.1667):
+                if (random.random() < 0.05):
                     self.map[x,y] = 1
-
+        for x in range(595,605,1):
+            self.map[x, 595] = 1
 
 
 
     def map_refresh(self,px,py):
         cx = 0
-        for x in range(px-30,px+29,1):
+        for ix in range(px-59,px+59,1):
             cy = 0
             cx += 1
-            for y in range(py-30,py+29,1):
+            for iy in range(py-54,py+4,1):
                 cy += 1
-                if (self.map[x, y]==1):
+                if (self.map[ix, iy]==1):
                     self.console.rgb[cx+1, cy+1] = ord("#")
                 else:
                     self.console.rgb[cx+1, cy+1] = ord(".")
+        self.console.print(3,70,f'({px},{py})')
 
+    def turn_map_right(self):
+        map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
+        for itx in range(self.MAP_WIDTH):
+            for ity in range(self.MAP_HEIGHT):
+                map[itx,ity] = self.map[self.MAP_WIDTH-ity-1,itx]
+        return map
 
+    def turn_map_left(self):
+        map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
+        for itx in range(self.MAP_WIDTH):
+            for ity in range(self.MAP_HEIGHT):
+                map[itx,ity] = self.map[ity,self.MAP_HEIGHT-itx-1]
+        return map
 
     def erase(self, x, y):
         self.console.rgb[x,y] = ord(' '), tcod.black, tcod.grey
@@ -82,7 +96,7 @@ class Motor(object):
             x = int(self.MAP_WIDTH / 2) + 1
             y = int(self.MAP_HEIGHT / 2) + 1
             pos_x = int(self.WINDOW_MAP_WIDTH / 2) + 1
-            pos_y = int(self.WINDOW_MAP_HEIGHT / 2) + 1
+            pos_y = int(self.WINDOW_MAP_HEIGHT - 4) + 1
 
             self.map_refresh(x,y)
 
@@ -99,25 +113,31 @@ class Motor(object):
                         #<type='KEYDOWN', scancode=SCANCODE_DOWN, sym=K_DOWN, mod=KMOD_NUM, repeat=False>
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_DOWN:
-                            self.erase(x, y)
+                            self.erase(pos_x, pos_y)
                             if (y < self.MAP_HEIGHT):
                                 y += 1
                                 self.map_refresh(x,y)
                         elif event.scancode == tcod.event.SCANCODE_UP:
-                            self.erase(x, y)
+                            self.erase(pos_x, pos_y)
                             if (y > 1):
                                 y -= 1
                                 self.map_refresh(x,y)
                         elif event.scancode == tcod.event.SCANCODE_LEFT:
-                            self.erase(x, y)
-                            if (x > 1):
-                                x -= 1
-                                self.map_refresh(x,y)
+                            # self.erase(pos_x, pos_y)
+                            # if (x > 1):
+                            #     x -= 1
+                            #    self.map_refresh(x,y)
+                            self.map = self.turn_map_left()
+                            x, y = y, self.MAP_WIDTH-x
+                            self.map_refresh(x, y)
                         elif event.scancode == tcod.event.SCANCODE_RIGHT:
-                            self.erase(x, y)
-                            if (x < self.MAP_WIDTH):
-                                x += 1
-                                self.map_refresh(x,y)
+                            #self.erase(pos_x, pos_y)
+                            #if (x < self.MAP_WIDTH):
+                            #    x += 1
+                            #    self.map_refresh(x,y)
+                            self.map = self.turn_map_right()
+                            x, y = self.MAP_HEIGHT-y, x
+                            self.map_refresh(x, y)
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
                             #self.console.buffer["ch"] = ord('.')
                             raise SystemExit()
