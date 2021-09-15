@@ -1,0 +1,27 @@
+<type='KEYDOWN', scancode=SCANCODE_W, sym=K_w, mod=KMOD_NUM, repeat=False>
+<type='TEXTINPUT', text='w')
+<type='KEYUP', scancode=SCANCODE_W, sym=K_w, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_S, sym=K_s, mod=KMOD_NUM, repeat=False>
+<type='TEXTINPUT', text='s')
+<type='KEYUP', scancode=SCANCODE_S, sym=K_s, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_A, sym=K_a, mod=KMOD_NUM, repeat=False>
+<type='TEXTINPUT', text='a')
+<type='KEYUP', scancode=SCANCODE_A, sym=K_a, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_D, sym=K_d, mod=KMOD_NUM, repeat=False>
+<type='TEXTINPUT', text='d')
+<type='KEYUP', scancode=SCANCODE_D, sym=K_d, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_UP, sym=K_UP, mod=KMOD_NUM, repeat=False>
+<type='KEYUP', scancode=SCANCODE_UP, sym=K_UP, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_LEFT, sym=K_LEFT, mod=KMOD_NUM, repeat=False>
+<type='KEYUP', scancode=SCANCODE_LEFT, sym=K_LEFT, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_RIGHT, sym=K_RIGHT, mod=KMOD_NUM, repeat=False>
+<type='KEYUP', scancode=SCANCODE_RIGHT, sym=K_RIGHT, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_DOWN, sym=K_DOWN, mod=KMOD_NUM, repeat=False>
+<type='KEYUP', scancode=SCANCODE_DOWN, sym=K_DOWN, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_SPACE, sym=K_SPACE, mod=KMOD_NUM, repeat=False>
+<type='TEXTINPUT', text=' ')
+<type='KEYUP', scancode=SCANCODE_SPACE, sym=K_SPACE, mod=KMOD_NUM, repeat=False>
+<type='KEYDOWN', scancode=SCANCODE_RETURN, sym=K_RETURN, mod=KMOD_NUM, repeat=False>
+<type='KEYUP', scancode=SCANCODE_RETURN, sym=K_RETURN, mod=KMOD_NUM, repeat=False>
+<type='WINDOWCLOSE'>
+<type='QUIT'>
