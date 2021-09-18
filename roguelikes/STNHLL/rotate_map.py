@@ -59,13 +59,20 @@ class Motor(object):
                              [0,0,0,0,0,0,0,0,0,0,0]]).T
         self.x = 0
         self.y = 0
-        # self.map_north = self.map
-        # self.map_west = self.turn_map_left()
-        # self.map_east = self.turn_map_right()
-        # self.map = self.map_east
-        # self.map_south = self.turn_map_right()
-        # self.map = self.map_north
-        # self.orientation = self.NORTH
+        #self.maps = [np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))]
+        self.map_north = self.map.copy()
+        self.map_west = self.turn_map_left()
+        self.map_east = self.turn_map_right()
+        self.map = self.map_east
+        self.map_south = self.turn_map_right()
+        self.map = self.map_north
+        self.orientation = self.NORTH
+        print(self.map)
+        print(self.map_north)
+        print(self.map_east)
+        print(self.map_south)
+        print(self.map_west)
+        print(self.orientation)
 
 
 
@@ -98,31 +105,31 @@ class Motor(object):
 
     def turn_left(self):
         if (self.orientation == self.NORTH):
-            self.map = self.map_west
             self.orientation = self.WEST
+            return self.map_west
         elif (self.orientation == self.WEST):
-            self.map = self.map_south
             self.orientation = self.SOUTH
+            return self.map_south
         elif (self.orientation == self.SOUTH):
-            self.map = self.map_east
             self.orientation = self.EAST
+            return self.map_east
         elif (self.orientation == self.EAST):
-            self.map = self.map_north
             self.orientation = self.NORTH
+            return self.map_north
 
     def turn_right(self):
         if (self.orientation == self.NORTH):
-            self.map = self.map_east
             self.orientation = self.EAST
+            return self.map_east
         elif (self.orientation == self.WEST):
-            self.map = self.map_north
             self.orientation = self.NORTH
+            return self.map_north
         elif (self.orientation == self.SOUTH):
-            self.map = self.map_west
             self.orientation = self.WEST
+            return self.map_west
         elif (self.orientation == self.EAST):
-            self.map = self.map_south
             self.orientation = self.SOUTH
+            return self.map_south
 
     def erase(self, x, y):
         self.console.rgb[x,y] = ord(' '), tcod.black, tcod.grey
@@ -145,16 +152,16 @@ class Motor(object):
             self.map_refresh(self.x,self.y)
 
             while True:  # Main loop, runs until SystemExit is raised.
-                #console = tcod.Console(WIDTH, HEIGHT, order="F", buffer=buffer)
                 self.console.rgb[pos_x, pos_y] = ord("@"), tcod.yellow, tcod.black
                 self.console.rgb["bg"] = tcod.grey
-                #console.clear()
                 context.present(self.console)  # Show the console.
 
                 for event in tcod.event.wait():
                     context.convert_event(event)  # Sets tile coordinates for mouse events.
+
                     # Print event information to stdout.
-                    print(event)
+                    #print(event)
+
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
@@ -167,12 +174,12 @@ class Motor(object):
                                 self.y -= 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_Q:
-                            self.map = self.turn_map_left()
+                            self.map = self.turn_left()
                             print(self.map.T)
                             self.x, self.y = self.MAP_HEIGHT-self.y-1, self.x
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_E:
-                            self.map = self.turn_map_right()
+                            self.map = self.turn_right()
                             print(self.map.T)
                             self.x, self.y = self.y, self.MAP_WIDTH-1-self.x
                             self.map_refresh(self.x, self.y)
