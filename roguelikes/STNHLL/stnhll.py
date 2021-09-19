@@ -17,7 +17,9 @@ class Map(object):
 
 class Motor(object):
 
-    WIDTH = 120
+    CHAR_WALL = '▓'
+    CHAR_OPEN = ' '
+    WIDTH = 80
     HEIGHT = 90  # Console width and height in tiles.
     WINDOW_MAP_WIDTH = 61
     WINDOW_MAP_HEIGHT = 61
@@ -54,22 +56,10 @@ class Motor(object):
         #self.console = tcod.Console(self.WIDTH, self.HEIGHT, buffer=buffer)
 
 
-        self.map = np.ones((self.MAP_WIDTH,self.MAP_HEIGHT))
-
-        # self.map = np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0],
-        #                      [0,0,0,0,0,0,0,0,0,0,0,0,0],
-        #                      [0,0,0,0,0,0,0,0,0,0,0,1,1],
-        #                      [0,0,0,0,0,0,0,0,0,0,0,1,1],
-        #                      [0,1,1,1,1,0,0,1,0,1,0],
-        #                      [0,0,0,0,0,0,0,0,0,0,0],
-        #                      [0,0,0,0,0,0,0,0,0,0,0],
-        #                      [0,1,0,0,0,0,0,0,0,1,0],
-        #                      [0,1,0,0,0,1,0,0,0,1,0],
-        #                      [0,1,1,1,1,1,1,1,1,1,0],
-        #                      [0,0,0,0,0,0,0,0,0,0,0]]).T
+        self.map = np.loadtxt("map.txt", dtype='int', delimiter=',')
         self.x = 0
         self.y = 0
-        #self.maps = [np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))]
+
         self.map_north = self.map.copy()
         self.map_west = self.turn_map_left()
         self.map_east = self.turn_map_right()
@@ -92,14 +82,14 @@ class Motor(object):
             cy = 0
             for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
                 if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
-                    self.console.rgb[cx+1, cy+1] = ord("~")
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 elif (self.map[ix, iy]==1):
-                    self.console.rgb[cx+1, cy+1] = ord("#")
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 else:
-                    self.console.rgb[cx+1, cy+1] = ord(".")
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_OPEN)
                 cy += 1
             cx += 1
-        self.console.print(1,65,f'({px},{py}){self.orientation}')
+        self.console.print(1,65,f'({px},{py}){self.orientation}    ')
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
@@ -144,7 +134,7 @@ class Motor(object):
             return self.map_south
 
     def erase(self, x, y):
-        self.console.rgb[x,y] = ord(' '), tcod.black, tcod.grey
+        self.console.rgb[x,y] = ord(self.CHAR_OPEN), tcod.black, tcod.grey
 
 
     def start(self) -> None:
@@ -157,8 +147,8 @@ class Motor(object):
         with tcod.context.new(  # New window for a console of size columns×rows.
             columns=self.console.width, rows=self.console.height, tileset=self.tileset,
         ) as context:
-            self.x = int(self.MAP_WIDTH / 2)
-            self.y = int(self.MAP_HEIGHT / 2)
+            self.x = 34
+            self.y = 23
             pos_x = int(self.MAP_FRAME_WIDTH / 2)
             pos_y = int(self.MAP_FRAME_HEIGHT / 2)
 
@@ -179,12 +169,12 @@ class Motor(object):
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
-                            if (self.y < (self.MAP_HEIGHT - 1)):
+                            if (self.y < (self.MAP_HEIGHT - 1) and self.map[self.x, self.y+1]==0):
                                 self.y += 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_W:
                             self.erase(pos_x, pos_y)
-                            if (self.y > 0):
+                            if (self.y > 0 and self.map[self.x, self.y-1]==0):
                                 self.y -= 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_Q:
@@ -199,20 +189,22 @@ class Motor(object):
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
                             self.erase(pos_x, pos_y)
-                            if (self.x > 0):
+                            if (self.x > 0 and self.map[self.x-1, self.y]==0):
                                 self.x -= 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_D:
                             self.erase(pos_x, pos_y)
-                            if (self.x < (self.MAP_WIDTH - 1)):
+                            if (self.x < (self.MAP_WIDTH - 1) and self.map[self.x+1, self.y]==0):
                                 self.x += 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_KP_MINUS:
                             self.map[self.x, self.y] = 0
                         elif event.scancode == tcod.event.SCANCODE_KP_PLUS:
                             self.map[self.x, self.y] = 1
+                        elif event.scancode == tcod.event.SCANCODE_F10:
+                            np.savetxt('map.txt', self.map_north, fmt='%-1i', delimiter=',')
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
-                            np.savetxt('map.txt', self.map.T, fmt='%-1i', delimiter=',')
+                            np.savetxt('map.txt', self.map_north, fmt='%-1i', delimiter=',')
                             raise SystemExit()
                     elif event.type == "QUIT":
                         raise SystemExit()
