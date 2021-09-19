@@ -14,8 +14,8 @@ class Motor(object):
 
     WIDTH = 30
     HEIGHT = 30  # Console width and height in tiles.
-    WINDOW_MAP_WIDTH = 5
-    WINDOW_MAP_HEIGHT = 5
+    WINDOW_MAP_WIDTH = 7
+    WINDOW_MAP_HEIGHT = 7
     MAP_FRAME_WIDTH = WINDOW_MAP_WIDTH + 2
     MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
     MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
@@ -51,15 +51,15 @@ class Motor(object):
 
 
         self.map = np.array([[0,0,0,0,0,0,0,0,0,0,0],
+                             [0,1,1,1,1,0,0,0,0,0,0],
+                             [0,1,0,0,0,0,0,1,0,1,0],
+                             [0,1,0,0,0,0,0,0,0,0,0],
+                             [0,1,1,1,1,0,0,1,0,1,0],
                              [0,0,0,0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,1,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,1,0,0,0,0,0,0,0,1,0],
+                             [0,1,0,0,0,1,0,0,0,1,0],
+                             [0,1,1,1,1,1,1,1,1,1,0],
                              [0,0,0,0,0,0,0,0,0,0,0]]).T
         self.x = 0
         self.y = 0
@@ -82,10 +82,12 @@ class Motor(object):
 
     def map_refresh(self,px,py):
         cx = 0
-        for ix in range(px-2,px+3,1):
+        for ix in range(px-self.MAP_REACH_X,px+self.MAP_REACH_X+1,1):
             cy = 0
-            for iy in range(py-2,py+3,1):
-                if (self.map[ix, iy]==1):
+            for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
+                if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
+                    self.console.rgb[cx+1, cy+1] = ord("#")
+                elif (self.map[ix, iy]==1):
                     self.console.rgb[cx+1, cy+1] = ord("#")
                 else:
                     self.console.rgb[cx+1, cy+1] = ord(".")
@@ -171,12 +173,12 @@ class Motor(object):
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
-                            if (self.y < (self.MAP_HEIGHT - self.MAP_REACH_Y - 1)):
+                            if (self.y < (self.MAP_HEIGHT - 1)):
                                 self.y += 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_W:
                             self.erase(pos_x, pos_y)
-                            if (self.y > (self.MAP_REACH_Y)):
+                            if (self.y > 0):
                                 self.y -= 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_Q:
@@ -191,12 +193,12 @@ class Motor(object):
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
                             self.erase(pos_x, pos_y)
-                            if (self.x > self.MAP_REACH_X):
+                            if (self.x > 0):
                                 self.x -= 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_D:
                             self.erase(pos_x, pos_y)
-                            if (self.x < (self.MAP_WIDTH - self.MAP_REACH_X - 1)):
+                            if (self.x < (self.MAP_WIDTH - 1)):
                                 self.x += 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
