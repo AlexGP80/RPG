@@ -3,6 +3,7 @@ import tcod
 import numpy as np
 import random
 from datetime import datetime
+import math
 
 
 random.seed(datetime.now().microsecond)
@@ -17,8 +18,13 @@ class Map(object):
 
 class Motor(object):
 
+    EDIT_MODE = False
     CHAR_WALL = '▓'
+    CHAR_MEDIUM_SHADE = '▒'
+    CHAR_LIGHT_SHADE = '░'
     CHAR_OPEN = ' '
+    CHAR_PC = '@'
+    TORCH_DISTANCE = 6
     WIDTH = 80
     HEIGHT = 90  # Console width and height in tiles.
     WINDOW_MAP_WIDTH = 61
@@ -74,19 +80,62 @@ class Motor(object):
         print(self.map_west)
         print(self.orientation)
 
-
+    def get_straight_distance(self, other_x, other_y):
+        return math.sqrt(abs(self.x - other_x)**2 + abs(self.y - other_y)**2)
 
     def map_refresh(self,px,py):
         cx = 0
         for ix in range(px-self.MAP_REACH_X,px+self.MAP_REACH_X+1,1):
             cy = 0
             for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
+                distance = self.get_straight_distance(ix, iy)
                 if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
                     self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE-2):
+                    if (distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE-1 and self.map[ix, iy] == 0):
+                        visible = True
+                        los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
+                        for cell in los:
+                            cell_x = cell[0]
+                            cell_y = cell[1]
+                            if (self.map[cell_x, cell_y] == 1):
+                                visible = False
+                                break
+                        if (visible):
+                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_LIGHT_SHADE), tcod.black, tcod.grey
+                        else:
+                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                    elif (distance > self.TORCH_DISTANCE-1 and distance <= self.TORCH_DISTANCE and self.map[ix, iy] == 0):
+                        visible = True
+                        los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
+                        for cell in los:
+                            cell_x = cell[0]
+                            cell_y = cell[1]
+                            if (self.map[cell_x, cell_y] == 1):
+                                visible = False
+                                break
+                        if (visible):
+                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_MEDIUM_SHADE), tcod.black, tcod.grey
+                        else:
+                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                    else:
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 elif (self.map[ix, iy]==1):
                     self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 else:
-                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_OPEN)
+                    visible = True
+                    if (not self.EDIT_MODE):
+                        los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
+                        for cell in los:
+                            cell_x = cell[0]
+                            cell_y = cell[1]
+                            if (self.map[cell_x, cell_y] == 1):
+                                visible = False
+                                break
+                    if (visible):
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_OPEN), tcod.black, tcod.grey
+                    else:
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 cy += 1
             cx += 1
         self.console.print(1,65,f'({px},{py}){self.orientation}    ')
@@ -156,7 +205,7 @@ class Motor(object):
             self.map_refresh(self.x,self.y)
 
             while True:  # Main loop, runs until SystemExit is raised.
-                self.console.rgb[pos_x, pos_y] = ord("@"), tcod.yellow, tcod.black
+                self.console.rgb[pos_x, pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.black
                 self.console.rgb["bg"] = tcod.grey
                 context.present(self.console)  # Show the console.
 
@@ -169,12 +218,12 @@ class Motor(object):
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
-                            if (self.y < (self.MAP_HEIGHT - 1) and self.map[self.x, self.y+1]==0):
+                            if (self.y < (self.MAP_HEIGHT - 1) and (self.map[self.x, self.y+1]==0 or self.EDIT_MODE)):
                                 self.y += 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_W:
                             self.erase(pos_x, pos_y)
-                            if (self.y > 0 and self.map[self.x, self.y-1]==0):
+                            if (self.y > 0 and (self.map[self.x, self.y-1]==0 or self.EDIT_MODE)):
                                 self.y -= 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_Q:
@@ -189,22 +238,23 @@ class Motor(object):
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
                             self.erase(pos_x, pos_y)
-                            if (self.x > 0 and self.map[self.x-1, self.y]==0):
+                            if (self.x > 0 and (self.map[self.x-1, self.y]==0 or self.EDIT_MODE)):
                                 self.x -= 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_D:
                             self.erase(pos_x, pos_y)
-                            if (self.x < (self.MAP_WIDTH - 1) and self.map[self.x+1, self.y]==0):
+                            if (self.x < (self.MAP_WIDTH - 1) and (self.map[self.x+1, self.y]==0 or self.EDIT_MODE)):
                                 self.x += 1
                                 self.map_refresh(self.x, self.y)
-                        elif event.scancode == tcod.event.SCANCODE_KP_MINUS:
+                        elif self.EDIT_MODE and event.scancode == tcod.event.SCANCODE_KP_MINUS:
                             self.map[self.x, self.y] = 0
-                        elif event.scancode == tcod.event.SCANCODE_KP_PLUS:
+                        elif self.EDIT_MODE and event.scancode == tcod.event.SCANCODE_KP_PLUS:
                             self.map[self.x, self.y] = 1
-                        elif event.scancode == tcod.event.SCANCODE_F10:
+                        elif self.EDIT_MODE and event.scancode == tcod.event.SCANCODE_F10:
                             np.savetxt('map.txt', self.map_north, fmt='%-1i', delimiter=',')
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
-                            np.savetxt('map.txt', self.map_north, fmt='%-1i', delimiter=',')
+                            if (self.EDIT_MODE):
+                                np.savetxt('map.txt', self.map_north, fmt='%-1i', delimiter=',')
                             raise SystemExit()
                     elif event.type == "QUIT":
                         raise SystemExit()
