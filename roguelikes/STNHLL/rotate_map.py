@@ -16,6 +16,10 @@ class Motor(object):
     HEIGHT = 30  # Console width and height in tiles.
     WINDOW_MAP_WIDTH = 5
     WINDOW_MAP_HEIGHT = 5
+    MAP_FRAME_WIDTH = WINDOW_MAP_WIDTH + 2
+    MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
+    MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
+    MAP_REACH_Y = int(WINDOW_MAP_HEIGHT / 2)
     MAP_WIDTH = 11
     MAP_HEIGHT = 11
     NORTH = 0
@@ -138,16 +142,18 @@ class Motor(object):
     def start(self) -> None:
         """Script entry point."""
 
-        self.console.draw_frame(x=0, y=0, width=self.WINDOW_MAP_WIDTH+2, height=self.WINDOW_MAP_HEIGHT+2, decoration="╔═╗║ ║╚═╝")
+        # map frame dimensions equals map dimensions plus borders
+        self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
 
         # Create a window based on the console and tileset.
         with tcod.context.new(  # New window for a console of size columns×rows.
             columns=self.console.width, rows=self.console.height, tileset=self.tileset,
         ) as context:
-            self.x = 5
-            self.y = 5
-            pos_x = 2 + 1 #(del borde)
-            pos_y = 2 + 1 #(del borde)
+            self.x = int(self.MAP_WIDTH / 2)
+            self.y = int(self.MAP_HEIGHT / 2)
+            pos_x = int(self.MAP_FRAME_WIDTH / 2)
+            pos_y = int(self.MAP_FRAME_HEIGHT / 2)
+
 
             self.map_refresh(self.x,self.y)
 
@@ -165,12 +171,12 @@ class Motor(object):
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
-                            if (self.y < self.MAP_HEIGHT):
+                            if (self.y < (self.MAP_HEIGHT - self.MAP_REACH_Y - 1)):
                                 self.y += 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_W:
                             self.erase(pos_x, pos_y)
-                            if (self.y > 1):
+                            if (self.y > (self.MAP_REACH_Y)):
                                 self.y -= 1
                                 self.map_refresh(self.x,self.y)
                         elif event.scancode == tcod.event.SCANCODE_Q:
@@ -185,12 +191,12 @@ class Motor(object):
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
                             self.erase(pos_x, pos_y)
-                            if (self.x > 1):
+                            if (self.x > self.MAP_REACH_X):
                                 self.x -= 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_D:
                             self.erase(pos_x, pos_y)
-                            if (self.x < self.MAP_WIDTH):
+                            if (self.x < (self.MAP_WIDTH - self.MAP_REACH_X - 1)):
                                 self.x += 1
                                 self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:

@@ -12,12 +12,16 @@ random.seed(datetime.now().microsecond)
 
 class Motor(object):
 
-    WIDTH = 150
-    HEIGHT = int((WIDTH*9) / 16)  # Console width and height in tiles.
-    WINDOW_MAP_WIDTH = 120
-    WINDOW_MAP_HEIGHT = 60
-    MAP_WIDTH = 1200
-    MAP_HEIGHT = 1200
+    WIDTH = 30
+    HEIGHT = 30  # Console width and height in tiles.
+    WINDOW_MAP_WIDTH = 5
+    WINDOW_MAP_HEIGHT = 5
+    MAP_FRAME_WIDTH = WINDOW_MAP_WIDTH + 2
+    MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
+    MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
+    MAP_REACH_Y = int(WINDOW_MAP_HEIGHT / 2)
+    MAP_WIDTH = 11
+    MAP_HEIGHT = 11
     NORTH = 0
     EAST = 1
     SOUTH = 2
@@ -42,41 +46,52 @@ class Motor(object):
         # Create the main console.
 
         self.console = tcod.Console(self.WIDTH, self.HEIGHT, order="F", buffer=buffer)
+        #self.console = tcod.Console(self.WIDTH, self.HEIGHT, buffer=buffer)
 
-        self.map = np.zeros(
-            shape = (self.MAP_WIDTH, self.MAP_HEIGHT),
-            dtype = np.intc,
-            order = "F"
-        )
-        for x in range(self.MAP_WIDTH):
-            for y in range(self.MAP_HEIGHT):
-                if (random.random() < 0.05):
-                    self.map[x,y] = 1
-        for x in range(595,605,1):
-            self.map[x, 595] = 1
 
-        self.map_north = self.map
+
+        self.map = np.array([[0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,1,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0,0]]).T
+        self.x = 0
+        self.y = 0
+        #self.maps = [np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))]
+        self.map_north = self.map.copy()
         self.map_west = self.turn_map_left()
         self.map_east = self.turn_map_right()
         self.map = self.map_east
         self.map_south = self.turn_map_right()
         self.map = self.map_north
         self.orientation = self.NORTH
+        print(self.map)
+        print(self.map_north)
+        print(self.map_east)
+        print(self.map_south)
+        print(self.map_west)
+        print(self.orientation)
 
 
 
     def map_refresh(self,px,py):
         cx = 0
-        for ix in range(px-59,px+59,1):
+        for ix in range(px-2,px+3,1):
             cy = 0
-            cx += 1
-            for iy in range(py-54,py+4,1):
-                cy += 1
+            for iy in range(py-2,py+3,1):
                 if (self.map[ix, iy]==1):
                     self.console.rgb[cx+1, cy+1] = ord("#")
                 else:
                     self.console.rgb[cx+1, cy+1] = ord(".")
-        self.console.print(3,70,f'({px},{py})')
+                cy += 1
+            cx += 1
+        self.console.print(1,10,f'({px},{py})')
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
@@ -94,31 +109,31 @@ class Motor(object):
 
     def turn_left(self):
         if (self.orientation == self.NORTH):
-            self.map = self.map_west
             self.orientation = self.WEST
+            return self.map_west
         elif (self.orientation == self.WEST):
-            self.map = self.map_south
             self.orientation = self.SOUTH
+            return self.map_south
         elif (self.orientation == self.SOUTH):
-            self.map = self.map_east
             self.orientation = self.EAST
+            return self.map_east
         elif (self.orientation == self.EAST):
-            self.map = self.map_north
             self.orientation = self.NORTH
+            return self.map_north
 
     def turn_right(self):
         if (self.orientation == self.NORTH):
-            self.map = self.map_east
             self.orientation = self.EAST
+            return self.map_east
         elif (self.orientation == self.WEST):
-            self.map = self.map_north
             self.orientation = self.NORTH
+            return self.map_north
         elif (self.orientation == self.SOUTH):
-            self.map = self.map_west
             self.orientation = self.WEST
+            return self.map_west
         elif (self.orientation == self.EAST):
-            self.map = self.map_south
             self.orientation = self.SOUTH
+            return self.map_south
 
     def erase(self, x, y):
         self.console.rgb[x,y] = ord(' '), tcod.black, tcod.grey
@@ -127,61 +142,64 @@ class Motor(object):
     def start(self) -> None:
         """Script entry point."""
 
-        self.console.draw_frame(x=0, y=0, width=self.WINDOW_MAP_WIDTH+2, height=self.WINDOW_MAP_HEIGHT+2, decoration="╔═╗║ ║╚═╝")
+        # map frame dimensions equals map dimensions plus borders
+        self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
 
         # Create a window based on the console and tileset.
         with tcod.context.new(  # New window for a console of size columns×rows.
             columns=self.console.width, rows=self.console.height, tileset=self.tileset,
         ) as context:
-            x = int(self.MAP_WIDTH / 2) + 1
-            y = int(self.MAP_HEIGHT / 2) + 1
-            pos_x = int(self.WINDOW_MAP_WIDTH / 2) + 1
-            pos_y = int(self.WINDOW_MAP_HEIGHT - 4) + 1
+            self.x = int(self.MAP_WIDTH / 2)
+            self.y = int(self.MAP_HEIGHT / 2)
+            pos_x = int(self.MAP_FRAME_WIDTH / 2)
+            pos_y = int(self.MAP_FRAME_HEIGHT / 2)
 
-            self.map_refresh(x,y)
+
+            self.map_refresh(self.x,self.y)
 
             while True:  # Main loop, runs until SystemExit is raised.
-                #console = tcod.Console(WIDTH, HEIGHT, order="F", buffer=buffer)
                 self.console.rgb[pos_x, pos_y] = ord("@"), tcod.yellow, tcod.black
                 self.console.rgb["bg"] = tcod.grey
-                #console.clear()
                 context.present(self.console)  # Show the console.
 
                 for event in tcod.event.wait():
                     context.convert_event(event)  # Sets tile coordinates for mouse events.
-                    print(event)  # Print event information to stdout.
-                        #<type='KEYDOWN', scancode=SCANCODE_DOWN, sym=K_DOWN, mod=KMOD_NUM, repeat=False>
+
+                    # Print event information to stdout.
+                    #print(event)
+
                     if event.type == "KEYDOWN":
-                        if event.scancode == tcod.event.SCANCODE_DOWN:
+                        if event.scancode == tcod.event.SCANCODE_S:
                             self.erase(pos_x, pos_y)
-                            if (y < self.MAP_HEIGHT):
-                                y += 1
-                                self.map_refresh(x,y)
-                        elif event.scancode == tcod.event.SCANCODE_UP:
+                            if (self.y < (self.MAP_HEIGHT - self.MAP_REACH_Y - 1)):
+                                self.y += 1
+                                self.map_refresh(self.x,self.y)
+                        elif event.scancode == tcod.event.SCANCODE_W:
                             self.erase(pos_x, pos_y)
-                            if (y > 1):
-                                y -= 1
-                                self.map_refresh(x,y)
-                        elif event.scancode == tcod.event.SCANCODE_LEFT:
-                            # self.erase(pos_x, pos_y)
-                            # if (x > 1):
-                            #     x -= 1
-                            #    self.map_refresh(x,y)
+                            if (self.y > (self.MAP_REACH_Y)):
+                                self.y -= 1
+                                self.map_refresh(self.x,self.y)
+                        elif event.scancode == tcod.event.SCANCODE_Q:
                             self.map = self.turn_left()
-                            print(self.map)
-                            x, y = y, self.MAP_WIDTH-x
-                            self.map_refresh(x, y)
-                        elif event.scancode == tcod.event.SCANCODE_RIGHT:
-                            #self.erase(pos_x, pos_y)
-                            #if (x < self.MAP_WIDTH):
-                            #    x += 1
-                            #    self.map_refresh(x,y)
+                            print(self.map.T)
+                            self.x, self.y = self.MAP_HEIGHT-self.y-1, self.x
+                            self.map_refresh(self.x, self.y)
+                        elif event.scancode == tcod.event.SCANCODE_E:
                             self.map = self.turn_right()
-                            print(self.map)
-                            x, y = self.MAP_HEIGHT-y, x
-                            self.map_refresh(x, y)
+                            print(self.map.T)
+                            self.x, self.y = self.y, self.MAP_WIDTH-1-self.x
+                            self.map_refresh(self.x, self.y)
+                        elif event.scancode == tcod.event.SCANCODE_A:
+                            self.erase(pos_x, pos_y)
+                            if (self.x > self.MAP_REACH_X):
+                                self.x -= 1
+                                self.map_refresh(self.x, self.y)
+                        elif event.scancode == tcod.event.SCANCODE_D:
+                            self.erase(pos_x, pos_y)
+                            if (self.x < (self.MAP_WIDTH - self.MAP_REACH_X - 1)):
+                                self.x += 1
+                                self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
-                            #self.console.buffer["ch"] = ord('.')
                             raise SystemExit()
                     elif event.type == "QUIT":
                         raise SystemExit()
