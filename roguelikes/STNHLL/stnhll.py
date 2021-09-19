@@ -12,10 +12,10 @@ random.seed(datetime.now().microsecond)
 
 class Motor(object):
 
-    WIDTH = 30
-    HEIGHT = 30  # Console width and height in tiles.
-    WINDOW_MAP_WIDTH = 7
-    WINDOW_MAP_HEIGHT = 7
+    WIDTH = 120
+    HEIGHT = 90  # Console width and height in tiles.
+    WINDOW_MAP_WIDTH = 61
+    WINDOW_MAP_HEIGHT = 61
     MAP_FRAME_WIDTH = WINDOW_MAP_WIDTH + 2
     MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
     MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
@@ -93,7 +93,7 @@ class Motor(object):
                     self.console.rgb[cx+1, cy+1] = ord(".")
                 cy += 1
             cx += 1
-        self.console.print(1,10,f'({px},{py})')
+        #self.console.print(1,10,f'({px},{py})')
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
