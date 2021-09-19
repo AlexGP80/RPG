@@ -7,6 +7,11 @@ from datetime import datetime
 
 random.seed(datetime.now().microsecond)
 
+class Cell(object):
+    pass
+
+class Map(object):
+    pass
 
 
 
@@ -20,12 +25,12 @@ class Motor(object):
     MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
     MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
     MAP_REACH_Y = int(WINDOW_MAP_HEIGHT / 2)
-    MAP_WIDTH = 11
-    MAP_HEIGHT = 11
-    NORTH = 0
-    EAST = 1
-    SOUTH = 2
-    WEST = 3
+    MAP_WIDTH = 61
+    MAP_HEIGHT = 61
+    NORTH = "N"
+    EAST = "E"
+    SOUTH = "S"
+    WEST = "W"
 
     def __init__(self):
 
@@ -49,18 +54,19 @@ class Motor(object):
         #self.console = tcod.Console(self.WIDTH, self.HEIGHT, buffer=buffer)
 
 
+        self.map = np.ones((self.MAP_WIDTH,self.MAP_HEIGHT))
 
-        self.map = np.array([[0,0,0,0,0,0,0,0,0,0,0],
-                             [0,1,1,1,1,0,0,0,0,0,0],
-                             [0,1,0,0,0,0,0,1,0,1,0],
-                             [0,1,0,0,0,0,0,0,0,0,0],
-                             [0,1,1,1,1,0,0,1,0,1,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,0,0,0,0,0,0,0,0,0,0],
-                             [0,1,0,0,0,0,0,0,0,1,0],
-                             [0,1,0,0,0,1,0,0,0,1,0],
-                             [0,1,1,1,1,1,1,1,1,1,0],
-                             [0,0,0,0,0,0,0,0,0,0,0]]).T
+        # self.map = np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0],
+        #                      [0,0,0,0,0,0,0,0,0,0,0,0,0],
+        #                      [0,0,0,0,0,0,0,0,0,0,0,1,1],
+        #                      [0,0,0,0,0,0,0,0,0,0,0,1,1],
+        #                      [0,1,1,1,1,0,0,1,0,1,0],
+        #                      [0,0,0,0,0,0,0,0,0,0,0],
+        #                      [0,0,0,0,0,0,0,0,0,0,0],
+        #                      [0,1,0,0,0,0,0,0,0,1,0],
+        #                      [0,1,0,0,0,1,0,0,0,1,0],
+        #                      [0,1,1,1,1,1,1,1,1,1,0],
+        #                      [0,0,0,0,0,0,0,0,0,0,0]]).T
         self.x = 0
         self.y = 0
         #self.maps = [np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH)),np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))]
@@ -86,14 +92,14 @@ class Motor(object):
             cy = 0
             for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
                 if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
-                    self.console.rgb[cx+1, cy+1] = ord("#")
+                    self.console.rgb[cx+1, cy+1] = ord("~")
                 elif (self.map[ix, iy]==1):
                     self.console.rgb[cx+1, cy+1] = ord("#")
                 else:
                     self.console.rgb[cx+1, cy+1] = ord(".")
                 cy += 1
             cx += 1
-        #self.console.print(1,10,f'({px},{py})')
+        self.console.print(1,65,f'({px},{py}){self.orientation}')
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
@@ -168,7 +174,7 @@ class Motor(object):
                     context.convert_event(event)  # Sets tile coordinates for mouse events.
 
                     # Print event information to stdout.
-                    #print(event)
+                    print(event)
 
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
@@ -201,7 +207,12 @@ class Motor(object):
                             if (self.x < (self.MAP_WIDTH - 1)):
                                 self.x += 1
                                 self.map_refresh(self.x, self.y)
+                        elif event.scancode == tcod.event.SCANCODE_KP_MINUS:
+                            self.map[self.x, self.y] = 0
+                        elif event.scancode == tcod.event.SCANCODE_KP_PLUS:
+                            self.map[self.x, self.y] = 1
                         elif event.scancode == tcod.event.SCANCODE_ESCAPE:
+                            np.savetxt('map.txt', self.map.T, fmt='%-1i', delimiter=',')
                             raise SystemExit()
                     elif event.type == "QUIT":
                         raise SystemExit()
