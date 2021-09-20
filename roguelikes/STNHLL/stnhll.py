@@ -5,76 +5,17 @@ import random
 from datetime import datetime
 import math
 import roller
+import character
 
 
 random.seed(datetime.now().microsecond)
+
 
 class Cell(object):
     pass
 
 class Map(object):
     pass
-
-class Character(object):
-    rlr = roller.Roller()
-
-    def __init__(self, name, pc_class, level, xp):
-        self.name = name
-        self.pc_class = pc_class
-        self.level = level
-        self.xp = xp
-        self.STR = self.rlr.roll('3d6')
-        self.STR_adj = self.get_adj(self.STR)
-        self.INT = self.rlr.roll('3d6')
-        self.INT_adj = self.get_adj(self.INT)
-        self.WIS = self.rlr.roll('3d6')
-        self.WIS_adj = self.get_adj(self.WIS)
-        self.CON = self.rlr.roll('3d6')
-        self.CON_adj = self.get_adj(self.CON)
-        self.DEX = self.rlr.roll('3d6')
-        self.DEX_adj = self.get_adj(self.DEX)
-        self.CHA = self.rlr.roll('3d6')
-        self.CHA_adj = self.get_adj(self.CHA, cha=True)
-
-        self.HP = 8 + self.CON_adj
-        self.AC = 9 + self.DEX_adj
-
-        self.alignment = "Neutral"
-
-    def xp_mult(self):
-        # # TODO: When addind the rest of classes, modify this to reflect the correct attributes for each class
-        if (self.STR <= 5):
-            return 0.8
-        if (self.STR <= 8):
-            return 0.9
-        if (self.STR >= 16):
-            return 1.1
-        if (self.STR >= 13):
-            return 1.05
-
-    def get_adj(self, attr, cha=False):
-        if (attr <= 3):
-            if (cha):
-                return -2
-            return -3
-        if (attr <= 5):
-            if (cha):
-                return -1
-            return -2
-        if (attr <= 8):
-            return -1
-        if (attr <= 12):
-            return 0
-        if (attr <= 15):
-            return 1
-        if (attr <= 17):
-            if (cha):
-                return 1
-            return 2
-        if (cha):
-            return 2
-        return 3
-
 
 class Motor(object):
 
@@ -101,6 +42,22 @@ class Motor(object):
     SOUTH = "S"
     WEST = "W"
     rlr = roller.Roller()
+
+    def popup(self, msg, title="Note"):
+        self.console.draw_frame(x=10, y=10, width=self.WIDTH-22, height=7, decoration="╔═╗║ ║╚═╝")
+        self.console.print(x=15, y=12, string=msg)
+        self.console.print(x=15, y=14, string="Press any key to continue...")
+        self.console.print_box(x=10, y=10, width=self.WIDTH-22, height=1, string=title, alignment=tcod.CENTER)
+        self.context.present(self.console)  # Show the console.
+        repeat = True
+        while repeat:
+            for event in tcod.event.wait():
+                self.context.convert_event(event)
+                if event.type == "KEYDOWN":
+                    repeat = False
+                    #if (event.scancode == tcod.event.SCANCODE_Y):
+                    break
+
 
     def __init__(self):
 
@@ -248,8 +205,9 @@ class Motor(object):
         self.console.clear()
         self.console.draw_frame(x=0, y=0, width=self.WIDTH-2, height=self.HEIGHT-2, decoration="╔═╗║ ║╚═╝")
         self.console.print_box(x=0, y=0, width=self.WIDTH-2, height=1, string=" Character creation ", alignment=tcod.CENTER)
-        c = Character("Hero", "Human", "Fighter", 1, 0)
-        while True:
+        c = character.Character("Hero", "Fighter", 1, 0)
+        repeat = True
+        while repeat:
             # output =  f"  Name: {c.name}\n\n"
             # output += f"  Species: {c.species}\n"
             # output
@@ -265,13 +223,82 @@ class Motor(object):
             self.console.print_box(x=3, y=13, width=50, height=1, string="Keep character? (Y/N):       ")
 
             self.context.present(self.console)  # Show the console.
+
+            if (self.chooseYN() == "Yes"):
+                repeat = False
+            else:
+                c = character.Character("Hero", "Fighter", 1, 0)
+                continue
+
+            self.console.print_box(x=3, y=13, width=60, height=1, string="Choose: (1)Leather armor (2)Chain mail          ")
+            self.context.present(self.console)  # Show the console.
+            self.armor = "None"
+            opt = self.choose(2)
+            if (opt == 1):
+                c.armor = "Leather armor"
+                c.AC = 7 - c.DEX_adj
+            elif (opt == 2):
+                c.armor = "Chain mail"
+                c.AC = 5 - c.DEX_adj
+
+            self.console.print_box(x=3, y=13, width=60, height=1, string="Choose: (1)Hand axe (2)Mace (3)Short sword (4)Spear      ")
+            self.context.present(self.console)  # Show the console.
+            self.weapon = "None"
+            c.THAC0 = 19 - c.STR_adj
+            c.DMG = f"1d6{c.STR_adj:+}"
+            opt = self.choose(4)
+            if (opt == 1):
+                c.weapon = "Hand axe"
+            elif (opt == 2):
+                c.weapon = "Mace"
+            elif (opt == 3):
+                c.weapon = "Short sword"
+            elif (opt == 4):
+                c.weapon = "Spear"
+
+            self.console.print_box(x=3, y=13, width=60, height=1, string=f"HP:{c.HP}  AC:{c.AC}  THAC0:{c.THAC0}  DMG:{c.DMG}                         ")
+            self.console.print_box(x=3, y=15, width=60, height=1, string="Press (1) to continue...         ")
+            self.context.present(self.console)  # Show the console.
+            opt = self.choose(1)
+
+
+
+
+    def choose(self, num_options):
+        while True:
+            for event in tcod.event.wait():
+                self.context.convert_event(event)  # Sets tile coordinates for mouse events.
+                if event.type == "KEYDOWN":
+                    if (event.scancode == tcod.event.SCANCODE_1):
+                        return 1
+                    if (event.scancode == tcod.event.SCANCODE_2 and num_options >= 2):
+                        return 2
+                    if (event.scancode == tcod.event.SCANCODE_3 and num_options >= 3):
+                        return 3
+                    if (event.scancode == tcod.event.SCANCODE_4 and num_options >= 4):
+                        return 4
+                    if (event.scancode == tcod.event.SCANCODE_5 and num_options >= 5):
+                        return 5
+                    if (event.scancode == tcod.event.SCANCODE_6 and num_options >= 6):
+                        return 6
+                    if (event.scancode == tcod.event.SCANCODE_7 and num_options >= 7):
+                        return 7
+                    if (event.scancode == tcod.event.SCANCODE_8 and num_options >= 8):
+                        return 8
+                    if (event.scancode == tcod.event.SCANCODE_9 and num_options >= 9):
+                        return 9
+                    if (event.scancode == tcod.event.SCANCODE_0 and num_options == 10):
+                        return 0
+
+    def chooseYN(self):
+        while True:
             for event in tcod.event.wait():
                 self.context.convert_event(event)  # Sets tile coordinates for mouse events.
                 if event.type == "KEYDOWN":
                     if (event.scancode == tcod.event.SCANCODE_Y):
-                        break
+                        return "Yes"
                     if (event.scancode == tcod.event.SCANCODE_N):
-                        c = Character("Hero", "Fighter", 1, 0)
+                        return "No"
 
 
 
@@ -352,6 +379,7 @@ class Motor(object):
                             raise SystemExit()
                     elif event.type == "QUIT":
                         raise SystemExit()
+
             # The window will be closed after the above with-block exits.
 
 
