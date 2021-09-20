@@ -10,15 +10,14 @@ class Roll(object):
         self.descr = descr
         self.result_list = result_list
         self.result_total = result_total
-    
+
     def __descr__(self):
         return str(self)
-    
+
     def __str__(self):
         output = f'{self.date_time}: {self.descr} = {self.result_total} ( '
-        
+
         for k,v in self.result_list.items():
-#        for i in range(len(self.result_list)):
             output += k + str(v) + ", "
         output += ')'
         return output
@@ -26,16 +25,16 @@ class Roll(object):
 class Roller(object):
     def __init__(self):
         self.roll_log = list()
-    
+
     def __str__(self):
         output = ''
         for i in range(len(self.roll_log)):
             output += str(self.roll_log[i]) + '\n'
         return output
-    
+
     def __descr__(self):
         return str(self)
-       
+
     def roll(self, roll_str):
         roll_str_curated = roll_str.lower().replace(" ","").replace("+"," ").replace("-"," -")
         roll_parts = list()
@@ -43,7 +42,7 @@ class Roller(object):
         result_total = 0
         result_list = dict()
         num_part = 0
-        
+
         for part in roll_parts:
             part_r_list = list()
             if ('d' in part):
@@ -63,7 +62,7 @@ class Roller(object):
                 part_r_list.append(int(part))
             result_list[str(part)] = part_r_list
             num_part += 1
-        self.roll_log.append(Roll(roll_str, result_list, result_total))    
+        self.roll_log.append(Roll(roll_str, result_list, result_total))
         return result_total
 
 r = Roller()

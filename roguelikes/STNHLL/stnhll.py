@@ -4,6 +4,7 @@ import numpy as np
 import random
 from datetime import datetime
 import math
+import roller
 
 
 random.seed(datetime.now().microsecond)
@@ -14,21 +15,38 @@ class Cell(object):
 class Map(object):
     pass
 
+class Character(object):
+    rlr = roller.Roller()
+
+    def __init__(self, name, species, pc_class, level, xp):
+        self.name = name
+        self.species = species
+        self.pc_class = pc_class
+        self.level = level
+        self.xp = xp
+        self.STR = self.rlr.roll('3d6')
+        self.INT = self.rlr.roll('3d6')
+        self.WIS = self.rlr.roll('3d6')
+        self.CON = self.rlr.roll('3d6')
+        self.DEX = self.rlr.roll('3d6')
+        self.CHA = self.rlr.roll('3d6')
+
 
 
 class Motor(object):
 
     EDIT_MODE = False
-    CHAR_WALL = '▓'
+    CHAR_WALL = '█'
+    CHAR_DARK_SHADE = '▓'
     CHAR_MEDIUM_SHADE = '▒'
     CHAR_LIGHT_SHADE = '░'
     CHAR_OPEN = ' '
     CHAR_PC = '@'
     TORCH_DISTANCE = 6
     WIDTH = 80
-    HEIGHT = 90  # Console width and height in tiles.
-    WINDOW_MAP_WIDTH = 61
-    WINDOW_MAP_HEIGHT = 61
+    HEIGHT = 65  # Console width and height in tiles.
+    WINDOW_MAP_WIDTH = 29
+    WINDOW_MAP_HEIGHT = 29
     MAP_FRAME_WIDTH = WINDOW_MAP_WIDTH + 2
     MAP_FRAME_HEIGHT = WINDOW_MAP_HEIGHT + 2
     MAP_REACH_X = int(WINDOW_MAP_WIDTH / 2)
@@ -39,12 +57,14 @@ class Motor(object):
     EAST = "E"
     SOUTH = "S"
     WEST = "W"
+    rlr = roller.Roller()
 
     def __init__(self):
 
         # Load the font, a 32 by 8 tile font with libtcod's old character layout.
         self.tileset = tcod.tileset.load_tilesheet(
-            "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD,
+            #"dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD,
+            "Cheepicus_14x14.png", 16, 16, tcod.tileset.CHARMAP_CP437,
         )
 
         buffer = np.zeros(
@@ -79,6 +99,7 @@ class Motor(object):
         print(self.map_south)
         print(self.map_west)
         print(self.orientation)
+        self.pc = None
 
     def get_straight_distance(self, other_x, other_y):
         return math.sqrt(abs(self.x - other_x)**2 + abs(self.y - other_y)**2)
@@ -91,8 +112,10 @@ class Motor(object):
                 distance = self.get_straight_distance(ix, iy)
                 if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
                     self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
-                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE-2):
-                    if (distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE-1 and self.map[ix, iy] == 0):
+                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE+1):
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE+1):
+                    if (self.map[ix, iy] == 0):
                         visible = True
                         los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
                         for cell in los:
@@ -102,20 +125,12 @@ class Motor(object):
                                 visible = False
                                 break
                         if (visible):
-                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_LIGHT_SHADE), tcod.black, tcod.grey
-                        else:
-                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
-                    elif (distance > self.TORCH_DISTANCE-1 and distance <= self.TORCH_DISTANCE and self.map[ix, iy] == 0):
-                        visible = True
-                        los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
-                        for cell in los:
-                            cell_x = cell[0]
-                            cell_y = cell[1]
-                            if (self.map[cell_x, cell_y] == 1):
-                                visible = False
-                                break
-                        if (visible):
-                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_MEDIUM_SHADE), tcod.black, tcod.grey
+                            if (distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE-1):
+                                self.console.rgb[cx+1, cy+1] = ord(self.CHAR_LIGHT_SHADE), tcod.black, tcod.grey
+                            elif (distance > self.TORCH_DISTANCE-1 and distance <= self.TORCH_DISTANCE):
+                                self.console.rgb[cx+1, cy+1] = ord(self.CHAR_MEDIUM_SHADE), tcod.black, tcod.grey
+                            elif (distance > self.TORCH_DISTANCE and distance <= self.TORCH_DISTANCE+1):
+                                self.console.rgb[cx+1, cy+1] = ord(self.CHAR_DARK_SHADE), tcod.black, tcod.grey
                         else:
                             self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                     else:
@@ -138,7 +153,7 @@ class Motor(object):
                         self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 cy += 1
             cx += 1
-        self.console.print(1,65,f'({px},{py}){self.orientation}    ')
+        self.console.print(1,35,f'({px},{py}){self.orientation}    ')
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
@@ -186,16 +201,52 @@ class Motor(object):
         self.console.rgb[x,y] = ord(self.CHAR_OPEN), tcod.black, tcod.grey
 
 
+    def create_character(self):
+        self.console.clear()
+        self.console.draw_frame(x=0, y=0, width=self.WIDTH-2, height=self.HEIGHT-2, decoration="╔═╗║ ║╚═╝")
+        self.console.print_box(x=0, y=0, width=self.WIDTH-2, height=1, string=" Character creation ", alignment=tcod.CENTER)
+        c = Character("Hero", "Human", "Fighter", 1, 0)
+        while True:
+            # output =  f"  Name: {c.name}\n\n"
+            # output += f"  Species: {c.species}\n"
+            # output
+
+            self.console.print(x=3, y=3, string=f"Name:{c.name}")
+            self.console.print_box(x=3, y=4, width=50, height=1, string=f"Species:{c.species}  Class:{c.pc_class}  Level:{c.level}  XP:{c.xp      }")
+            self.console.print_box(x=3, y=6, width=50, height=1, string=f" STR:{c.STR}                                     ")
+            self.console.print_box(x=3, y=7, width=50, height=1, string=f" INT:{c.INT}                                     ")
+            self.console.print_box(x=3, y=8, width=50, height=1, string=f" WIS:{c.WIS}                                     ")
+            self.console.print_box(x=3, y=9, width=50, height=1, string=f" CON:{c.CON}                                     ")
+            self.console.print_box(x=3, y=10, width=50, height=1, string=f" DEX:{c.DEX}                                     ")
+            self.console.print_box(x=3, y=11, width=50, height=1, string=f" CHA:{c.CHA}                                     ")
+            self.console.print_box(x=3, y=13, width=50, height=1, string="Keep character? (Y/N):       ")
+
+            self.context.present(self.console)  # Show the console.
+            for event in tcod.event.wait():
+                self.context.convert_event(event)  # Sets tile coordinates for mouse events.
+                if event.type == "KEYDOWN":
+                    if (event.scancode == tcod.event.SCANCODE_Y):
+                        return c
+                    if (event.scancode == tcod.event.SCANCODE_N):
+                        c = Character("Hero", "Human", "Fighter", 1, 0)
+
+
+
     def start(self) -> None:
         """Script entry point."""
-
-        # map frame dimensions equals map dimensions plus borders
-        self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
-
         # Create a window based on the console and tileset.
         with tcod.context.new(  # New window for a console of size columns×rows.
             columns=self.console.width, rows=self.console.height, tileset=self.tileset,
         ) as context:
+            self.context = context
+            self.console.rgb["bg"] = tcod.black
+            if (not self.EDIT_MODE):
+                self.pc = self.create_character()
+
+            # map frame dimensions equals map dimensions plus borders
+            self.console.clear()
+            self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
+
             self.x = 34
             self.y = 23
             pos_x = int(self.MAP_FRAME_WIDTH / 2)
@@ -205,8 +256,7 @@ class Motor(object):
             self.map_refresh(self.x,self.y)
 
             while True:  # Main loop, runs until SystemExit is raised.
-                self.console.rgb[pos_x, pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.black
-                self.console.rgb["bg"] = tcod.grey
+                self.console.rgb[pos_x, pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.grey
                 context.present(self.console)  # Show the console.
 
                 for event in tcod.event.wait():
