@@ -18,19 +18,62 @@ class Map(object):
 class Character(object):
     rlr = roller.Roller()
 
-    def __init__(self, name, species, pc_class, level, xp):
+    def __init__(self, name, pc_class, level, xp):
         self.name = name
-        self.species = species
         self.pc_class = pc_class
         self.level = level
         self.xp = xp
         self.STR = self.rlr.roll('3d6')
+        self.STR_adj = self.get_adj(self.STR)
         self.INT = self.rlr.roll('3d6')
+        self.INT_adj = self.get_adj(self.INT)
         self.WIS = self.rlr.roll('3d6')
+        self.WIS_adj = self.get_adj(self.WIS)
         self.CON = self.rlr.roll('3d6')
+        self.CON_adj = self.get_adj(self.CON)
         self.DEX = self.rlr.roll('3d6')
+        self.DEX_adj = self.get_adj(self.DEX)
         self.CHA = self.rlr.roll('3d6')
+        self.CHA_adj = self.get_adj(self.CHA, cha=True)
 
+        self.HP = 8 + self.CON_adj
+        self.AC = 9 + self.DEX_adj
+
+        self.alignment = "Neutral"
+
+    def xp_mult(self):
+        # # TODO: When addind the rest of classes, modify this to reflect the correct attributes for each class
+        if (self.STR <= 5):
+            return 0.8
+        if (self.STR <= 8):
+            return 0.9
+        if (self.STR >= 16):
+            return 1.1
+        if (self.STR >= 13):
+            return 1.05
+
+    def get_adj(self, attr, cha=False):
+        if (attr <= 3):
+            if (cha):
+                return -2
+            return -3
+        if (attr <= 5):
+            if (cha):
+                return -1
+            return -2
+        if (attr <= 8):
+            return -1
+        if (attr <= 12):
+            return 0
+        if (attr <= 15):
+            return 1
+        if (attr <= 17):
+            if (cha):
+                return 1
+            return 2
+        if (cha):
+            return 2
+        return 3
 
 
 class Motor(object):
@@ -212,7 +255,7 @@ class Motor(object):
             # output
 
             self.console.print(x=3, y=3, string=f"Name:{c.name}")
-            self.console.print_box(x=3, y=4, width=50, height=1, string=f"Species:{c.species}  Class:{c.pc_class}  Level:{c.level}  XP:{c.xp      }")
+            self.console.print_box(x=3, y=4, width=50, height=1, string=f"Class:{c.pc_class}  Level:{c.level}  XP:{c.xp      }")
             self.console.print_box(x=3, y=6, width=50, height=1, string=f" STR:{c.STR}                                     ")
             self.console.print_box(x=3, y=7, width=50, height=1, string=f" INT:{c.INT}                                     ")
             self.console.print_box(x=3, y=8, width=50, height=1, string=f" WIS:{c.WIS}                                     ")
@@ -226,9 +269,10 @@ class Motor(object):
                 self.context.convert_event(event)  # Sets tile coordinates for mouse events.
                 if event.type == "KEYDOWN":
                     if (event.scancode == tcod.event.SCANCODE_Y):
-                        return c
+                        break
                     if (event.scancode == tcod.event.SCANCODE_N):
-                        c = Character("Hero", "Human", "Fighter", 1, 0)
+                        c = Character("Hero", "Fighter", 1, 0)
+
 
 
 
