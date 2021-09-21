@@ -21,12 +21,12 @@ class Map(object):
 class Motor(object):
 
     EDIT_MODE = False
-    CHAR_WALL = '█'
+    CHAR_WALL = ' '
     CHAR_DARK_SHADE = '▓'
     CHAR_MEDIUM_SHADE = '▒'
     CHAR_LIGHT_SHADE = '░'
-    CHAR_OPEN = ' '
-    CHAR_PC = '@'
+    CHAR_OPEN = '█'
+    CHAR_PC = '▲'
     TORCH_DISTANCE = 6
     WIDTH = 80
     HEIGHT = 65  # Console width and height in tiles.
@@ -38,10 +38,10 @@ class Motor(object):
     MAP_REACH_Y = int(WINDOW_MAP_HEIGHT / 2)
     MAP_WIDTH = 61
     MAP_HEIGHT = 61
-    NORTH = "N"
-    EAST = "E"
-    SOUTH = "S"
-    WEST = "W"
+    NORTH = "▲"
+    EAST = "►"
+    SOUTH = "▼"
+    WEST = "◄"
     rlr = roller.Roller()
 
     def popup(self, msg, title="Note"):
@@ -134,10 +134,10 @@ class Motor(object):
             for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
                 distance = self.get_straight_distance(ix, iy)
                 if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
-                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
-                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE+1):
-                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
-                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE+1):
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
+                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE+3):
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
+                elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE and distance <= self.TORCH_DISTANCE+3):
                     if (self.map[ix, iy] == 0):
                         visible = True
                         los = tcod.los.bresenham((self.x, self.y),(ix, iy)).tolist()
@@ -148,18 +148,18 @@ class Motor(object):
                                 visible = False
                                 break
                         if (visible):
-                            if (distance > self.TORCH_DISTANCE-2 and distance <= self.TORCH_DISTANCE-1):
+                            if (distance > self.TORCH_DISTANCE and distance <= self.TORCH_DISTANCE+1):
                                 self.console.rgb[cx+1, cy+1] = ord(self.CHAR_LIGHT_SHADE), tcod.black, tcod.grey
-                            elif (distance > self.TORCH_DISTANCE-1 and distance <= self.TORCH_DISTANCE):
+                            elif (distance > self.TORCH_DISTANCE+1 and distance <= self.TORCH_DISTANCE+2):
                                 self.console.rgb[cx+1, cy+1] = ord(self.CHAR_MEDIUM_SHADE), tcod.black, tcod.grey
-                            elif (distance > self.TORCH_DISTANCE and distance <= self.TORCH_DISTANCE+1):
+                            elif (distance > self.TORCH_DISTANCE+2 and distance <= self.TORCH_DISTANCE+3):
                                 self.console.rgb[cx+1, cy+1] = ord(self.CHAR_DARK_SHADE), tcod.black, tcod.grey
                         else:
-                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                            self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
                     else:
-                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
                 elif (self.map[ix, iy]==1):
-                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
                 else:
                     visible = True
                     if (not self.EDIT_MODE):
@@ -171,9 +171,9 @@ class Motor(object):
                                 visible = False
                                 break
                     if (visible):
-                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_OPEN), tcod.black, tcod.grey
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_OPEN), tcod.grey, tcod.black
                     else:
-                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
+                        self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
                 cy += 1
             cx += 1
         self.console.print(1,29,f'({px},{py}){self.orientation}',bg=tcod.black,fg=tcod.white)
@@ -192,6 +192,29 @@ class Motor(object):
             for ity in range(self.MAP_HEIGHT):
                 map[itx,ity] = self.map[ity,self.MAP_HEIGHT-itx-1]
         return map
+
+    def turn_char_left(self):
+        if (self.orientation == self.NORTH):
+            self.orientation = self.WEST
+        elif (self.orientation == self.WEST):
+            self.orientation = self.SOUTH
+        elif (self.orientation == self.SOUTH):
+            self.orientation = self.EAST
+        elif (self.orientation == self.EAST):
+            self.orientation = self.NORTH
+        self.CHAR_PC = self.orientation
+
+    def turn_char_right(self):
+        if (self.orientation == self.NORTH):
+            self.orientation = self.EAST
+        elif (self.orientation == self.WEST):
+            self.orientation = self.NORTH
+        elif (self.orientation == self.SOUTH):
+            self.orientation = self.WEST
+        elif (self.orientation == self.EAST):
+            self.orientation = self.SOUTH
+        self.CHAR_PC = self.orientation
+
 
     def turn_left(self):
         if (self.orientation == self.NORTH):
@@ -326,6 +349,72 @@ class Motor(object):
                     if (event.scancode == tcod.event.SCANCODE_N):
                         return "No"
 
+    def move_north(self):
+        self.erase(self.pos_x, self.pos_y)
+        if (self.y > 0 and (self.map[self.x, self.y-1]==0 or self.EDIT_MODE)):
+            self.y -= 1
+            self.map_refresh(self.x,self.y)
+
+    def move_south(self):
+        self.erase(self.pos_x, self.pos_y)
+        if (self.y < (self.MAP_HEIGHT - 1) and (self.map[self.x, self.y+1]==0 or self.EDIT_MODE)):
+            self.y += 1
+            self.map_refresh(self.x,self.y)
+
+
+    def move_east(self):
+        self.erase(self.pos_x, self.pos_y)
+        if (self.x < (self.MAP_WIDTH - 1) and (self.map[self.x+1, self.y]==0 or self.EDIT_MODE)):
+            self.x += 1
+            self.map_refresh(self.x, self.y)
+
+
+    def move_west(self):
+        self.erase(self.pos_x, self.pos_y)
+        if (self.x > 0 and (self.map[self.x-1, self.y]==0 or self.EDIT_MODE)):
+            self.x -= 1
+            self.map_refresh(self.x, self.y)
+
+
+    def move_char(self, direction):
+        if (self.orientation == self.NORTH):
+            if (direction == "forward"):
+                self.move_north()
+            elif (direction == "backward"):
+                self.move_south()
+            elif (direction == "side_left"):
+                self.move_west()
+            elif (direction == "side_right"):
+                self.move_east()
+        elif (self.orientation == self.SOUTH):
+            if (direction == "forward"):
+                self.move_south()
+            elif (direction == "backward"):
+                self.move_north()
+            elif (direction == "side_left"):
+                self.move_east()
+            elif (direction == "side_right"):
+                self.move_west()
+        elif (self.orientation == self.EAST):
+            if (direction == "forward"):
+                self.move_east()
+            elif (direction == "backward"):
+                self.move_west()
+            elif (direction == "side_left"):
+                self.move_north()
+            elif (direction == "side_right"):
+                self.move_south()
+        elif (self.orientation == self.WEST):
+            if (direction == "forward"):
+                self.move_west()
+            elif (direction == "backward"):
+                self.move_east()
+            elif (direction == "side_left"):
+                self.move_south()
+            elif (direction == "side_right"):
+                self.move_north()
+
+
 
 
 
@@ -347,14 +436,14 @@ class Motor(object):
 
             self.x = 34
             self.y = 23
-            pos_x = int(self.MAP_FRAME_WIDTH / 2)
-            pos_y = int(self.MAP_FRAME_HEIGHT / 2)
+            self.pos_x = int(self.MAP_FRAME_WIDTH / 2)
+            self.pos_y = int(self.MAP_FRAME_HEIGHT / 2)
 
 
             self.map_refresh(self.x,self.y)
 
             while True:  # Main loop, runs until SystemExit is raised.
-                self.console.rgb[pos_x, pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.grey
+                self.console.rgb[self.pos_x, self.pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.grey
                 context.present(self.console)  # Show the console.
 
                 for event in tcod.event.wait():
@@ -365,35 +454,25 @@ class Motor(object):
 
                     if event.type == "KEYDOWN":
                         if event.scancode == tcod.event.SCANCODE_S:
-                            self.erase(pos_x, pos_y)
-                            if (self.y < (self.MAP_HEIGHT - 1) and (self.map[self.x, self.y+1]==0 or self.EDIT_MODE)):
-                                self.y += 1
-                                self.map_refresh(self.x,self.y)
+                            self.move_char("backward")
                         elif event.scancode == tcod.event.SCANCODE_W:
-                            self.erase(pos_x, pos_y)
-                            if (self.y > 0 and (self.map[self.x, self.y-1]==0 or self.EDIT_MODE)):
-                                self.y -= 1
-                                self.map_refresh(self.x,self.y)
+                            self.move_char("forward")
                         elif event.scancode == tcod.event.SCANCODE_Q:
-                            self.map = self.turn_left()
-                            print(self.map.T)
-                            self.x, self.y = self.MAP_HEIGHT-self.y-1, self.x
+                            # self.map = self.turn_left()
+                            # print(self.map.T)
+                            # self.x, self.y = self.MAP_HEIGHT-self.y-1, self.x
+                            self.turn_char_left()
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_E:
-                            self.map = self.turn_right()
-                            print(self.map.T)
-                            self.x, self.y = self.y, self.MAP_WIDTH-1-self.x
+                            # self.map = self.turn_right()
+                            # print(self.map.T)
+                            # self.x, self.y = self.y, self.MAP_WIDTH-1-self.x
+                            self.turn_char_right()
                             self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
-                            self.erase(pos_x, pos_y)
-                            if (self.x > 0 and (self.map[self.x-1, self.y]==0 or self.EDIT_MODE)):
-                                self.x -= 1
-                                self.map_refresh(self.x, self.y)
+                            self.move_char("side_left")
                         elif event.scancode == tcod.event.SCANCODE_D:
-                            self.erase(pos_x, pos_y)
-                            if (self.x < (self.MAP_WIDTH - 1) and (self.map[self.x+1, self.y]==0 or self.EDIT_MODE)):
-                                self.x += 1
-                                self.map_refresh(self.x, self.y)
+                            self.move_char("side_right")
                         elif self.EDIT_MODE and event.scancode == tcod.event.SCANCODE_KP_MINUS:
                             self.map[self.x, self.y] = 0
                         elif self.EDIT_MODE and event.scancode == tcod.event.SCANCODE_KP_PLUS:
