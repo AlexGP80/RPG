@@ -6,6 +6,7 @@ from datetime import datetime
 import math
 import roller
 import character
+import monsters
 
 
 random.seed(datetime.now().microsecond)
@@ -58,6 +59,23 @@ class Motor(object):
                     #if (event.scancode == tcod.event.SCANCODE_Y):
                     break
 
+    def add_time(self, hours=0, turns=0, rounds=0):
+        self.rounds += rounds
+        while (self.rounds >= 60):
+            self.rounds -= 60
+            self.turns += 1
+
+        self.turns += turns
+        while (self.turns >= 6):
+            self.turns -= 6
+            self.hours += 1
+
+        self.hours += hours
+
+    def next_turn(self):
+        self.rounds = 0
+        self.add_time(turns=1)
+
 
     def __init__(self):
 
@@ -72,6 +90,11 @@ class Motor(object):
             dtype = tcod.console.Console.DTYPE,
             order = "F"
         )
+        self.hours = 0
+        self.turns = 0
+        self.rounds = 0
+
+
 
         #buffer["ch"] = ord('.')
         #buffer["ch"][:, 1] = ord('#')
@@ -153,7 +176,8 @@ class Motor(object):
                         self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.black, tcod.grey
                 cy += 1
             cx += 1
-        self.console.print(1,35,f'({px},{py}){self.orientation}    ')
+        self.console.print(1,29,f'({px},{py}){self.orientation}',bg=tcod.black,fg=tcod.white)
+        self.console.print(1,1,f'{self.hours} hours, {self.turns} turns, {self.rounds} rounds',bg=tcod.black,fg=tcod.white)
 
     def turn_map_right(self):
         map = np.zeros((self.MAP_HEIGHT, self.MAP_WIDTH))
@@ -220,7 +244,7 @@ class Motor(object):
             self.console.print_box(x=3, y=9, width=50, height=1, string=f" CON:{c.CON}                                     ")
             self.console.print_box(x=3, y=10, width=50, height=1, string=f" DEX:{c.DEX}                                     ")
             self.console.print_box(x=3, y=11, width=50, height=1, string=f" CHA:{c.CHA}                                     ")
-            self.console.print_box(x=3, y=13, width=50, height=1, string="Keep character? (Y/N):       ")
+            self.console.print_box(x=3, y=13, width=70, height=1, string="Keep character? (Y/N):       ")
 
             self.context.present(self.console)  # Show the console.
 
@@ -230,9 +254,9 @@ class Motor(object):
                 c = character.Character("Hero", "Fighter", 1, 0)
                 continue
 
-            self.console.print_box(x=3, y=13, width=60, height=1, string="Choose: (1)Leather armor (2)Chain mail          ")
+            self.console.print_box(x=3, y=13, width=70, height=1, string="Choose: (1)Leather armor (2)Chain mail          ")
             self.context.present(self.console)  # Show the console.
-            self.armor = "None"
+            c.armor = "None"
             opt = self.choose(2)
             if (opt == 1):
                 c.armor = "Leather armor"
@@ -241,9 +265,9 @@ class Motor(object):
                 c.armor = "Chain mail"
                 c.AC = 5 - c.DEX_adj
 
-            self.console.print_box(x=3, y=13, width=60, height=1, string="Choose: (1)Hand axe (2)Mace (3)Short sword (4)Spear      ")
+            self.console.print_box(x=3, y=13, width=70, height=1, string="Choose: (1)Hand axe (2)Mace (3)Short sword (4)Spear      ")
             self.context.present(self.console)  # Show the console.
-            self.weapon = "None"
+            c.weapon = "None"
             c.THAC0 = 19 - c.STR_adj
             c.DMG = f"1d6{c.STR_adj:+}"
             opt = self.choose(4)
@@ -256,8 +280,10 @@ class Motor(object):
             elif (opt == 4):
                 c.weapon = "Spear"
 
-            self.console.print_box(x=3, y=13, width=60, height=1, string=f"HP:{c.HP}  AC:{c.AC}  THAC0:{c.THAC0}  DMG:{c.DMG}                         ")
-            self.console.print_box(x=3, y=15, width=60, height=1, string="Press (1) to continue...         ")
+
+
+            self.console.print_box(x=3, y=13, width=70, height=1, string=f"HP:{c.HP}  AC:{c.AC}  THAC0:{c.THAC0}  DMG:{c.DMG}                         ")
+            self.console.print_box(x=3, y=15, width=70, height=1, string="Press (1) to continue...         ")
             self.context.present(self.console)  # Show the console.
             opt = self.choose(1)
 
@@ -317,6 +343,7 @@ class Motor(object):
             # map frame dimensions equals map dimensions plus borders
             self.console.clear()
             self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
+            self.console.draw_frame(x=31, y=0, width=self.WIDTH - self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
 
             self.x = 34
             self.y = 23
