@@ -82,7 +82,8 @@ class Motor(object):
         # Load the font, a 32 by 8 tile font with libtcod's old character layout.
         self.tileset = tcod.tileset.load_tilesheet(
             #"dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD,
-            "Cheepicus_14x14.png", 16, 16, tcod.tileset.CHARMAP_CP437,
+            #"Cheepicus_14x14.png", 16, 16, tcod.tileset.CHARMAP_CP437,
+            "Gamo_14x14.png", 16, 16, tcod.tileset.CHARMAP_CP437,
         )
 
         buffer = np.zeros(
@@ -203,6 +204,7 @@ class Motor(object):
         elif (self.orientation == self.EAST):
             self.orientation = self.NORTH
         self.CHAR_PC = self.orientation
+        self.map_refresh(self.x,self.y)
 
     def turn_char_right(self):
         if (self.orientation == self.NORTH):
@@ -214,6 +216,7 @@ class Motor(object):
         elif (self.orientation == self.EAST):
             self.orientation = self.SOUTH
         self.CHAR_PC = self.orientation
+        self.map_refresh(self.x,self.y)
 
 
     def turn_left(self):
@@ -462,13 +465,13 @@ class Motor(object):
                             # print(self.map.T)
                             # self.x, self.y = self.MAP_HEIGHT-self.y-1, self.x
                             self.turn_char_left()
-                            self.map_refresh(self.x, self.y)
+                            #self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_E:
                             # self.map = self.turn_right()
                             # print(self.map.T)
                             # self.x, self.y = self.y, self.MAP_WIDTH-1-self.x
                             self.turn_char_right()
-                            self.map_refresh(self.x, self.y)
+                            #self.map_refresh(self.x, self.y)
                         elif event.scancode == tcod.event.SCANCODE_A:
                             self.move_char("side_left")
                         elif event.scancode == tcod.event.SCANCODE_D:
