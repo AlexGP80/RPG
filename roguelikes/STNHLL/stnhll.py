@@ -43,6 +43,8 @@ class Motor(object):
     SOUTH = "▼"
     WEST = "◄"
     rlr = roller.Roller()
+    EXPLORATION_MODE_COLOR = tcod.light_orange
+    COMBAT_MODE_COLOR = tcod.dark_red
 
     def popup(self, msg, title="Note"):
         self.console.draw_frame(x=10, y=10, width=self.WIDTH-22, height=7, decoration="╔═╗║ ║╚═╝")
@@ -59,7 +61,12 @@ class Motor(object):
                     #if (event.scancode == tcod.event.SCANCODE_Y):
                     break
 
-    def add_time(self, hours=0, turns=0, rounds=0):
+    def add_time(self, hours=0, turns=0, rounds=0, seconds=0):
+        self.seconds += seconds
+        while(self.seconds >= 10):
+            self.seconds -= 10
+            self.rounds += 1
+
         self.rounds += rounds
         while (self.rounds >= 60):
             self.rounds -= 60
@@ -94,6 +101,7 @@ class Motor(object):
         self.hours = 0
         self.turns = 0
         self.rounds = 0
+        self.seconds = 0
 
 
 
@@ -124,11 +132,35 @@ class Motor(object):
         print(self.map_west)
         print(self.orientation)
         self.pc = None
+        # self.mode = "Combat"
+        # self.mode_color = self.COMBAT_MODE_COLOR
+        self.mode = "Exploration"
+        self.mode_color = self.EXPLORATION_MODE_COLOR
+
+
+
+
 
     def get_straight_distance(self, other_x, other_y):
         return math.sqrt(abs(self.x - other_x)**2 + abs(self.y - other_y)**2)
 
-    def map_refresh(self,px,py):
+    def char_info_refresh(self):
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=2, string=self.pc.name, bg=tcod.black, fg=tcod.dark_green)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=4, string=f"Human {self.pc.pc_class} {str(self.pc.level)} XP:{self.pc.XP}/200000", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=6, string=f"STR:{self.pc.STR:2}  ±Melee:{self.pc.STR_adj}  OpenDoors:{self.pc.open_doors}-in-6", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=7, string=f"INT:{self.pc.INT:2}  Literacy:{self.pc.literacy}", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=8, string=f"WIS:{self.pc.WIS:2}", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=9, string=f"DEX:{self.pc.DEX:2}  ±AC:{self.pc.DEX_adj}  ±Missile:{self.pc.DEX_adj}", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=10, string=f"CON:{self.pc.CON:2}  ±HP:{self.pc.CON_adj}", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=11, string=f"CHA:{self.pc.CHA:2}  ±React:{self.pc.CHA_adj}  MaxRets:{self.pc.max_retainers}  Loyalty:{self.pc.loyalty}", bg=tcod.black, fg=tcod.white)
+
+        # self.console.print(x=self.WINDOW_MAP_WIDTH+30, y=2, string=str(self.pc.level), bg=tcod.black, fg=tcod.white)
+        # self.console.print(x=self.WINDOW_MAP_WIDTH+33, y=2, string=f"XP:{self.pc.XP}/200000", bg=tcod.black, fg=tcod.white)
+
+
+    def map_refresh(self):
+        px = self.x
+        py = self.y
         cx = 0
         for ix in range(px-self.MAP_REACH_X,px+self.MAP_REACH_X+1,1):
             cy = 0
@@ -178,6 +210,7 @@ class Motor(object):
                 cy += 1
             cx += 1
         self.console.print(1,29,f'({px},{py}){self.orientation}',bg=tcod.black,fg=tcod.white)
+        self.console.print_box(1,29,string=f'{self.mode}',height=1,width=self.WINDOW_MAP_WIDTH,alignment=tcod.RIGHT, bg=tcod.black,fg=self.mode_color)
         self.console.print(1,1,f'{self.hours} hours, {self.turns} turns, {self.rounds} rounds',bg=tcod.black,fg=tcod.white)
 
     def turn_map_right(self):
@@ -204,7 +237,7 @@ class Motor(object):
         elif (self.orientation == self.EAST):
             self.orientation = self.NORTH
         self.CHAR_PC = self.orientation
-        self.map_refresh(self.x,self.y)
+        self.map_refresh()
 
     def turn_char_right(self):
         if (self.orientation == self.NORTH):
@@ -216,7 +249,7 @@ class Motor(object):
         elif (self.orientation == self.EAST):
             self.orientation = self.SOUTH
         self.CHAR_PC = self.orientation
-        self.map_refresh(self.x,self.y)
+        self.map_refresh()
 
 
     def turn_left(self):
@@ -255,7 +288,7 @@ class Motor(object):
         self.console.clear()
         self.console.draw_frame(x=0, y=0, width=self.WIDTH-2, height=self.HEIGHT-2, decoration="╔═╗║ ║╚═╝")
         self.console.print_box(x=0, y=0, width=self.WIDTH-2, height=1, string=" Character creation ", alignment=tcod.CENTER)
-        c = character.Character("Hero", "Fighter", 1, 0)
+        c = character.Character("Jerry Duller", "Magic-User", 10, 199999)
         repeat = True
         while repeat:
             # output =  f"  Name: {c.name}\n\n"
@@ -263,7 +296,7 @@ class Motor(object):
             # output
 
             self.console.print(x=3, y=3, string=f"Name:{c.name}")
-            self.console.print_box(x=3, y=4, width=50, height=1, string=f"Class:{c.pc_class}  Level:{c.level}  XP:{c.xp      }")
+            self.console.print_box(x=3, y=4, width=50, height=1, string=f"Class:{c.pc_class}  Level:{c.level}  XP:{c.XP      }")
             self.console.print_box(x=3, y=6, width=50, height=1, string=f" STR:{c.STR}                                     ")
             self.console.print_box(x=3, y=7, width=50, height=1, string=f" INT:{c.INT}                                     ")
             self.console.print_box(x=3, y=8, width=50, height=1, string=f" WIS:{c.WIS}                                     ")
@@ -277,7 +310,7 @@ class Motor(object):
             if (self.chooseYN() == "Yes"):
                 repeat = False
             else:
-                c = character.Character("Hero", "Fighter", 1, 0)
+                c = character.Character("Jerry Duller", "Magic-User", 10, 199999)
                 continue
 
             self.console.print_box(x=3, y=13, width=70, height=1, string="Choose: (1)Leather armor (2)Chain mail          ")
@@ -313,6 +346,7 @@ class Motor(object):
             self.context.present(self.console)  # Show the console.
             opt = self.choose(1)
 
+            return c
 
 
 
@@ -356,68 +390,75 @@ class Motor(object):
         self.erase(self.pos_x, self.pos_y)
         if (self.y > 0 and (self.map[self.x, self.y-1]==0 or self.EDIT_MODE)):
             self.y -= 1
-            self.map_refresh(self.x,self.y)
+            return True
+        return False
 
     def move_south(self):
         self.erase(self.pos_x, self.pos_y)
         if (self.y < (self.MAP_HEIGHT - 1) and (self.map[self.x, self.y+1]==0 or self.EDIT_MODE)):
             self.y += 1
-            self.map_refresh(self.x,self.y)
+            return True
+        return False
 
 
     def move_east(self):
         self.erase(self.pos_x, self.pos_y)
         if (self.x < (self.MAP_WIDTH - 1) and (self.map[self.x+1, self.y]==0 or self.EDIT_MODE)):
             self.x += 1
-            self.map_refresh(self.x, self.y)
+            return True
+        return False
 
 
     def move_west(self):
         self.erase(self.pos_x, self.pos_y)
         if (self.x > 0 and (self.map[self.x-1, self.y]==0 or self.EDIT_MODE)):
             self.x -= 1
-            self.map_refresh(self.x, self.y)
+            return True
+        return False
 
 
     def move_char(self, direction):
+        moved = False
         if (self.orientation == self.NORTH):
             if (direction == "forward"):
-                self.move_north()
+                moved = self.move_north()
             elif (direction == "backward"):
-                self.move_south()
+                moved = self.move_south()
             elif (direction == "side_left"):
-                self.move_west()
+                moved = self.move_west()
             elif (direction == "side_right"):
-                self.move_east()
+                moved = self.move_east()
         elif (self.orientation == self.SOUTH):
             if (direction == "forward"):
-                self.move_south()
+                moved = self.move_south()
             elif (direction == "backward"):
-                self.move_north()
+                moved = self.move_north()
             elif (direction == "side_left"):
-                self.move_east()
+                moved = self.move_east()
             elif (direction == "side_right"):
-                self.move_west()
+                moved = self.move_west()
         elif (self.orientation == self.EAST):
             if (direction == "forward"):
-                self.move_east()
+                moved = self.move_east()
             elif (direction == "backward"):
-                self.move_west()
+                moved = self.move_west()
             elif (direction == "side_left"):
-                self.move_north()
+                moved = self.move_north()
             elif (direction == "side_right"):
-                self.move_south()
+                moved = self.move_south()
         elif (self.orientation == self.WEST):
             if (direction == "forward"):
-                self.move_west()
+                moved = self.move_west()
             elif (direction == "backward"):
-                self.move_east()
+                moved = self.move_east()
             elif (direction == "side_left"):
-                self.move_south()
+                moved = self.move_south()
             elif (direction == "side_right"):
-                self.move_north()
-
-
+                moved = self.move_north()
+        if (moved):
+            self.add_time(seconds=int(600*5/self.pc.MV))
+            print(f'PC.MV:{self.pc.MV}  TURNS:{self.turns}  ROUNDS:{self.rounds}  SECONDS:{self.seconds}')
+            self.map_refresh()
 
 
 
@@ -434,8 +475,8 @@ class Motor(object):
 
             # map frame dimensions equals map dimensions plus borders
             self.console.clear()
-            self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
-            self.console.draw_frame(x=31, y=0, width=self.WIDTH - self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝")
+            self.console.draw_frame(x=0, y=0, width=self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝", fg=tcod.light_grey)
+            self.console.draw_frame(x=31, y=0, width=self.WIDTH - self.MAP_FRAME_WIDTH, height=self.MAP_FRAME_HEIGHT, decoration="╔═╗║ ║╚═╝", fg=tcod.light_grey)
 
             self.x = 34
             self.y = 23
@@ -443,10 +484,11 @@ class Motor(object):
             self.pos_y = int(self.MAP_FRAME_HEIGHT / 2)
 
 
-            self.map_refresh(self.x,self.y)
+            self.map_refresh()
 
             while True:  # Main loop, runs until SystemExit is raised.
                 self.console.rgb[self.pos_x, self.pos_y] = ord(self.CHAR_PC), tcod.yellow, tcod.grey
+                self.char_info_refresh()
                 context.present(self.console)  # Show the console.
 
                 for event in tcod.event.wait():
