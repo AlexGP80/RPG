@@ -45,43 +45,7 @@ class Motor(object):
     rlr = roller.Roller()
     EXPLORATION_MODE_COLOR = tcod.light_orange
     COMBAT_MODE_COLOR = tcod.dark_red
-
-    def popup(self, msg, title="Note"):
-        self.console.draw_frame(x=10, y=10, width=self.WIDTH-22, height=7, decoration="╔═╗║ ║╚═╝")
-        self.console.print(x=15, y=12, string=msg)
-        self.console.print(x=15, y=14, string="Press any key to continue...")
-        self.console.print_box(x=10, y=10, width=self.WIDTH-22, height=1, string=title, alignment=tcod.CENTER)
-        self.context.present(self.console)  # Show the console.
-        repeat = True
-        while repeat:
-            for event in tcod.event.wait():
-                self.context.convert_event(event)
-                if event.type == "KEYDOWN":
-                    repeat = False
-                    #if (event.scancode == tcod.event.SCANCODE_Y):
-                    break
-
-    def add_time(self, hours=0, turns=0, rounds=0, seconds=0):
-        self.seconds += seconds
-        while(self.seconds >= 10):
-            self.seconds -= 10
-            self.rounds += 1
-
-        self.rounds += rounds
-        while (self.rounds >= 60):
-            self.rounds -= 60
-            self.turns += 1
-
-        self.turns += turns
-        while (self.turns >= 6):
-            self.turns -= 6
-            self.hours += 1
-
-        self.hours += hours
-
-    def next_turn(self):
-        self.rounds = 0
-        self.add_time(turns=1)
+    DEFAULT_FONT_FG_COLOR = tcod.lighter_gray
 
 
     def __init__(self):
@@ -102,6 +66,7 @@ class Motor(object):
         self.turns = 0
         self.rounds = 0
         self.seconds = 0
+        self.light = True
 
 
 
@@ -137,6 +102,77 @@ class Motor(object):
         self.mode = "Exploration"
         self.mode_color = self.EXPLORATION_MODE_COLOR
 
+        self.enemies = []
+
+
+
+
+
+
+    def popup(self, msg, title="Note"):
+        self.console.draw_frame(x=10, y=10, width=self.WIDTH-22, height=7, decoration="╔═╗║ ║╚═╝")
+        self.console.print(x=15, y=12, string=msg)
+        self.console.print(x=15, y=14, string="Press any key to continue...")
+        self.console.print_box(x=10, y=10, width=self.WIDTH-22, height=1, string=title, alignment=tcod.CENTER)
+        self.context.present(self.console)  # Show the console.
+        repeat = True
+        while repeat:
+            for event in tcod.event.wait():
+                self.context.convert_event(event)
+                if event.type == "KEYDOWN":
+                    repeat = False
+                    #if (event.scancode == tcod.event.SCANCODE_Y):
+                    break
+
+    def add_time(self, hours=0, turns=0, rounds=0, seconds=0):
+
+        turns_delta = 0
+
+        # seconds
+        self.seconds += seconds
+        while(self.seconds >= 10):
+            self.seconds -= 10
+            self.rounds += 1
+
+        # rounds
+        self.rounds += rounds
+        while (self.rounds >= 60):
+            self.rounds -= 60
+            self.turns += 1
+            turns_delta += 1
+
+        # turns
+        self.turns += turns
+        turns_delta += turns
+        while (self.turns >= 6):
+            self.turns -= 6
+            self.hours += 1
+
+        while (turns_delta > 0):
+            if (self.light):
+                self.pc.turns_remaining_current_torch -= 1
+                if (self.pc.turns_remaining_current_torch == 0):
+                    if (self.pc.additional_torches >= 1):
+                        self.pc.turns_remaining_current_torch = 6
+                        self.pc.additional_torches -= 1
+                    self.light = False
+            self.pc.turns_remaining_current_waterskin -= 1
+            if (self.pc.turns_remaining_current_waterskin == 0):
+                self.pc.turns_remaining_current_waterskin = 24
+                self.pc.additional_waterskins -= 1
+            turns_delta -= 1
+
+        # hours
+        self.hours += hours
+
+        # # TODO: DAYS?
+
+
+
+
+    def next_turn(self):
+        self.rounds = 0
+        self.add_time(turns=1)
 
 
 
@@ -146,13 +182,26 @@ class Motor(object):
 
     def char_info_refresh(self):
         self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=2, string=self.pc.name, bg=tcod.black, fg=tcod.dark_green)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=4, string=f"Human {self.pc.pc_class} {str(self.pc.level)} XP:{self.pc.XP}/200000", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=6, string=f"STR:{self.pc.STR:2}  ±Melee:{self.pc.STR_adj}  OpenDoors:{self.pc.open_doors}-in-6", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=7, string=f"INT:{self.pc.INT:2}  Literacy:{self.pc.literacy}", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=8, string=f"WIS:{self.pc.WIS:2}", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=9, string=f"DEX:{self.pc.DEX:2}  ±AC:{self.pc.DEX_adj}  ±Missile:{self.pc.DEX_adj}", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=10, string=f"CON:{self.pc.CON:2}  ±HP:{self.pc.CON_adj}", bg=tcod.black, fg=tcod.white)
-        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=11, string=f"CHA:{self.pc.CHA:2}  ±React:{self.pc.CHA_adj}  MaxRets:{self.pc.max_retainers}  Loyalty:{self.pc.loyalty}", bg=tcod.black, fg=tcod.white)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=4, string=f"Human {self.pc.pc_class} {str(self.pc.level)} XP:{self.pc.XP}/{self.pc.XP_next}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=6, string=f"STR:{self.pc.STR:2}  ±Melee:{self.pc.STR_adj:+}  Doors:{self.pc.open_doors}-in-6", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=7, string=f"INT:{self.pc.INT:2}  Literacy:{self.pc.literacy}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=8, string=f"WIS:{self.pc.WIS:2}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=9, string=f"DEX:{self.pc.DEX:2}  ±AC:{self.pc.DEX_adj:+}  ±Missile:{self.pc.DEX_adj}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=10, string=f"CON:{self.pc.CON:2}  ±HP:{self.pc.CON_adj:+}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=11, string=f"CHA:{self.pc.CHA:2}  ±React:{self.pc.CHA_adj:+}  MaxRets:{self.pc.max_retainers}  Loyalty:{self.pc.loyalty}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=13, string=f"Combat", bg=tcod.black, fg=tcod.darker_orange)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=14, string=f"HP:{self.pc.HP}/{self.pc.HP_MAX}  AC:{self.pc.AC}({self.pc.armor})  THAC0:{self.pc.THAC0}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=15, string=f"{self.pc.weapon}, THAC0 {self.pc.weapon_THAC0}, DMG {self.pc.weapon_DMG}", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=17, string=f"Resources", bg=tcod.black, fg=tcod.darker_orange)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=18, string=f"Light:{self.pc.turns_remaining_current_torch} turns, {self.pc.additional_torches} more torches", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=19, string=f"Water:{self.pc.turns_remaining_current_waterskin} turns, {self.pc.additional_waterskins} more waterskins", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=20, string=f"Food:{self.pc.food_remaining} days", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=22, string=f"Treasure", bg=tcod.black, fg=tcod.darker_orange)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=23, string=f"{self.pc.cp}cp  {self.pc.sp}sp  {self.pc.ep}ep  {self.pc.gp}gp  {self.pc.pp}pp", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
+        self.console.print(x=self.WINDOW_MAP_WIDTH+4, y=24, string=f"Gems worth {self.pc.gems_gp}gp", bg=tcod.black, fg=self.DEFAULT_FONT_FG_COLOR)
 
         # self.console.print(x=self.WINDOW_MAP_WIDTH+30, y=2, string=str(self.pc.level), bg=tcod.black, fg=tcod.white)
         # self.console.print(x=self.WINDOW_MAP_WIDTH+33, y=2, string=f"XP:{self.pc.XP}/200000", bg=tcod.black, fg=tcod.white)
@@ -166,7 +215,9 @@ class Motor(object):
             cy = 0
             for iy in range(py-self.MAP_REACH_Y,py+self.MAP_REACH_Y+1,1):
                 distance = self.get_straight_distance(ix, iy)
-                if (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
+                if (not self.light):
+                    self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
+                elif (iy < 0 or ix < 0 or iy >= self.MAP_HEIGHT or ix >= self.MAP_WIDTH):
                     self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
                 elif ((not self.EDIT_MODE) and distance > self.TORCH_DISTANCE+3):
                     self.console.rgb[cx+1, cy+1] = ord(self.CHAR_WALL), tcod.grey, tcod.black
@@ -288,7 +339,7 @@ class Motor(object):
         self.console.clear()
         self.console.draw_frame(x=0, y=0, width=self.WIDTH-2, height=self.HEIGHT-2, decoration="╔═╗║ ║╚═╝")
         self.console.print_box(x=0, y=0, width=self.WIDTH-2, height=1, string=" Character creation ", alignment=tcod.CENTER)
-        c = character.Character("Jerry Duller", "Magic-User", 10, 199999)
+        c = character.Character("Jerry Duller", "Fighter", 1, 0)
         repeat = True
         while repeat:
             # output =  f"  Name: {c.name}\n\n"
@@ -310,7 +361,7 @@ class Motor(object):
             if (self.chooseYN() == "Yes"):
                 repeat = False
             else:
-                c = character.Character("Jerry Duller", "Magic-User", 10, 199999)
+                c = character.Character("Jerry Duller", "Fighter", 1, 0)
                 continue
 
             self.console.print_box(x=3, y=13, width=70, height=1, string="Choose: (1)Leather armor (2)Chain mail          ")
@@ -327,8 +378,6 @@ class Motor(object):
             self.console.print_box(x=3, y=13, width=70, height=1, string="Choose: (1)Hand axe (2)Mace (3)Short sword (4)Spear      ")
             self.context.present(self.console)  # Show the console.
             c.weapon = "None"
-            c.THAC0 = 19 - c.STR_adj
-            c.DMG = f"1d6{c.STR_adj:+}"
             opt = self.choose(4)
             if (opt == 1):
                 c.weapon = "Hand axe"
@@ -339,12 +388,17 @@ class Motor(object):
             elif (opt == 4):
                 c.weapon = "Spear"
 
+            c.weapon_adj = 0
+            c.weapon_THAC0 = 19 - c.STR_adj - c.weapon_adj
+            wpn_dmg_adj_total = c.STR_adj + c.weapon_adj
+            c.weapon_DMG = f"1d6{wpn_dmg_adj_total:+}"
 
 
-            self.console.print_box(x=3, y=13, width=70, height=1, string=f"HP:{c.HP}  AC:{c.AC}  THAC0:{c.THAC0}  DMG:{c.DMG}                         ")
-            self.console.print_box(x=3, y=15, width=70, height=1, string="Press (1) to continue...         ")
-            self.context.present(self.console)  # Show the console.
-            opt = self.choose(1)
+
+            # self.console.print_box(x=3, y=13, width=70, height=1, string=f"HP:{c.HP}  AC:{c.AC}  THAC0:{c.THAC0}  DMG:{c.DMG}                         ")
+            # self.console.print_box(x=3, y=15, width=70, height=1, string="Press (1) to continue...         ")
+            # self.context.present(self.console)  # Show the console.
+            # opt = self.choose(1)
 
             return c
 

@@ -8,6 +8,7 @@ class Character(object):
         self.pc_class = pc_class
         self.level = level
         self.XP = xp
+        self.XP_next = self.get_xp_for_next_level()
         self.STR = self.rlr.roll('3d6')
         self.STR_adj = self.get_adj(self.STR)
         self.open_doors = self.open_doors()
@@ -26,12 +27,37 @@ class Character(object):
         self.loyalty = self.get_loyalty()
 
         self.HP = 8 + self.CON_adj
+        self.HP_MAX = self.HP
         self.AC = 9 - self.DEX_adj
-        self.THAC0 = 19
+        self.THAC0 = 19 - self.STR_adj
 
         self.alignment = "Neutral"
 
         self.MV = 120
+
+        self.turns_remaining_current_torch = 6
+        self.additional_torches = 5
+        self.turns_remaining_current_waterskin = 24
+        self.additional_waterskins = 3
+        self.food_remaining = 2
+
+        self.cp = self.rlr.roll('3d6')
+        self.sp = self.rlr.roll("3d6")
+        self.ep = 0
+        self.gp = self.rlr.roll("1d4")
+        self.pp = 0
+        self.gems_gp = 0
+
+
+
+
+
+
+    def get_xp_for_next_level(self):
+        if (self.pc_class == "Fighter"):
+            if (self.level == 1):
+                return 2000
+        return 0
 
     def get_max_retainers(self):
         if (self.CHA == 3):
