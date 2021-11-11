@@ -2,7 +2,7 @@ import random
 import re
 from datetime import datetime
 
-random.seed(datetime.now())
+random.seed(datetime.now().microsecond)
 
 class Roll(object):
     def __init__(self, descr, result_list, result_total):
