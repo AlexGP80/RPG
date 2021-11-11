@@ -1,0 +1,107 @@
+Rellorb
+Lawful Human Magic-User
+Experience Points: 0 XP     Level 1
+
+STR:7   INT:16   WIS:14   CON:12   DEX:11   CHA:13
+
+STR
+  To-Hit Modifier: +0
+  Damage Modifier: +0
+  Open Doors: 2 in 6
+  Carry Modifier: +0
+
+INT
+  Maximum Additional Languages: 5
+  Maximum Spell Level: 8
+  Chance to Understand New Spell: 75%
+  Min/Max Number of Basic Spells Understandable per Level: 6/10
+
+WIS
+  Additional 1st level Cleric Spells: 0
+  Wisdom Experience Bonus: 5%
+
+CON
+  Hit Point Modifier: +0
+  Raise Dead Survival: 75%
+
+DEX
+  Missile To-Hit Modifier: +0
+  Armor Class Modifier: +0
+
+CHA
+  Maximum Number of Special Hirelings: 5
+  Charisma Experience Bonus: 5%
+
+
+Armor Class (AC): 9
+Hit Points: 4 / 4
+THAC0 (Melee): 19
+THAC0 (Missile): 19
+Weaponless Damage: 1
+
+Saving Throws: 
+    Death Rays and Poison: 13
+    Wands (all): 14
+    Turned to Stone: 13
+    Dragon's Breath: 16
+    Spells and Staffs: 15
+
+Prime Attribute(s): INT 
+Prime Attribute(s) Experience Bonus: 5%
+Total Experience Bonus (Prime Attrs + WIS + CHA): 15%
+
+Armor Permitted: None
+Shield Permitted: No
+
+Wealth:
+  46 gold pieces [46 cns]
+  0 silver pieces [0 cns]
+  4 copper pieces [4 cns]
+
+Armor: None [0 cns]
+Shield: None [0 cns]
+Weapons:
+  1 Sling [10 cns]: THAC0 19, RoF:1, Range: 40, 1d4 damage.
+  1 Dagger [20 cns]: THAC0 19, 1d4 damage.
+    (thrown): THAC0 19, RoF:1, Range: 10, 1d4 damage.
+Equipment List:
+  1 Backpack (300 coin capacity) [20 cns]
+  1 Bedroll [50 cns]
+  5 Rations, dried (per day) [100 cns]
+  2 Waterskin [40 cns]
+  1 Flint & Steel [10 cns]
+  5 Torch [50 cns]
+  1 Spellbook [30 cns]
+  1 Ink (1-ounce bottle) [5 cns]
+  5 Parchment (sheet) [0 cns]
+  1 Case (map or scroll) [2 cns]
+  20 Stones, sling [60 cns]
+  1 Signal whistle [1 cns]
+
+Weight carried: 448
+Carrying Capacity: 750 / 1000 / 1500 / 3000
+Movement Rate: 12
+
+Magic-User Level 1 Spell Slots: 2
+
+Spells Known:
+  Read Magic
+  Sleep
+  Hold Portal
+  Light
+  Read Languages
+  Detect Magic
+  Charm Person
+  Shield
+  Protection from Evil
+
+Thieving Skills:
+  None
+
+*** Class Abilities ***
+SPELL CASTING: Unlike the Cleric, a Magic-User owns a book of spells, which does not necessarily include all of the spells on the standard lists. Reading from this book, Magic-Users force selected spell formulae into their minds, “preparing” as many spells as the Magic-User can mentally sustain. (It is possible to prepare a spell multiple times using the available “slots” in the Magic-User’s memory and mental capability.) Once a prepared spell is cast, it disappears from the Magic-User’s ability to cast, until it is prepared again. If a Magic-User finds scrolls of spells while adventuring, these spells can be added to the Magic-User’s spellbook.
+
+SAVING THROW BONUS: Magic-Users gain a bonus of +2 on all saving throw rolls against spells, including spells from magic wands and staffs.
+
+IDENTIFY MAGIC ITEMS: Magic-Users can attempt to identify the properties of magic items. Chance equal to learn spell %. It takes 1 full day of study and analysis of the item to earn a chance to uncover a property. Each subsequent attempt, regardless of whether or not earlier attempts were successful, escalates in time: 1 day, 3 day, 1 week, 2 weeks, 1 month, 3 months. This research may cost money in the form of materials.
+

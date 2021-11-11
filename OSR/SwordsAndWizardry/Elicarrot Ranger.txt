@@ -1,0 +1,91 @@
+Elicarrot
+Lawful Human Ranger
+Experience Points: 0 XP     Level 1
+
+STR:12   INT:11   WIS:10   CON:12   DEX:8   CHA:12
+
+STR
+  To-Hit Modifier: +0
+  Damage Modifier: +0
+  Open Doors: 2 in 6
+  Carry Modifier: +50
+
+INT
+  Maximum Additional Languages: 2
+  Maximum Spell Level: 6
+  Chance to Understand New Spell: 50%
+  Min/Max Number of Basic Spells Understandable per Level: 4/6
+
+WIS
+  Additional 1st level Cleric Spells: 0
+  Wisdom Experience Bonus: 0%
+
+CON
+  Hit Point Modifier: +0
+  Raise Dead Survival: 75%
+
+DEX
+  Missile To-Hit Modifier: -1
+  Armor Class Modifier: -1
+
+CHA
+  Maximum Number of Special Hirelings: 4
+  Charisma Experience Bonus: 0%
+
+
+Armor Class (AC): 5
+Hit Points: 12 / 12
+THAC0 (Melee): 19
+THAC0 (Missile): 20
+Weaponless Damage: 1
+
+Saving Throws: 
+    Death Rays and Poison: 12
+    Wands (all): 13
+    Turned to Stone: 14
+    Dragon's Breath: 15
+    Spells and Staffs: 16
+
+Prime Attribute(s): STR INT WIS 
+Prime Attribute(s) Experience Bonus: 0%
+Total Experience Bonus (Prime Attrs + WIS + CHA): 0%
+
+Armor Permitted: Any
+Shield Permitted: Yes
+
+Wealth:
+  19 gold pieces [19 cns]
+  5 silver pieces [5 cns]
+  0 copper pieces [0 cns]
+
+Armor: Chain Armor [500 cns]
+Shield: Shield [100 cns]
+Weapons:
+  1 Shortsword [50 cns]: THAC0 19, 1d6 damage.
+Equipment List:
+  1 Backpack (300 coin capacity) [20 cns]
+  1 Bedroll [50 cns]
+  5 Rations, dried (per day) [100 cns]
+  2 Waterskin [40 cns]
+  1 Flint & Steel [10 cns]
+  1 Lantern, hooded [20 cns]
+  3 Oil, lamp (1 pint) [30 cns]
+  1 Shovel [50 cns]
+
+Weight carried: 994
+Carrying Capacity: 800 / 1050 / 1550 / 3050
+Movement Rate: 9
+
+Spells Known:
+  None
+
+Thieving Skills:
+  None
+
+*** Class Abilities ***
+ALERTNESS: A party containing a Ranger is unlikely to be surprised, with only a 1 in 6 chance.
+
+MAGIC ITEMS: Rangers can use any magic items that can normally be used by Fighters.
+
+GIANTS AND GOBLIN-TYPES: Rangers are well trained to deal with giants, trolls, ogres, orcs, goblins, and kobolds. Against any of these sorts of monsters, Rangers gain +1 damage per level with a successful attack roll.
+

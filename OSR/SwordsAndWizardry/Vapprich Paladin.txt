@@ -1,0 +1,93 @@
+Vapprich
+Lawful Human Paladin
+Experience Points: 0 XP     Level 1
+
+STR:13   INT:9   WIS:13   CON:7   DEX:8   CHA:13
+
+STR
+  To-Hit Modifier: +0
+  Damage Modifier: +0
+  Open Doors: 2 in 6
+  Carry Modifier: +100
+
+INT
+  Maximum Additional Languages: 1
+  Maximum Spell Level: 5
+  Chance to Understand New Spell: 45%
+  Min/Max Number of Basic Spells Understandable per Level: 3/5
+
+WIS
+  Additional 1st level Cleric Spells: 0
+  Wisdom Experience Bonus: 5%
+
+CON
+  Hit Point Modifier: -1
+  Raise Dead Survival: 50%
+
+DEX
+  Missile To-Hit Modifier: -1
+  Armor Class Modifier: -1
+
+CHA
+  Maximum Number of Special Hirelings: 5
+  Charisma Experience Bonus: 5%
+
+
+Armor Class (AC): 7
+Hit Points: 7 / 7
+THAC0 (Melee): 19
+THAC0 (Missile): 20
+Weaponless Damage: 1
+
+Saving Throws: 
+    Death Rays and Poison: 10
+    Wands (all): 11
+    Turned to Stone: 12
+    Dragon's Breath: 13
+    Spells and Staffs: 14
+
+Prime Attribute(s): STR CHA 
+Prime Attribute(s) Experience Bonus: 5%
+Total Experience Bonus (Prime Attrs + WIS + CHA): 15%
+
+Armor Permitted: Any
+Shield Permitted: Yes
+
+Wealth:
+  7 gold pieces [7 cns]
+  7 silver pieces [7 cns]
+  5 copper pieces [5 cns]
+
+Armor: Ring Armor [400 cns]
+Shield: None [0 cns]
+Weapons:
+  1 Battle Axe [150 cns]: THAC0 19, 1d8 damage.
+    (two-handed): THAC0 +19, 1d8+1 damage.
+Equipment List:
+  1 Backpack (300 coin capacity) [20 cns]
+  1 Bedroll [50 cns]
+  5 Rations, dried (per day) [100 cns]
+  2 Waterskin [40 cns]
+  1 Flint & Steel [10 cns]
+  5 Torch [50 cns]
+  1 Holy Symbol, wooden [1 cns]
+  1 Shovel [50 cns]
+  1 Bell [5 cns]
+
+Weight carried: 895
+Carrying Capacity: 850 / 1100 / 1600 / 3100
+Movement Rate: 9
+
+Spells Known:
+  None
+
+Thieving Skills:
+  None
+
+*** Class Abilities ***
+LAY ON HANDS: A Paladin can “lay on hands” once per day to cure others of 2 hit points of damage per level of the Paladin, or to cure disease. If the other person is afflicted by more than one disease, only one of these will be affected per five levels the Paladin has attained.
+
+INMUNE TO DISEASES: Paladins are immune to all diseases.
+
+WARHORSE: At any level, the character may summon a warhorse that will arrive from the wilderness to serve as the Paladin’s steed. This warhorse will be unusually intelligent and extremely strong (5 HD). However, if the horse is killed, the Paladin may not summon another within a period of ten game-years.
+

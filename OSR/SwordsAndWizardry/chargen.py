@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 
-random.seed(datetime.now())
+random.seed(datetime.now().microsecond)
 
 class Roll(object):
     def __init__(self, descr, result_list, result_total):
@@ -9,10 +9,10 @@ class Roll(object):
         self.descr = descr
         self.result_list = result_list
         self.result_total = result_total
-    
+
     def __descr__(self):
         return str(self)
-    
+
     def __str__(self):
         output = f'{self.date_time}: {self.descr} = {self.result_total} ( '
         for i in range(len(self.result_list)):
@@ -23,16 +23,16 @@ class Roll(object):
 class Roller(object):
     def __init__(self):
         self.roll_log = list()
-    
+
     def __str__(self):
         output = ''
         for i in range(len(self.roll_log)):
             output += str(self.roll_log[i]) + '\n'
         return output
-    
+
     def __descr__(self):
         return str(self)
-    
+
     def roll(self, roll_str):
         roll_str_curated = roll_str.lower().replace(" ","").replace("+"," ").replace("-"," -")
         roll_parts = list()
@@ -40,7 +40,7 @@ class Roller(object):
         result_total = 0
         result_list = dict()
         num_part = 0
-        
+
         for part in roll_parts:
             if (part == ""):
                 continue
@@ -62,9 +62,9 @@ class Roller(object):
                 part_r_list.append(int(part))
             result_list[str(part)] = part_r_list
             num_part += 1
-        self.roll_log.append(Roll(roll_str, result_list, result_total))    
+        self.roll_log.append(Roll(roll_str, result_list, result_total))
         return result_total
-    
+
     def vhalfmin(self, roll_str):
         roll_str = roll_str.lower()
         num_dice, sides = roll_str.split('d')
@@ -79,15 +79,15 @@ class Roller(object):
                 die_result = vmin
             result_list.append(die_result)
             result_total += die_result
-        self.roll_log.append(Roll(roll_str, result_list, result_total))    
+        self.roll_log.append(Roll(roll_str, result_list, result_total))
         return result_total
-    
+
     def vmax(self, roll_str):
         roll_str = roll_str.lower()
         num_dice, sides = roll_str.split('d')
         return int(num_dice)*int(sides)
-        
-        
+
+
     def vmaxnroll(self, roll_str):
         roll_str = roll_str.lower()
         num_dice, sides = roll_str.split('d')
@@ -103,24 +103,24 @@ class Roller(object):
             die_result = random.randint(1, sides)
             result_list.append(die_result)
             result_total += die_result
-        self.roll_log.append(Roll(roll_str, result_list, result_total))    
+        self.roll_log.append(Roll(roll_str, result_list, result_total))
         return result_total
-        
-        
 
-            
+
+
+
 def class_distribution():
     iterations = 10000
     occurrences = dict()
-    
+
     for i in range(iterations):
-    
+
         ch = Character()
         if (ch.c_class in occurrences.keys()):
             occurrences[ch.c_class] += 1
         else:
             occurrences[ch.c_class] = 1
-            
+
     occurrences = dict(sorted(occurrences.items(), key=lambda item: item[1]))
     for k,v in occurrences.items():
         print(f'{k}: {(100*v)/iterations:.2f}%')
@@ -130,13 +130,13 @@ class GEItem(object):
         self.descr = descr
         self.price = price
         self.weight = weight
-        
+
     def __str__(self):
         return self.descr
-    
+
     def __descr__(self):
         return str(self)
-        
+
 BACKPACK = GEItem("Backpack (300 coin capacity)", 5, 20)
 BEDROLL = GEItem("Bedroll", 0.2, 50)
 BELL = GEItem("Bell", 1, 5)
@@ -171,7 +171,7 @@ class Armor(GEItem):
         self.ac_mod = ac_mod
     def __str__(self):
         return f'{self.descr} [{self.weight} cns]'
-        
+
 
 NO_ARMOR = Armor("None", 0, 0, 0)
 NO_SHIELD = NO_ARMOR
@@ -194,7 +194,7 @@ class Damage(object):
         else:
             self.roll = ""
             self.modif = int(dmg)
-            
+
         if (not self.modif):
             self.modif = 0
         self.modif = int(self.modif)
@@ -206,18 +206,18 @@ class Damage(object):
         if (new_modif < 0):
             return Damage(self.roll + str(new_modif))
         return Damage(self.roll + '+' + str(new_modif))
-        
+
     def __str__(self):
         if (not self.modif):
             return self.roll
         if (self.modif < 0):
             return self.roll + str(self.modif)
         return self.roll + '+' + str(self.modif)
-    
+
     def __descr(self):
         return str(self)
-    
-    
+
+
 
 class Weapon(GEItem):
     def __init__(self, descr, price, weight, damage, rof=0, w_range=0, vers=False, melee_and_missile=False):
@@ -257,10 +257,10 @@ class EquipEntry(object):
     def __init__(self, item, quantity):
         self.quantity = quantity
         self.item = item
-        
+
     def __str__(self):
         return f'{self.quantity} {self.item} [{self.quantity * self.item.weight} cns]'
-    
+
     def __descr__(self):
         return str(self)
 
@@ -268,19 +268,19 @@ class EquipList(object):
     def __init__(self, name):
         self.eq_list = list()
         self.name = name
-        
+
     def add(self, eq_item, quant):
         self.eq_list.append(EquipEntry(eq_item, quant))
-        
+
     def __str__(self):
         output = "Equipment List:\n"
         for it in self.eq_list:
             output += "  " + str(it) + "\n"
         return output
-    
+
     def __descr__(self):
         return str(self)
-    
+
     def to_str(self, character):
         output = f"{self.name}:\n"
         for it in self.eq_list:
@@ -299,10 +299,10 @@ class EquipList(object):
                     output += f'    (two-handed): THAC0 {character.melee_to_hit:+}, {w.damage + character.dmg_mod + 1} damage.\n'
             else:
                 output += '\n'
-        return output            
-        
-        
-        
+        return output
+
+
+
 class Character(object):
     def __init__(self):
         self.name = self.get_name()
@@ -330,7 +330,7 @@ class Character(object):
         self.prime_attr_exp_bonus = self.get_prime_attr_exp_bonus()
 
         self.gold = self.get_starting_gold()
-        
+
         self.to_hit_mod = self.get_to_hit_mod()
         self.dmg_mod = self.get_dmg_mod()
         self.open_doors = self.get_open_doors()
@@ -351,25 +351,25 @@ class Character(object):
         self.cha_exp_bonus = self.get_cha_exp_bonus()
         self.max_num_special_hirelings = self.get_max_num_special_hirelings()
         self.retainers_morale = self.max_num_special_hirelings+3
-        
+
         self.total_exp_bonus = self.prime_attr_exp_bonus + self.wis_exp_bonus + self.cha_exp_bonus
-        
+
         self.saving_throw = self.get_saving_throw()
         self.death_ray_poison_save = self.saving_throw
         self.wands_save = self.saving_throw
         self.turned_to_stone_save = self.saving_throw
         self.dragon_breath_save = self.saving_throw
         self.spells_staff_save = self.saving_throw
-        
+
         self.set_saving_throws()
-        
+
         self.armor_permitted = self.get_armor_permitted()
         self.shield_permitted = self.get_shield_permitted()
 
         self.cl_spell_slots_lev1 = self.get_cl_spell_slots_lev1()
         self.dr_spell_slots_lev1 = self.get_dr_spell_slots_lev1()
         self.mu_spell_slots_lev1 = self.get_mu_spell_slots_lev1()
-        
+
         self.base_ac = 9
         self.weaponless_damage = self.get_weaponless_damage()
         self.base_to_hit = 19
@@ -377,7 +377,7 @@ class Character(object):
         self.missile_to_hit = self.base_to_hit - self.to_hit_mod - self.missile_to_hit_mod
         self.xp = 0
         self.alignment = self.get_alignment()
-        
+
         self.spells_known = self.get_spells_known()
         self.thieving_skills = self.get_thieving_skills()
         self.get_equipment()
@@ -393,8 +393,8 @@ class Character(object):
         self.weight_thresholds = [x + y for x, y in zip([750, 1000, 1500, 3000], [self.carry_mod, self.carry_mod, self.carry_mod, self.carry_mod])]
         self.mv_rate = self.get_mv_rate()
         self.class_abilities = self.get_class_abilities()
-        
-        
+
+
     def set_saving_throws(self):
         if (self.c_class in ["Cleric", "Druid", "Monk"]):
             self.death_ray_poison_save = 11
@@ -420,8 +420,8 @@ class Character(object):
             self.turned_to_stone_save = 13
             self.dragon_breath_save = 16
             self.spells_staff_save = 15
-            
-        
+
+
     def add_items(self, item, quant=1):
         self.gold -= quant * item.price
         if hasattr(item, 'weight'):
@@ -430,28 +430,28 @@ class Character(object):
             self.weapons.add(item, 1)
         else:
             self.eq_list.add(item, quant)
-            
+
 
     def add_armor(self, armor):
         self.armor = armor
         self.gold -= armor.price
         self.weight += armor.weight
         self.armor.ac_mod = armor.ac_mod
-    
+
     def add_shield(self, shield):
         self.shield = shield
         self.gold -= shield.price
         self.weight += shield.weight
         self.shield.ac_mod = shield.ac_mod
-    
+
     def get_mv_rate(self):
         for i in range(len(self.weight_thresholds)):
             if (self.weight <= self.weight_thresholds[i]):
                 return 12 - (i*3)
-        
-        
-        
-        
+
+
+
+
     def get_equipment(self):
         self.add_armor(NO_ARMOR)
         self.add_shield(NO_SHIELD)
@@ -460,25 +460,25 @@ class Character(object):
         self.add_items(RATIONS_DRY, 5)
         self.add_items(WATERSKIN, 2)
         self.add_items(FLINT_STEEL)
-        
+
         if (random.randint(0,3)):
             self.add_items(TORCH, 5)
         else:
             self.add_items(LAMP_HOODED)
             self.add_items(OIL, 3)
-            
+
         if (self.c_class == "Magic-User"):
             self.add_items(SPELLBOOK)
             self.add_items(INK)
             self.add_items(PARCHMENT, 5)
             self.add_items(CASE)
-            
+
         if (self.c_class == "Cleric" or self.c_class == "Paladin"):
             self.add_items(W_HOLY_SYMBOL)
-            
+
         # Armor & Shield
         if (self.c_class == "Assassin" or self.c_class == "Thief" or self.c_class == "Druid"):
-            if (self.gold > 15): 
+            if (self.gold > 15):
                 self.add_armor(LEATHER_ARMOR)
             if (self.gold > 18):
                 if (self.c_class == "Druid"):
@@ -511,9 +511,9 @@ class Character(object):
                 self.add_armor(RING_ARMOR)
             else:
                 self.add_armor(LEATHER_ARMOR)
-                
-                
-            if (self.gold > SHIELD.price+10 and random.randint(0,2)):    
+
+
+            if (self.gold > SHIELD.price+10 and random.randint(0,2)):
                 self.add_shield(SHIELD)
                 if (self.c_class == "Cleric"):
                     if (random.randint(0,1)):
@@ -538,9 +538,9 @@ class Character(object):
                         self.add_items(WARHAMMER)
                     elif (opc == 3):
                         self.add_items(SPEAR)
-                else: 
+                else:
                     self.add_items(CLUB)
-            else: 
+            else:
                 #no shield
                 if (self.c_class == "Cleric"):
                     if (self.gold > FLAIL.price+10):
@@ -569,18 +569,18 @@ class Character(object):
                         self.add_items(SPEAR)
                     else:
                         self.add_items(STAFF)
-                        
-                    
-                    
-            
+
+
+
+
         if (self.gold < 0):
             self.gold = 0
-            
+
         if (self.gold > 1 and random.randint(1,3) < 3):
             self.add_items(ROPE, 1)
             if (self.gold > 1 and random.randint(1,3) == 1):
                 self.add_items(GRAPPLING_HOOK, 1)
-        
+
         if (random.randint(1,3) < 3):
             opc = random.randint(1,4)
             if (opc == 1 and self.gold > 0.2):
@@ -592,7 +592,7 @@ class Character(object):
                 self.add_items(SHOVEL, 1)
             elif (opc == 4 and self.gold > 0.2):
                 self.add_items(POLE, 1)
-        
+
         if (random.randint(1,3) < 3):
             opc = random.randint(1,4)
             if (opc == 1 and self.gold > 1):
@@ -603,17 +603,17 @@ class Character(object):
                 self.add_items(WHISTLE, 1)
             elif (opc == 4 and self.gold > 0.25):
                 self.add_items(CHALK, 5)
-        
-        
+
+
     def get_thieving_skills(self):
         thsk = dict()
         if (self.c_class == "Monk" or self.c_class == "Thief"):
             thsk = {"Climb Walls":85, "Delicate Tasks and Traps":15, "Hear Sounds":3, "Hide in Shadows":10, "Move Silently":20, "Open Locks":10}
         return thsk
-        
-        
-        
-        
+
+
+
+
     def get_spells_known(self):
         spells = list()
         if (self.c_class == "Cleric" and self.cl_spell_slots_lev1 > 0):
@@ -655,8 +655,8 @@ class Character(object):
                             if (known == min_sp):
                                 return spells
         return spells
-        
-        
+
+
     def get_alignment(self):
         if (self.c_class == "Fighter" or self.c_class == "Magic-User"):
             als = ["Lawful", "Neutral"]
@@ -664,13 +664,13 @@ class Character(object):
         if (self.c_class == "Assassin" or self.c_class == "Druid" or self.c_class == "Thief"):
             return "Neutral"
         return "Lawful"
-    
-    
+
+
     def get_weaponless_damage(self):
         if (self.c_class == "Monk"):
             return "1d4"
         return "1"
-    
+
     def get_mu_spell_slots_lev1(self):
         slots1 = 0
         if (self.c_class == "Magic-User"):
@@ -678,48 +678,48 @@ class Character(object):
             if (self.INT >= 15):
                 slots1 += 1
         return slots1
-    
-    
+
+
     def get_dr_spell_slots_lev1(self):
         if (self.c_class == "Druid"):
             return 1
         return 0
-    
-    
+
+
     def get_cl_spell_slots_lev1(self):
         if (self.c_class == "Cleric" and self.WIS >= 15):
             return 1
         return 0
-    
+
     def get_shield_permitted(self):
         if (self.c_class == "Druid"):
             return "Wooden"
         if (self.c_class == "Magic-User" or self.c_class == "Monk" or self.c_class == "Thief"):
             return "No"
         return "Yes"
-    
-    
+
+
     def get_armor_permitted(self):
         if (self.c_class == "Assasin" or self.c_class == "Druid" or self.c_class == "Thief"):
             return "Leather Armor"
         if (self.c_class == "Magic-User" or self.c_class == "Monk"):
             return "None"
         return "Any"
-    
+
     def get_saving_throw(self):
         if (self.c_class == "Paladin"):
             return 12
         if (self.c_class == "Fighter" or self.c_class == "Ranger"):
             return 14
         return 15
-    
-    
+
+
     def get_prime_attr_exp_bonus(self):
         for i in range(len(self.prime_attrs)):
             if (self.attributes[self.prime_attrs[i]] < 13):
                 return 0
         return 5
-    
+
     def get_prime_attrs(self):
         if (self.c_class == "Assassin"):
             return ["DEX", "STR", "INT"]
@@ -740,8 +740,8 @@ class Character(object):
         if (self.c_class == "Thief"):
             return ["DEX"]
         return "ERROR"
-        
-    
+
+
     def get_hit_dice(self):
         if (self.c_class in ["Assassin", "Cleric", "Druid"]):
             return "1d6"
@@ -752,7 +752,7 @@ class Character(object):
         else: #Monk, Thief, Magic-User
             return "1d4"
 
-    def get_hit_points_max(self):    
+    def get_hit_points_max(self):
         hp = 0
         if (self.c_class == "Ranger"):
             hp = rlr.vmax('1d8') + self.hp_mod + rlr.vhalfmin('1d8') + self.hp_mod
@@ -760,7 +760,7 @@ class Character(object):
             # house rule: at first level, max hit points
             hp = rlr.vmax(self.hit_dice) + self.hp_mod
         return hp
-    
+
     def get_max_num_special_hirelings(self):
         c = self.CHA
         if (c <= 4):
@@ -776,25 +776,25 @@ class Character(object):
         if (c <= 17):
             return 6
         return 7
-    
+
     def get_additional_cleric_1st_level_spells(self):
         if (self.c_class == "Cleric" and self.WIS >= 15):
             return 1
         return 0
-    
+
     def get_wis_exp_bonus(self):
         if (self.WIS >= 13):
             return 5
         return 0
-    
+
     def get_cha_exp_bonus(self):
         if (self.CHA >= 13):
             return 5
         return 0
-    
+
     def get_min_max_num_spells_und_level(self):
         i = self.INT
-        if (i <= 7): 
+        if (i <= 7):
             return '2/4'
         if (i <= 9):
             return '3/5'
@@ -807,8 +807,8 @@ class Character(object):
         if (i == 17):
             return '7/All'
         return '8/All'
-        
-        
+
+
     def get_max_spell_level(self):
         INT = self.INT
         if (INT <= 7):
@@ -822,7 +822,7 @@ class Character(object):
         if (INT <= 16):
             return 8
         return 9
-    
+
     def get_chance_und_new_spell(self):
         i = self.INT
         if (i >= 18):
@@ -842,7 +842,7 @@ class Character(object):
         if (i == 8):
             return 40
         return 30
-    
+
     def get_max_additional_languages(self):
         if (self.INT <= 7):
             return 0
@@ -858,27 +858,27 @@ class Character(object):
             return 5
         # self.INT == 18
         return 6
-        
+
     def get_raise_dead_survival(self):
         if (self.CON < 9):
             return 50
         if (self.CON >= 13):
             return 100
         return 75
-        
+
     def get_hp_mod(self):
         if (self.CON < 9):
             return -1
         if (self.CON >= 13):
             return 1
         return 0
-        
+
     def get_class(self):
         attributes = self.attributes
         thresholds = [17,15,12,9]
         optim_classes = list()
         c_class = ""
-        
+
         for t in thresholds:
             if (c_class):
                 break
@@ -908,13 +908,13 @@ class Character(object):
                         optim_classes.append("Cleric")
                     if (optim_classes):
                         c_class = optim_classes[random.randint(0,len(optim_classes)-1)]
-        
+
         if (not c_class):
             c_class = "Bullshit"
-        
+
         return c_class
-    
-    
+
+
     def get_name(self):
         beginning  = ["A", "Ada", "Aki", "Al", "Ali", "Alo", "Ana", "Ani", "Ba", "Be", "Bo", "Bra", "Bro"]
         beginning += ["Cha", "Chi", "Da", "De", "Do", "Dra", "Dro", "Eki", "Eko", "Ele", "Eli", "Elo"]
@@ -924,7 +924,7 @@ class Character(object):
         beginning += ["Pra", "Qua", "Qui", "Quo", "Ra", "Re", "Ro", "Sa", "Sca", "Sco", "Se", "Sha"]
         beginning += ["She", "Sho", "So", "Sta", "Ste", "Sti", "Stu", "Ta", "Tha", "The", "Tho", "Ti"]
         beginning += ["To", "Tra", "Tri", "Tru", "Ul", "Ur", "Va", "Vo", "Wra", "Xa", "Xi", "Zha", "Zho"]
-        
+
         middle  = ["bb", "bl", "bold", "br", "bran", "can", "carr", "ch", "cinn", "ck", "ckl", "ckr", "cks"]
         middle += ["dd", "dell", "dr", "ds", "fadd", "fall", "farr", "ff", "fill", "fl", "fr", "genn"]
         middle += ["gg", "gl", "gord", "gr", "gs", "h", "hall", "hark", "hill", "hork", "jenn", "kell"]
@@ -933,7 +933,7 @@ class Character(object):
         middle += ["ns", "nt", "part", "pelt", "pl", "pp", "ppr", "pps", "rand", "rd", "resh", "rn"]
         middle += ["rp", "rr", "rush", "salk", "sass", "sc", "sh", "sp", "ss", "st", "tall", "tend"]
         middle += ["told", "v", "vall", "w", "wall", "wild", "will", "x", "y", "yang", "yell", "z", "zenn"]
-        
+
         end  = ["a", "ab", "ac", "ace", "ach", "ad", "adle", "af", "ag", "ah", "ai", "ak", "aker", "al"]
         end += ["ale", "am", "an", "and", "ane", "ar", "ard", "ark", "art", "ash", "at", "ath", "ave"]
         end += ["ea", "eb", "ec", "ech", "ed", "ef", "eh", "ek", "el", "elle", "elton", "em", "en"]
@@ -942,32 +942,32 @@ class Character(object):
         end += ["oe", "of", "oh", "ol", "olen", "omir", "or", "orb", "org", "ort", "os", "osh", "ot", "oth"]
         end += ["ottle", "ove", "ow", "ox", "ud", "ule", "umber", "un", "under", "undle", "unt", "ur", "us"]
         end += ["ust", "ut", "", "", "", ""]
-    
+
         b = random.randint(0, len(beginning)-1)
         m = random.randint(0, len(middle)-1)
         e = random.randint(0, len(end)-1)
-        
+
         return beginning[b] + middle[m] + end[e]
-    
-    
-    
-    
+
+
+
+
     def get_attributes(self):
         below_nine_count = 6
         while (below_nine_count>3):
             attributes = dict(STR=max(rlr.roll("3d6"),6), DEX=max(rlr.roll("3d6"),6), CON=max(rlr.roll("3d6"),6),
                          INT=max(rlr.roll("3d6"),6), WIS=max(rlr.roll("3d6"),6), CHA=max(rlr.roll("3d6"),6))
-    
+
             below_nine_count = 0
             for k,v in attributes.items():
                 if (v < 9):
                     below_nine_count += 1
-    
-        return attributes       
+
+        return attributes
 
     def get_starting_gold(self):
         return 10*rlr.roll("3d6")
-            
+
     def get_to_hit_mod(self):
         fighter = self.c_class == "Fighter"
         if (self.STR < 5):
@@ -979,7 +979,7 @@ class Character(object):
         if (fighter and self.STR >= 13):
             return +1
         return 0
-    
+
     def get_dmg_mod(self):
         fighter = self.c_class == "Fighter"
         if (self.STR < 5):
@@ -991,7 +991,7 @@ class Character(object):
         if (fighter and self.STR == 16):
             return +1
         return 0
-    
+
     def get_open_doors(self):
         if (self.STR < 7):
             return 1
@@ -1004,7 +1004,7 @@ class Character(object):
         if (self.STR == 18):
             return 5
         return 0
-    
+
     def get_carry_mod(self):
         if (self.STR < 5):
             return -100
@@ -1023,7 +1023,7 @@ class Character(object):
         if (self.STR == 18):
             return 500
         return 0
-    
+
     def get_missile_to_hit_mod(self):
         fighter = self.c_class == "Fighter"
         if (self.DEX < 9):
@@ -1031,19 +1031,19 @@ class Character(object):
         if (fighter and self.DEX >= 13):
             return 1
         return 0
-    
+
     def get_ac_mod(self):
-        if (self.DEX < 9): 
+        if (self.DEX < 9):
             return -1
         if (self.DEX >= 13):
             return 1
         return 0
-    
+
     def __descr__(self):
         return str(self)
-    
+
     def __str__(self):
-        output = f'{self.name}\n' 
+        output = f'{self.name}\n'
         output += f'{self.alignment} {self.race} {self.c_class}\n'
         output += f'Experience Points: {self.xp} XP     Level 1\n\n'
         output += f'STR:{self.STR}   INT:{self.INT}   WIS:{self.WIS}   CON:{self.CON}   DEX:{self.DEX}   CHA:{self.CHA}\n\n'
@@ -1089,7 +1089,7 @@ class Character(object):
         output += f'Total Experience Bonus (Prime Attrs + WIS + CHA): {self.total_exp_bonus}%\n\n'
         output += f'Armor Permitted: {self.armor_permitted}\n'
         output += f'Shield Permitted: {self.shield_permitted}\n'
-        
+
         output += f'\nWealth:\n  {self.gold} gold pieces [{self.weight_gold} cns]\n  {self.silver} silver pieces [{self.weight_silver} cns]\n  {self.copper} copper pieces [{self.weight_copper} cns]\n'
         #print (self.equipment)
         output += f'\nArmor: {str(self.armor)}\n'
@@ -1097,7 +1097,7 @@ class Character(object):
         output += self.weapons.to_str(self)
         output += str(self.eq_list)
         output += f'\nWeight carried: {self.weight}\n'
-        output += f'Carrying Capacity: {self.carrying_capacity} / {self.carrying_capacity + 250} / {self.carrying_capacity + 750} / {self.carrying_capacity + 2250}\n' 
+        output += f'Carrying Capacity: {self.carrying_capacity} / {self.carrying_capacity + 250} / {self.carrying_capacity + 750} / {self.carrying_capacity + 2250}\n'
         output += f'Movement Rate: {self.mv_rate}\n\n'
         if (self.c_class == "Cleric"):
             output += f'Cleric Level 1 Spell Slots: {self.cl_spell_slots_lev1}\n\n'
@@ -1122,7 +1122,7 @@ class Character(object):
                 else:
                     output += "%\n"
         else:
-            output += "  None\n" 
+            output += "  None\n"
         output += "\n*** Class Abilities ***\n"
         for cabil in self.class_abilities:
             output += cabil
@@ -1160,7 +1160,7 @@ class Character(object):
             txt += "eyes before remembering to wash the deadly toxin from their hands; "
             txt += "Assassins are trained not to fall prey to such basic errors when using "
             txt += "poison. Assassins are not, however, trained at concocting poisons; most "
-            txt += "guilds employ an alchemist for such purposes.\n\n" 
+            txt += "guilds employ an alchemist for such purposes.\n\n"
             cabil.append(txt)
             txt = "THIEVING SKILL: Assassins have skills similar to those of Thieves, "
             txt += "but comparable to a Thief two levels lower than the Assassin character. "
@@ -1296,12 +1296,12 @@ class Character(object):
             cabil.append(txt)
             txt = "ASSESS: Thieves can attempt to evaluate the worth of any treasure they find.\n\n"
         return cabil
-    
-    
+
+
 def get_character():
     ch = Character()
     print(ch)
-    
+
 
 class CharGen:
     def __init__(self):
@@ -1319,7 +1319,7 @@ class CharGen:
             character = Character()
 
         return character
-    
+
     def get_alignment(self):
         roll = self.rlr.roll('1d6')
         if (roll > 3):
@@ -1327,7 +1327,7 @@ class CharGen:
         if (roll > 1):
             return "Neutral"
         return "Chaotic"
-    
+
     def get_trait(self):
         r = self.rlr.roll('1d100')
         if (r == 1):
@@ -1530,8 +1530,8 @@ class CharGen:
         	return "wisecracking"
         if (r == 100):
         	return "world-weary"
-        return ""            
-    
+        return ""
+
     def get_henchman(self, h_class="Torchbearer"):
         cost = 15
         wage = 1
@@ -1543,20 +1543,20 @@ class CharGen:
         INT = self.rlr.roll('3d6')
         WIS = self.rlr.roll('3d6')
         CHA = self.rlr.roll('3d6')
-        
+
         alignment = self.get_alignment()
-        
+
         to_hit = 0
         dmg = 0
         ac_mod = 0
         hp_mod = 0
         carry_cap = 75
-        
+
         if (CON < 9):
             hp_mod = -1
         elif (CON > 12):
             hp_mod = 1
-        
+
         if (STR < 5):
             to_hit = -2
             dmg = -1
@@ -1579,27 +1579,27 @@ class CharGen:
             carry_cap += 10
         elif (STR > 8):
             carry_cap += 5
-            
-        
+
+
         if (DEX < 9):
             ac_mod = -1
         elif (DEX > 12):
             ac_mod = 1
-        
+
         hp = self.rlr.roll(f'1d6+{hp_mod}')
         if (hp < 1):
             hp = 1
-            
+
         gender = "Male"
         if (self.rlr.roll('1d4') == 1):
             gender = "Female"
-            
+
         armor = "None"
         ac = 10 + ac_mod
         shield = "no shield"
         weapon = "club"
         weapon2 = ""
-       
+
         if (h_class == "Man-at-arms"):
             wage = 2
             if (self.rlr.roll('1d6') <= 2):
@@ -1610,7 +1610,7 @@ class CharGen:
                 shield = "shield"
                 ac += 1
                 cost += 15
-        
+
             roll = self.rlr.roll('1d6')
             if (roll == 1):
                 weapon = f"spear(1d6{dmg:+})"
@@ -1636,7 +1636,7 @@ class CharGen:
             if (self.rlr.roll('1d6')<=2):
                 weapon2 = f"dagger(1d4{dmg:+})"
                 cost += 2
-                
+
         occupation = ""
         trait = self.get_trait()
         roll = self.rlr.roll('1d20')
@@ -1662,7 +1662,7 @@ class CharGen:
             occupation = "outlaw"
         elif (roll == 20):
             occupation = "gambler"
-        
+
         output = f"{h_class}: {name}\n"
         output += f'Human, {gender}, {alignment}\n'
         output += f'STR:{STR} DEX:{DEX} CON:{CON} INT:{INT} WIS:{WIS} CHA:{CHA}\n'
@@ -1672,10 +1672,10 @@ class CharGen:
         output += f'Armor:{armor}/{shield}\n'
         output += f'Weapons:{weapon} {weapon2}\n'
         output += f'Cost:{cost}gp Upkeep:Rations+Lodgins Wage:{wage}gp/day\n'
-        return output    
+        return output
 
-    
-rlr = Roller()    
+
+rlr = Roller()
 char_str = str(CharGen().get_character("Any"))
 print(char_str)
 words = char_str.split()

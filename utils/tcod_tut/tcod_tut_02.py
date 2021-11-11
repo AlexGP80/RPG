@@ -6,12 +6,19 @@ FLAGS = tcod.context.SDL_WINDOW_RESIZABLE | tcod.context.SDL_WINDOW_MAXIMIZED
 
 def main() -> None:
     """Script entry point."""
+        # Load the font, a 32 by 8 tile font with libtcod's old character layout.
+    tileset = tcod.tileset.load_tilesheet(
+        "Gamo_14x14.png", 16, 16, tcod.tileset.CHARMAP_CP437,
+    )
     with tcod.context.new(  # New window with pixel resolution of width×height.
-        width=WIDTH, height=HEIGHT, sdl_window_flags=FLAGS
+        width=WIDTH, height=HEIGHT, sdl_window_flags=FLAGS, tileset=tileset
     ) as context:
         while True:
             console = context.new_console(order="F")
-            console.print(0, 0, "Hello World")
+            half_width = int(console.width / 2)
+            rest = console.width - (2 * half_width)
+            console.draw_frame(x=0, y=0, width=half_width+rest, height=console.height, decoration="╔═╗║ ║╚═╝", fg=tcod.light_grey)
+            console.draw_frame(x=half_width+rest, y=0, width=half_width, height=console.height, decoration="╔═╗║ ║╚═╝", fg=tcod.light_grey)
             context.present(console, integer_scaling=True)
 
             for event in tcod.event.wait():

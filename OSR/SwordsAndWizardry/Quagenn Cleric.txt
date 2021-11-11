@@ -1,0 +1,94 @@
+Quagenn
+Lawful Human Cleric
+Experience Points: 0 XP     Level 1
+
+STR:9   INT:10   WIS:12   CON:9   DEX:7   CHA:8
+
+STR
+  To-Hit Modifier: +0
+  Damage Modifier: +0
+  Open Doors: 2 in 6
+  Carry Modifier: +50
+
+INT
+  Maximum Additional Languages: 2
+  Maximum Spell Level: 5
+  Chance to Understand New Spell: 50%
+  Min/Max Number of Basic Spells Understandable per Level: 4/6
+
+WIS
+  Additional 1st level Cleric Spells: 0
+  Wisdom Experience Bonus: 0%
+
+CON
+  Hit Point Modifier: +0
+  Raise Dead Survival: 75%
+
+DEX
+  Missile To-Hit Modifier: -1
+  Armor Class Modifier: -1
+
+CHA
+  Maximum Number of Special Hirelings: 3
+  Charisma Experience Bonus: 0%
+
+
+Armor Class (AC): 7
+Hit Points: 6 / 6
+THAC0 (Melee): 19
+THAC0 (Missile): 20
+Weaponless Damage: 1
+
+Saving Throws: 
+    Death Rays and Poison: 11
+    Wands (all): 12
+    Turned to Stone: 14
+    Dragon's Breath: 16
+    Spells and Staffs: 15
+
+Prime Attribute(s): WIS 
+Prime Attribute(s) Experience Bonus: 0%
+Total Experience Bonus (Prime Attrs + WIS + CHA): 0%
+
+Armor Permitted: Any
+Shield Permitted: Yes
+
+Wealth:
+  37 gold pieces [37 cns]
+  5 silver pieces [5 cns]
+  0 copper pieces [0 cns]
+
+Armor: Ring Armor [400 cns]
+Shield: None [0 cns]
+Weapons:
+  1 Flail (two-handed) [100 cns]: THAC0 19, 1d8 damage.
+Equipment List:
+  1 Backpack (300 coin capacity) [20 cns]
+  1 Bedroll [50 cns]
+  5 Rations, dried (per day) [100 cns]
+  2 Waterskin [40 cns]
+  1 Flint & Steel [10 cns]
+  5 Torch [50 cns]
+  1 Holy Symbol, wooden [1 cns]
+  1 Pole (10 foot) [100 cns]
+  5 Candle [5 cns]
+
+Weight carried: 918
+Carrying Capacity: 800 / 1050 / 1550 / 3050
+Movement Rate: 9
+
+Cleric Level 1 Spell Slots: 0
+
+Spells Known:
+  None
+
+Thieving Skills:
+  None
+
+*** Class Abilities ***
+SPELL CASTING: Clerics cast “divine” spells from a specific list, with numbers as per the Cleric Advancement table. Clerics of specific deities might have different lists of available spells, designed by the Referee. Each day, the Cleric selects and prays for a particular set of spells, choosing any spells from the standard list. Once a spell is cast it cannot be cast again until the next day, unless the Cleric has prepared (prayed for) the spell more than once.
+
+BANISHING UNDEAD: Lawful Clerics can “turn” undead monsters (see “Turning the Undead” in the Combat Section), making them flee from the Cleric’s holiness. Whether Chaotic Clerics can affect undead at all is up to the Referee.
+
+SAVING THROW BONUS: Clerics gain a +2 bonus on saving throw rolls against being paralyzed or poisoned.
+
