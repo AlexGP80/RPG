@@ -1,0 +1,3 @@
+Alabarda,ab|Arco compuesto,ak|Arco corto,ac|Arco largo,al|Ballesta,ba|Bastón,bs|Boleadoras,bo|Cimitarra,ci|Daga,da|Espada ancha,ea|Espada corta,ec|Espadón,e2|Garrote,ga|Hacha de combate,hc|Hacha,ha|Honda,ho|Jabalina a 1 mano,j1|Jabalina a 2 manos,j2|Lanza a 1 mano,l1|Lanza a 2 manos,l2|Lanza de caballería,lc|Látigo,lt|Martillo de guerra,mg|Mayal,my|Maza de combate,mc|Maza,ma|Red,rd
+
+Alabarda|Arco compuesto|Arco corto|Arco largo|Ballesta|Bastón|Boleadoras|Cimitarra|Daga|Espada ancha|Espada corta|Espadón|Garrote|Hacha de combate|Hacha|Honda|Jabalina a 1 mano|Jabalina a 2 manos|Lanza a 1 mano|Lanza a 2 manos|Lanza de caballería|Látigo|Martillo de guerra|Mayal|Maza de combate|Maza|Red

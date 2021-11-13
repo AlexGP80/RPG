@@ -1,8 +1,8 @@
 from datetime import datetime
-import roller
+from roller import Roller
 
 class MatrixRoller(object):
-    rlr = roller.Roller()
+    rlr = Roller()
     cells = 1000
     visual_cells = 10
 

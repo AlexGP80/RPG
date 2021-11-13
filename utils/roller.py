@@ -47,11 +47,15 @@ class Roller(object):
             part_r_list = list()
             if ('d' in part):
                 num, dice = part.split('d')
+                if not num:
+                    num = 1
                 num = int(num)
                 mult = 1
                 if (num<0):
                     mult = -1
                     num = abs(num)
+                if not dice:
+                    dice = 6
                 dice = int(dice)
                 for i in range(num):
                     die_result = mult * random.randint(1, dice)
@@ -65,6 +69,6 @@ class Roller(object):
         self.roll_log.append(Roll(roll_str, result_list, result_total))
         return result_total
 
-r = Roller()
-print(r.roll("4d6+1"))
-print(str(r))
+# r = Roller()
+# print(r.roll("4d6+1"))
+# print(str(r))
