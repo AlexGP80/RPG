@@ -23,7 +23,11 @@ class ShuffleRoller(object):
             l.append(num)
         random.shuffle(l)
         for i in range(min_num, max_num):
-            result += f"{i-min_num+1:2}.{l[i-min_num]}\t\t"
+            result += f"{i-min_num+1:3}:{l[i-min_num]:3}"
+            if ( i%10 == 0):
+                result += "\n"
+            else:
+                result += "    "
         return result
 
 
