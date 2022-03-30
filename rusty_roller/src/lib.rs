@@ -2,6 +2,7 @@ use rand::Rng;
 use chrono::{DateTime, Local};
 use std::error::Error;
 use std::fmt;
+use regex::Regex;
 
 
 #[derive(Debug)]
@@ -55,6 +56,13 @@ impl Roller {
     pub fn roll(roll_str: &str) -> Result<Roll, RollError> {
         if roll_str.len() > 0 {
             //TODO: Check format of roll_str
+            // regex strExpr ("[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*");
+            let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
+            if re.is_match(roll_str) {
+                println!("roll_str ok");
+            } else {
+                println!("roll_str_error");
+            }
             //TODO: parse roll_str into a vector of unary rolls and operands
             //TODO: convert rolls to values
             Ok(Roll::new(roll_str, vec![], 0))
