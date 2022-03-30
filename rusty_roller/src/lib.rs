@@ -56,7 +56,6 @@ impl Roller {
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
         if roll_str.len() > 0 {
             //TODO: Check format of roll_str
-            // regex strExpr ("[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*");
             let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
             if re.is_match(roll_str) {
                 println!("roll_str ok");
