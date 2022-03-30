@@ -6,7 +6,7 @@ use regex::Regex;
 
 
 #[derive(Debug)]
-enum RollError {
+pub enum RollError {
     ParseRollStr{roll_str: String},
     EmptyRollStr,
 }
@@ -24,7 +24,7 @@ impl fmt::Display for RollError {
 
 impl Error for RollError {}
 
-struct Roll {
+pub struct Roll {
     datetime: String,
     description: String,
     result_list: Vec<i32>,
@@ -42,7 +42,7 @@ impl Roll {
     }
 }
 
-struct Roller {
+pub struct Roller {
     roll_list: Vec<Roll>,
 }
 
@@ -53,7 +53,7 @@ impl Roller {
         }
     }
 
-    pub fn roll(roll_str: &str) -> Result<Roll, RollError> {
+    pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
         if roll_str.len() > 0 {
             //TODO: Check format of roll_str
             // regex strExpr ("[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*");
