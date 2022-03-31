@@ -42,6 +42,10 @@ impl Roll {
             result_total,
         }
     }
+
+    pub fn result(&self) -> i32 {
+        self.result_total
+    }
 }
 
 pub struct Roller {
