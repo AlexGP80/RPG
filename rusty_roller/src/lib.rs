@@ -55,32 +55,42 @@ impl Roller {
         }
     }
 
+    fn get_operands(&self, roll_str: &str) -> Vec<String> {
+        let mut operands: Vec<String> = vec![];
+        let gross: Vec<&str> = roll_str.split('+').collect();
+        for item in gross {
+            let gross_item: Vec<&str> = item.split('-').collect();
+            let mut count = 0;
+            for final_item in gross_item {
+                if count == 0 {
+                    operands.push(format!("+{}", final_item));
+                } else {
+                    operands.push(format!("-{}", final_item));
+                }
+                count += 1;
+            }
+        }
+        operands
+    }
+
+    fn check_roll_format(&self, roll_str: &str) -> Result<(), RollError> {
+        //TODO: Check format of roll_str: add drop lower, keep higher
+        let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
+
+        if !re.is_match(roll_str) {
+            return Err(RollError::ParseRollStr{ roll_str: roll_str.to_string(), });
+        }
+        Ok(())
+    }
+
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
         //TODO: refactor, create smaller functions, call them from here
         if roll_str.len() > 0 {
-            //TODO: Check format of roll_str: add drop lower, keep higher
-            let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
-
-            if !re.is_match(roll_str) {
-                return Err(RollError::ParseRollStr{ roll_str: roll_str.to_string(), });
-            }
+            self.check_roll_format(roll_str)?;
+            let operands: Vec<String> = self.get_operands(roll_str);
 
             let mut result_total = 0;
 
-            let mut operands: Vec<String> = vec![];
-            let gross: Vec<&str> = roll_str.split('+').collect();
-            for item in gross {
-                let gross_item: Vec<&str> = item.split('-').collect();
-                let mut count = 0;
-                for final_item in gross_item {
-                    if count == 0 {
-                        operands.push(format!("+{}", final_item));
-                    } else {
-                        operands.push(format!("-{}", final_item));
-                    }
-                    count += 1;
-                }
-            }
             let mut roll_list = HashMap::<String, Vec<i32>>::new();
             for operand in operands {
                 if operand.contains("d") {
