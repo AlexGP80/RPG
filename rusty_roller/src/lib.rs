@@ -106,27 +106,25 @@ impl Roller {
                         // let num_dice: i32 = num_dice.parse::<i32>().unwrap(); //FIXME: unwrap
                         let mut result_list = vec![];
                         for _ in 0..num_dice {
-                            let result = rand::thread_rng().gen_range(1..(dice_faces+1));
-                            result_list.push(result);
-                            match sign {
-                                '+' => result_total += result,
-                                '-' => result_total -= result,
-                                _ => (), // FIXME: return appropiate error
+                            let mut result = rand::thread_rng().gen_range(1..(dice_faces+1));
+                            if sign == '-' {
+                                result *= -1;
                             }
+                            result_total += result;
+                            result_list.push(result);
                         }
                         roll_list.insert(operand.to_string(), result_list);
                     }
                 } else {
                     let sign = operand.chars().next().unwrap(); // FIXME: unwrap
-                    let value: i32 = operand[1..].parse::<i32>().unwrap(); //FIXME: unwrap
+                    let mut value: i32 = operand[1..].parse::<i32>().unwrap(); //FIXME: unwrap
                     let mut result_list = vec![];
+                    if sign == '-' {
+                        value *= -1;
+                    }
+                    result_total += value;
                     result_list.push(value);
                     roll_list.insert(operand.to_string(), result_list);
-                    match sign {
-                        '+' => result_total += value,
-                        '-' => result_total -= value,
-                        _ => (), // FIXME: return appropiate error
-                    }
                 }
             }
 
