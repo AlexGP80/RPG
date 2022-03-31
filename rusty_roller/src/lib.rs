@@ -1,5 +1,5 @@
 use rand::Rng;
-use chrono::{DateTime, Local};
+use chrono::Local;
 use std::error::Error;
 use std::fmt;
 use regex::Regex;
@@ -56,26 +56,17 @@ impl Roller {
     }
 
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
+        //TODO: refactor, create smaller functions, call them from here
         if roll_str.len() > 0 {
-            //TODO: Check format of roll_str
+            //TODO: Check format of roll_str: add drop lower, keep higher
             let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
 
-            //FIXME: delete println!s, check only for the error
-            if re.is_match(roll_str) {
-                println!("roll_str ok");
-            } else {
-                println!("roll_str_error");
+            if !re.is_match(roll_str) {
                 return Err(RollError::ParseRollStr{ roll_str: roll_str.to_string(), });
             }
 
             let mut result_total = 0;
 
-
-            // 1. split and collect by '+' to get the gross vector
-            // 2. traverse the gross vector and split/collect by '-'
-            //    (NOT)- Of the resulting vector, the first element goes to the adding vector
-            //     (NOT) - The rest of the elements go to the substracting vector
-            //FIXME: maybe it's better to use only a vector and split keeping the sign, so the order is maintained
             let mut operands: Vec<String> = vec![];
             let gross: Vec<&str> = roll_str.split('+').collect();
             for item in gross {
@@ -91,19 +82,14 @@ impl Roller {
                 }
             }
             let mut roll_list = HashMap::<String, Vec<i32>>::new();
-            //let secret_number = rand::thread_rng().gen_range(1..101);
             for operand in operands {
-                println!("Operand: {}", operand);
-                // let operand_str = operand.to_string;
                 if operand.contains("d") {
                     let parts: Vec<&str> = operand.split('d').collect();
                     if parts.len() == 2 {
-                        let mut num_dice = parts[0];
-                        // println("num_dice: {}", num_dice);
+                        let num_dice = parts[0];
                         let dice_faces: i32 = parts[1].parse::<i32>().unwrap(); //FIXME: unwrap
                         let sign = num_dice.chars().next().unwrap(); // FIXME: unwrap
                         let num_dice: i32 = num_dice[1..].parse::<i32>().unwrap(); //FIXME: unwrap
-                        // let num_dice: i32 = num_dice.parse::<i32>().unwrap(); //FIXME: unwrap
                         let mut result_list = vec![];
                         for _ in 0..num_dice {
                             let mut result = rand::thread_rng().gen_range(1..(dice_faces+1));

@@ -1,4 +1,4 @@
-use rusty_roller::{Roller, Roll, RollError};
+use rusty_roller::Roller;
 
 fn main() {
     let mut roller = Roller::new();
