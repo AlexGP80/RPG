@@ -85,7 +85,9 @@ impl Roller {
 
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
         //TODO: refactor, create smaller functions, call them from here
-        if roll_str.len() > 0 {
+        if roll_str.len() == 0 {
+            Err(RollError::EmptyRollStr)
+        } else {
             self.check_roll_format(roll_str)?;
             let operands: Vec<String> = self.get_operands(roll_str);
 
@@ -123,10 +125,7 @@ impl Roller {
                     roll_list.insert(operand.to_string(), result_list);
                 }
             }
-
             Ok(Roll::new(roll_str, roll_list, result_total))
-        } else {
-            Err(RollError::EmptyRollStr)
         }
     }
 }
