@@ -80,34 +80,53 @@ impl Roller {
             let gross: Vec<&str> = roll_str.split('+').collect();
             for item in gross {
                 let gross_item: Vec<&str> = item.split('-').collect();
-                let count = 0;
+                let mut count = 0;
                 for final_item in gross_item {
                     if count == 0 {
                         operands.push(format!("+{}", final_item));
                     } else {
                         operands.push(format!("-{}", final_item));
                     }
+                    count += 1;
                 }
             }
             let mut roll_list = HashMap::<String, Vec<i32>>::new();
             //let secret_number = rand::thread_rng().gen_range(1..101);
             for operand in operands {
-                let parts: Vec<&str> = operand.split('d').collect();
-                if parts.len() != 2 {
-                    () //FIXME: Return an appropiate Error
-                } else {
-                    //FIXME: get the sign
-                    let mut num_dice = parts[0];
-                    let dice_faces: i32 = parts[1].parse::<i32>().unwrap(); //FIXME: unwrap
-                    let ch = num_dice.chars().next().unwrap(); // FIXME: unwrap
-                    let num_dice: i32 = num_dice[1..].parse::<i32>().unwrap(); //FIXME: unwrap
-                    let mut result_list = vec![];
-                    for _ in 1..num_dice {
-                        let result = rand::thread_rng().gen_range(1..(dice_faces+1));
-                        result_list.push(result);
-                        result_total += result;
+                println!("Operand: {}", operand);
+                // let operand_str = operand.to_string;
+                if operand.contains("d") {
+                    let parts: Vec<&str> = operand.split('d').collect();
+                    if parts.len() == 2 {
+                        let mut num_dice = parts[0];
+                        // println("num_dice: {}", num_dice);
+                        let dice_faces: i32 = parts[1].parse::<i32>().unwrap(); //FIXME: unwrap
+                        let sign = num_dice.chars().next().unwrap(); // FIXME: unwrap
+                        let num_dice: i32 = num_dice[1..].parse::<i32>().unwrap(); //FIXME: unwrap
+                        // let num_dice: i32 = num_dice.parse::<i32>().unwrap(); //FIXME: unwrap
+                        let mut result_list = vec![];
+                        for _ in 0..num_dice {
+                            let result = rand::thread_rng().gen_range(1..(dice_faces+1));
+                            result_list.push(result);
+                            match sign {
+                                '+' => result_total += result,
+                                '-' => result_total -= result,
+                                _ => (), // FIXME: return appropiate error
+                            }
+                        }
+                        roll_list.insert(operand.to_string(), result_list);
                     }
-                    roll_list.insert(roll_str.to_string(), result_list);
+                } else {
+                    let sign = operand.chars().next().unwrap(); // FIXME: unwrap
+                    let value: i32 = operand[1..].parse::<i32>().unwrap(); //FIXME: unwrap
+                    let mut result_list = vec![];
+                    result_list.push(value);
+                    roll_list.insert(operand.to_string(), result_list);
+                    match sign {
+                        '+' => result_total += value,
+                        '-' => result_total -= value,
+                        _ => (), // FIXME: return appropiate error
+                    }
                 }
             }
 
