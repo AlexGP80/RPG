@@ -143,3 +143,14 @@ r = Roller()
 print(r.lowest("1d20+1d4"))
 print(r.highest("1d20+1d4"))
 print(str(r))
+
+scores = []
+
+for i in range(0,101):
+    scores.append(0)
+
+for i in range(100000):
+    scores[r.roll("1d100")] += 1
+
+for i in range(len(scores)):
+    print(f"{i}: {scores[i]}")
