@@ -116,21 +116,24 @@ impl Roller {
         let mut result_list = vec![];
         let parts: Vec<&str> = operand.split('d').collect();
         if parts.len() != 2 {
-            return Err(RollError::ParseRollStr(parts[1].to_string())); // FIXME: error message
+            return Err(RollError::ParseRollStr(format!("operand has more than 1 d: {}",operand.to_string())));
         } else {
             let num_dice = parts[0];
             let dice_faces = match parts[1].parse::<i32>() {
                 Ok(dice_faces) => dice_faces,
-                Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                Err(_) => return Err(RollError::ParseRollStr(format!("unable to parse int die's\
+                    number of faces {} for operand {}", parts[1].to_string(), operand.to_string()))),
             };
             let sign_mult = match num_dice.chars().next() {
                 Some('+') => 1,
                 Some('-') => -1,
-                _ => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                _ => return Err(RollError::ParseRollStr(format!("incorrect sign (1st char) for \
+                                                            operand {}", operand.to_string()))),
             };
-            let num_dice: i32 = match num_dice[1..].parse::<i32>() {
+            let num_dice: i32 = match num_dice[1..].parse::<i32>() { 
                 Ok(num_dice) => num_dice,
-                Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                Err(_) => return Err(RollError::ParseRollStr(format!("unable to parse int \
+                    number of dices {} for operand {}", num_dice.to_string(), operand.to_string()))),
             };
             for _ in 0..num_dice {
                 let result = sign_mult * rand::thread_rng().gen_range(1..(dice_faces+1));
