@@ -26,6 +26,12 @@ impl fmt::Display for RollError {
 
 impl Error for RollError {}
 
+// TODO: Consider the lazy creation of each kind of roll needed (1d100, 3d6, 2d4+3, etc.) with
+//        an associated RollResult struct storing the results of that kind of roll.
+//        So the regex could be used in the creation of the Roll. Once created, you can "roll"
+//        that kind of roll as many times as needed without having to create it each time, hence
+//        without the need to use the regex to check the roll_str
+
 #[derive(Debug)]
 pub struct Roll {
     datetime: String,

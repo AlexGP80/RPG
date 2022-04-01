@@ -10,7 +10,7 @@ fn main() {
         Err(e) => println!("ERROR: {:?}", e),
     }
 
-    // check_randomness();
+    check_randomness();
 
 }
 
