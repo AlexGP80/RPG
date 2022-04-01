@@ -1,4 +1,6 @@
 use rusty_roller::Roller;
+use std::time::{Duration, Instant};
+
 
 fn main() {
     let mut roller = Roller::new();
@@ -8,12 +10,15 @@ fn main() {
         Err(e) => println!("ERROR: {:?}", e),
     }
 
+    check_randomness();
+
 }
 
 fn check_randomness() {
-    //FIXME: SLOOOOOOOOOOOW, I have to do some research
+    let start = Instant::now();
+    // It was the regex checking that was causing the huge bottleneck
     const DIE_SIDES: usize = 100;
-    const NUM_ROLLS: i32 = 10_000; // why less? :P
+    const NUM_ROLLS: i32 = 100_000;
 
     let mut roller = Roller::new();
     // I'm going to ignore pos 0 for simplicity sake
@@ -34,4 +39,5 @@ fn check_randomness() {
 
     println!("scores: {:?}", scores);
     //TODO: some statistics (typical deviation, max deviation, median, mode, etc)
+    println!("DEBUG: check_randomness elapsed time: {:?}", Instant::now().duration_since(start));
 }

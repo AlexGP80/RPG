@@ -4,6 +4,7 @@ use std::error::Error;
 use std::fmt;
 use regex::Regex;
 use std::collections::HashMap;
+// use std::time::{Duration, Instant};
 
 
 #[derive(Debug)]
@@ -60,6 +61,7 @@ impl Roller {
     }
 
     fn get_operands(&self, roll_str: &str) -> Vec<String> {
+        // let start = Instant::now();
         let mut operands: Vec<String> = vec![];
         let gross: Vec<&str> = roll_str.split('+').collect();
         for item in gross {
@@ -74,16 +76,24 @@ impl Roller {
                 count += 1;
             }
         }
+        // println!("DEBUG: get_operands elapsed time: {:?}", Instant::now().duration_since(start));
         operands
     }
 
+
+    // INFO: it was this function that was affecting performance
+    // TODO: don't use this function, integrate the checking in the roll error processing
+    //          returning meaningful errors when it encounters an error
     fn check_roll_format(&self, roll_str: &str) -> Result<(), RollError> {
+        // let start = Instant::now();
+
         //TODO: Check format of roll_str: add drop lower, keep higher
         let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
 
         if !re.is_match(roll_str) {
             return Err(RollError::ParseRollStr{ roll_str: roll_str.to_string(), });
         }
+        // println!("DEBUG: check_roll_format elapsed time: {:?}", Instant::now().duration_since(start));
         Ok(())
     }
 
@@ -92,8 +102,9 @@ impl Roller {
         if roll_str.len() == 0 {
             Err(RollError::EmptyRollStr)
         } else {
-            self.check_roll_format(roll_str)?;
+            // self.check_roll_format(roll_str)?;
             let operands: Vec<String> = self.get_operands(roll_str);
+            // let start = Instant::now();
 
             let mut result_total = 0;
 
@@ -129,6 +140,7 @@ impl Roller {
                     roll_list.insert(operand.to_string(), result_list);
                 }
             }
+            // println!("DEBUG: roll (after checking format and getting operands) elapsed time: {:?}", Instant::now().duration_since(start));
             Ok(Roll::new(roll_str, roll_list, result_total))
         }
     }
