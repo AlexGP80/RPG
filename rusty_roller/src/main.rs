@@ -1,5 +1,5 @@
 use rusty_roller::Roller;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 
 fn main() {
