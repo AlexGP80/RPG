@@ -9,7 +9,7 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub enum RollError {
-    ParseRollStr{roll_str: String},
+    ParseRollStr(String),
     EmptyRollStr,
 }
 
@@ -19,7 +19,7 @@ impl fmt::Display for RollError {
         use RollError::*;
         match self {
             EmptyRollStr => write!(f, "empty input"),
-            ParseRollStr{roll_str} => write!(f, "error parsing the roll str: {}", roll_str),
+            ParseRollStr(roll_str) => write!(f, "PARSE_ROLL_STR_ERROR: {}", roll_str),
         }
     }
 }
@@ -91,7 +91,7 @@ impl Roller {
         let re = Regex::new(r"^[1-9][0-9]*(d[1-9][0-9]*)?([\\+\\-][1-9][0-9]*(d[1-9][0-9]*)?)*$").unwrap();
 
         if !re.is_match(roll_str) {
-            return Err(RollError::ParseRollStr{ roll_str: roll_str.to_string(), });
+            return Err(RollError::ParseRollStr(roll_str.to_string()));
         }
         // println!("DEBUG: check_roll_format elapsed time: {:?}", Instant::now().duration_since(start));
         Ok(())
@@ -114,27 +114,47 @@ impl Roller {
                     let parts: Vec<&str> = operand.split('d').collect();
                     if parts.len() == 2 {
                         let num_dice = parts[0];
-                        let dice_faces: i32 = parts[1].parse::<i32>().unwrap(); //FIXME: unwrap
-                        let sign = num_dice.chars().next().unwrap(); // FIXME: unwrap
-                        let num_dice: i32 = num_dice[1..].parse::<i32>().unwrap(); //FIXME: unwrap
+                        let dice_faces = match parts[1].parse::<i32>() {
+                            Ok(dice_faces) => dice_faces,
+                            Err(e) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                        };
+                        let sign_mult = match num_dice.chars().next() {
+                            Some('+') => 1,
+                            Some('-') => -1,
+                            _ => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                        };
+                        let num_dice: i32 = match num_dice[1..].parse::<i32>() {
+                            Ok(num_dice) => num_dice,
+                            Err(e) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+                        };
                         let mut result_list = vec![];
                         for _ in 0..num_dice {
-                            let mut result = rand::thread_rng().gen_range(1..(dice_faces+1));
-                            if sign == '-' {
-                                result *= -1;
-                            }
+                            let mut result = sign_mult * rand::thread_rng().gen_range(1..(dice_faces+1));
+
                             result_total += result;
                             result_list.push(result);
                         }
                         roll_list.insert(operand.to_string(), result_list);
                     }
                 } else {
-                    let sign = operand.chars().next().unwrap(); // FIXME: unwrap
-                    let mut value: i32 = operand[1..].parse::<i32>().unwrap(); //FIXME: unwrap
+                    let mut sign_mult = match operand.chars().next() {
+                        Some('+') => 1,
+                        Some('-') => -1,
+                        _ => {
+                            return Err(RollError::ParseRollStr(format!("Unable to get the string \
+                                of the operand {}",operand.to_string())));
+                        },
+                    };
+                    // let sign = operand.chars().next().unwrap(); // FIXME: unwrap
+                    let value: i32 = match operand[1..].parse::<i32>() {
+                        Ok(value) => value,
+                        Err(e) => return Err(RollError::ParseRollStr(operand[1..].to_string())), // FIXME: error message
+                    };
+                    let value = sign_mult * value;
                     let mut result_list = vec![];
-                    if sign == '-' {
-                        value *= -1;
-                    }
+                    // if sign == '-' {
+                    //     value *= -1;
+                    // }
                     result_total += value;
                     result_list.push(value);
                     roll_list.insert(operand.to_string(), result_list);

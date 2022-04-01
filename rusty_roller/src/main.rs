@@ -4,13 +4,13 @@ use std::time::{Duration, Instant};
 
 fn main() {
     let mut roller = Roller::new();
-    let roll = roller.roll("1d6+3+2d4-17+6d6");
+    let roll = roller.roll("3d6+3-2d4");
     match roll {
         Ok(roll) => println!("{:?}", roll),
         Err(e) => println!("ERROR: {:?}", e),
     }
 
-    check_randomness();
+    // check_randomness();
 
 }
 
