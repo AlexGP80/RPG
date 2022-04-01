@@ -61,7 +61,6 @@ impl Roller {
     }
 
     fn get_operands(&self, roll_str: &str) -> Vec<String> {
-        // let start = Instant::now();
         let mut operands: Vec<String> = vec![];
         let gross: Vec<&str> = roll_str.split('+').collect();
         for item in gross {
@@ -76,7 +75,6 @@ impl Roller {
                 count += 1;
             }
         }
-        // println!("DEBUG: get_operands elapsed time: {:?}", Instant::now().duration_since(start));
         operands
     }
 
@@ -113,68 +111,79 @@ impl Roller {
         Ok(())
     }
 
+    fn process_dice_operand(&mut self, operand: &str, roll_list: &mut HashMap::<String, Vec<i32>>) -> Result<i32, RollError> {
+        let mut result_total = 0;
+        let mut result_list = vec![];
+        let parts: Vec<&str> = operand.split('d').collect();
+        if parts.len() != 2 {
+            return Err(RollError::ParseRollStr(parts[1].to_string())); // FIXME: error message
+        } else {
+            let num_dice = parts[0];
+            let dice_faces = match parts[1].parse::<i32>() {
+                Ok(dice_faces) => dice_faces,
+                Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+            };
+            let sign_mult = match num_dice.chars().next() {
+                Some('+') => 1,
+                Some('-') => -1,
+                _ => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+            };
+            let num_dice: i32 = match num_dice[1..].parse::<i32>() {
+                Ok(num_dice) => num_dice,
+                Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
+            };
+            for _ in 0..num_dice {
+                let result = sign_mult * rand::thread_rng().gen_range(1..(dice_faces+1));
+
+                result_total += result;
+                result_list.push(result);
+            }
+        }
+        roll_list.insert(operand.to_string(), result_list);
+        Ok(result_total)
+    }
+
+    fn process_number_operand(&mut self, operand: &str, roll_list: &mut HashMap::<String, Vec<i32>>) -> Result<i32, RollError> {
+        let sign_mult = match operand.chars().next() {
+            Some('+') => 1,
+            Some('-') => -1,
+            _ => {
+                return Err(RollError::ParseRollStr(format!("Unable to get the string \
+                    of the operand {}",operand.to_string())));
+            },
+        };
+        let value: i32 = match operand[1..].parse::<i32>() {
+            Ok(value) => value,
+            Err(_) => return Err(RollError::ParseRollStr(operand[1..].to_string())), // FIXME: error message
+        };
+        let value = sign_mult * value;
+        let mut result_list = vec![];
+        result_list.push(value);
+        roll_list.insert(operand.to_string(), result_list);
+        Ok(value)
+    }
+
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
-        //TODO: refactor, create smaller functions, call them from here
         if roll_str.len() == 0 {
             Err(RollError::EmptyRollStr)
         } else {
-
             self.check_roll_str(roll_str)?;
-
             let operands: Vec<String> = self.get_operands(roll_str);
-            // let start = Instant::now();
-
             let mut result_total = 0;
-
             let mut roll_list = HashMap::<String, Vec<i32>>::new();
             for operand in operands {
                 if operand.contains("d") {
-                    let parts: Vec<&str> = operand.split('d').collect();
-                    if parts.len() == 2 {
-                        let num_dice = parts[0];
-                        let dice_faces = match parts[1].parse::<i32>() {
-                            Ok(dice_faces) => dice_faces,
-                            Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
-                        };
-                        let sign_mult = match num_dice.chars().next() {
-                            Some('+') => 1,
-                            Some('-') => -1,
-                            _ => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
-                        };
-                        let num_dice: i32 = match num_dice[1..].parse::<i32>() {
-                            Ok(num_dice) => num_dice,
-                            Err(_) => return Err(RollError::ParseRollStr(parts[1].to_string())), // FIXME: error message
-                        };
-                        let mut result_list = vec![];
-                        for _ in 0..num_dice {
-                            let result = sign_mult * rand::thread_rng().gen_range(1..(dice_faces+1));
-
-                            result_total += result;
-                            result_list.push(result);
-                        }
-                        roll_list.insert(operand.to_string(), result_list);
+                    match self.process_dice_operand(&operand, &mut roll_list) {
+                        Ok(result) => result_total += result,
+                        Err(e) => return Err(e),
                     }
                 } else {
-                    let sign_mult = match operand.chars().next() {
-                        Some('+') => 1,
-                        Some('-') => -1,
-                        _ => {
-                            return Err(RollError::ParseRollStr(format!("Unable to get the string \
-                                of the operand {}",operand.to_string())));
-                        },
-                    };
-                    let value: i32 = match operand[1..].parse::<i32>() {
-                        Ok(value) => value,
-                        Err(_) => return Err(RollError::ParseRollStr(operand[1..].to_string())), // FIXME: error message
-                    };
-                    let value = sign_mult * value;
-                    let mut result_list = vec![];
-                    result_total += value;
-                    result_list.push(value);
-                    roll_list.insert(operand.to_string(), result_list);
+                    match self.process_number_operand(&operand, &mut roll_list) {
+                        Ok(result) => result_total += result,
+                        Err(e) => return Err(e),
+                    }
                 }
             }
-            // println!("DEBUG: roll (after checking format and getting operands) elapsed time: {:?}", Instant::now().duration_since(start));
             Ok(Roll::new(roll_str, roll_list, result_total))
         }
     }
