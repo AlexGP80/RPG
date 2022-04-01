@@ -14,6 +14,9 @@ class ShuffleRoller(object):
     def __init__(self, dice_expr):
         self.dice_expr = dice_expr
 
+    # FIXME: this roller doesn't work for more than 1 dice
+    # 3d6 has different probabilities for 3 or 18 than for 9 or 12
+    # (bell curve)
     def get_roller(self):
         result = ""
         min_num = self.rlr.lowest(self.dice_expr)
