@@ -10,7 +10,7 @@ pub enum NumBit {
 }
 
 impl NumBit {
-    pub fn num_bit(&self) -> i32 {
+    pub fn pos(&self) -> i32 {
         match self {
             NumBit::B0 => 0,
             NumBit::B1 => 1,
@@ -39,8 +39,8 @@ impl RustyByte {
         self.bits
     }
 
-    pub fn get_bit(&self, num_bit: NumBit) -> u8 {
-        0
+    pub fn get_bit(&self, bit_number: NumBit) -> u8 {
+        (self.bits & (1 << bit_number.pos())) >> bit_number.pos()
     }
 }
 
@@ -51,14 +51,14 @@ mod tests {
 
     #[test]
     fn test_num_bits() {
-        assert_eq!(NumBit::B0.num_bit(), 0);
-        assert_eq!(NumBit::B1.num_bit(), 1);
-        assert_eq!(NumBit::B2.num_bit(), 2);
-        assert_eq!(NumBit::B3.num_bit(), 3);
-        assert_eq!(NumBit::B4.num_bit(), 4);
-        assert_eq!(NumBit::B5.num_bit(), 5);
-        assert_eq!(NumBit::B6.num_bit(), 6);
-        assert_eq!(NumBit::B7.num_bit(), 7);
+        assert_eq!(NumBit::B0.pos(), 0);
+        assert_eq!(NumBit::B1.pos(), 1);
+        assert_eq!(NumBit::B2.pos(), 2);
+        assert_eq!(NumBit::B3.pos(), 3);
+        assert_eq!(NumBit::B4.pos(), 4);
+        assert_eq!(NumBit::B5.pos(), 5);
+        assert_eq!(NumBit::B6.pos(), 6);
+        assert_eq!(NumBit::B7.pos(), 7);
     }
 
     #[test]
@@ -78,5 +78,32 @@ mod tests {
         assert_eq!(my_byte.get_bit(NumBit::B5), 0);
         assert_eq!(my_byte.get_bit(NumBit::B6), 0);
         assert_eq!(my_byte.get_bit(NumBit::B7), 0);
+        let my_byte = RustyByte::new(10);
+        assert_eq!(my_byte.get_bit(NumBit::B0), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B1), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B2), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B3), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B4), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B5), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B6), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B7), 0);
+        let my_byte = RustyByte::new(63);
+        assert_eq!(my_byte.get_bit(NumBit::B0), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B1), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B2), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B3), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B4), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B5), 1);
+        assert_eq!(my_byte.get_bit(NumBit::B6), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B7), 0);
+        let my_byte = RustyByte::new(128);
+        assert_eq!(my_byte.get_bit(NumBit::B0), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B1), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B2), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B3), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B4), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B5), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B6), 0);
+        assert_eq!(my_byte.get_bit(NumBit::B7), 1);
     }
 }
