@@ -130,7 +130,7 @@ impl Roller {
                 _ => return Err(RollError::ParseRollStr(format!("incorrect sign (1st char) for \
                                                             operand {}", operand.to_string()))),
             };
-            let num_dice: i32 = match num_dice[1..].parse::<i32>() { 
+            let num_dice: i32 = match num_dice[1..].parse::<i32>() {
                 Ok(num_dice) => num_dice,
                 Err(_) => return Err(RollError::ParseRollStr(format!("unable to parse int \
                     number of dices {} for operand {}", num_dice.to_string(), operand.to_string()))),
@@ -166,6 +166,14 @@ impl Roller {
         Ok(value)
     }
 
+    fn process_operand(&mut self, operand: &str, roll_list: &mut HashMap::<String, Vec<i32>>) -> Result<i32, RollError> {
+        if operand.contains("d") {
+            self.process_dice_operand(&operand, roll_list)
+        } else {
+            self.process_number_operand(&operand, roll_list)
+        }
+    }
+
     pub fn roll(&mut self, roll_str: &str) -> Result<Roll, RollError> {
         if roll_str.len() == 0 {
             Err(RollError::EmptyRollStr)
@@ -175,16 +183,9 @@ impl Roller {
             let mut result_total = 0;
             let mut roll_list = HashMap::<String, Vec<i32>>::new();
             for operand in operands {
-                if operand.contains("d") {
-                    match self.process_dice_operand(&operand, &mut roll_list) {
-                        Ok(result) => result_total += result,
-                        Err(e) => return Err(e),
-                    }
-                } else {
-                    match self.process_number_operand(&operand, &mut roll_list) {
-                        Ok(result) => result_total += result,
-                        Err(e) => return Err(e),
-                    }
+                match self.process_operand(&operand, &mut roll_list) {
+                    Ok(result) => result_total += result,
+                    Err(e) => return Err(e),
                 }
             }
             Ok(Roll::new(roll_str, roll_list, result_total))
