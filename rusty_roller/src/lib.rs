@@ -151,13 +151,14 @@ impl Roller {
             Some('+') => 1,
             Some('-') => -1,
             _ => {
-                return Err(RollError::ParseRollStr(format!("Unable to get the string \
+                return Err(RollError::ParseRollStr(format!("Unable to obtain the sign \
                     of the operand {}",operand.to_string())));
             },
         };
         let value: i32 = match operand[1..].parse::<i32>() {
             Ok(value) => value,
-            Err(_) => return Err(RollError::ParseRollStr(operand[1..].to_string())), // FIXME: error message
+            Err(_) => return Err(RollError::ParseRollStr(format!("Unable to obtain the value of \
+                    the operand {}", operand[1..].to_string()))),
         };
         let value = sign_mult * value;
         let mut result_list = vec![];
