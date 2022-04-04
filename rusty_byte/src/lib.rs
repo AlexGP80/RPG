@@ -1,3 +1,6 @@
+use std::time::Instant;
+
+
 pub enum Bit {
     Zero,
     One,
@@ -94,6 +97,7 @@ impl RustyByte {
         }
     }
 
+    // TODO: Try to improve this to do it at once (get rid of the for loop)?
     pub fn get_bits(&self, bit_from: NumBit, bit_to: NumBit) -> u8 {
         let mut mask: u8 = 0;
         for i in bit_from.pos()..=bit_to.pos() {
@@ -102,6 +106,7 @@ impl RustyByte {
         (self.bits & mask) >> bit_from.pos()
     }
 
+    // FIXME: Improve performance
     pub fn set_bits(&mut self, bit_from: NumBit, bit_to: NumBit, value: u8) {
         let mask = RustyByte::new(value << bit_from.pos());
         for i in bit_from.pos()..=bit_to.pos() {
@@ -113,7 +118,8 @@ impl RustyByte {
         }
     }
 
-    //TODO: Select slices, overload index operator (brackets)...
+    //TODO: overload index operator (brackets)...
+    // TODO: Check exec time for each method to see if there are bottlenecks
 }
 
 #[cfg(test)]
@@ -233,5 +239,77 @@ mod tests {
         let mut my_byte = RustyByte::new(0_u8);
         my_byte.set_bits(NumBit::POS0, NumBit::POS2, 0b_101_u8);
         assert_eq!(my_byte.value(), 5_u8);
+    }
+
+    #[test]
+    fn test_get_bit_elapsed_time() {
+        let mut my_byte = RustyByte::new(0xc3_u8);
+
+        let start = Instant::now();
+        for _ in 1..1_000_000 {
+            for i in 0..=7 {
+                if let Some(num_bit) = NumBit::get(i) {
+                    let _ = my_byte.get_bit(num_bit);
+                }
+            }
+        }
+        println!("DEBUG: get_bit elapsed time: {:?}", Instant::now().duration_since(start));
+    }
+
+    #[test]
+    fn test_get_bits_elapsed_time() {
+        let mut my_byte = RustyByte::new(0xc3_u8);
+
+        let start = Instant::now();
+
+        for _ in 1..1_000_000 {
+            for i in 0..=4 {
+                if let Some(from_bit) = NumBit::get(i) {
+                    if let Some(to_bit) = NumBit::get(i+3) {
+                        let _ = my_byte.get_bits(from_bit, to_bit);
+                    }
+                }
+            }
+        }
+        println!("DEBUG: get_bit elapsed time: {:?}", Instant::now().duration_since(start));
+    }
+
+    #[test]
+    fn test_set_bit_elapsed_time() {
+        let mut my_byte = RustyByte::new(0_u8);
+
+        let start = Instant::now();
+
+        for _ in 1..1_000_000 {
+            for i in 0..=7 {
+                if let Some(num_bit) = NumBit::get(i) {
+                    let value = match i%3 {
+                        1 => B1,
+                        _ => B0,
+                    };
+                    let _ = my_byte.set_bit(num_bit, value);
+                }
+            }
+        }
+        println!("DEBUG: set_bit elapsed time: {:?}", Instant::now().duration_since(start));
+    }
+
+    #[test]
+    fn test_set_bits_elapsed_time() {
+        let mut my_byte = RustyByte::new(0_u8);
+
+        let start = Instant::now();
+
+        for _ in 1..1_000_000 {
+            for i in 0..=4 {
+                if let Some(from_bit) = NumBit::get(i) {
+                    if let Some(to_bit) = NumBit::get(i+3) {
+                        let value = i%8;
+                        let _ = my_byte.set_bits(from_bit, to_bit, value);
+                    }
+                }
+            }
+        }
+        println!("DEBUG: get_bit elapsed time: {:?}", Instant::now().duration_since(start));
     }
 }
