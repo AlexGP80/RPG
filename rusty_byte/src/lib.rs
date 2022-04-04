@@ -57,19 +57,29 @@ impl RustyByte {
     }
 
     pub fn get_bit(&self, bit_number: NumBit) -> u8 {
-        (self.bits & (1 << bit_number.pos())) >> bit_number.pos()
+        (self.bits & (1_u8 << bit_number.pos())) >> bit_number.pos()
     }
 
     pub fn set_bit(&mut self, bit_number: NumBit, value: Bit) {
         self.bits = match value {
             Bit::Zero => {
-                self.bits & !(1 << bit_number.pos())
+                self.bits & !(1_u8 << bit_number.pos())
             },
             Bit::One => {
-                self.bits | (1 << bit_number.pos())
+                self.bits | (1_u8 << bit_number.pos())
             }
         }
     }
+
+    pub fn get_bits(&self, bit_from: NumBit, bit_to: NumBit) -> u8 {
+        let mut mask: u8 = 0;
+        for i in bit_from.pos()..bit_to.pos()+1 {
+            mask += 1_u8 << i;
+        }
+        (self.bits & mask) >> bit_from.pos()
+    }
+
+    //TODO: Select slices, overload index operator (brackets)...
 }
 
 #[cfg(test)]
@@ -173,5 +183,14 @@ mod tests {
         my_byte.set_bit(NumBit::POS6, B1);
         assert_eq!(my_byte.get_bit(NumBit::POS6), 1);
         assert_eq!(my_byte.value(), 192);
+    }
+
+    #[test]
+    fn test_get_bits() {
+        let mut my_byte = RustyByte::new(0b_0011_1100_u8);
+        assert_eq!(my_byte.get_bits(NumBit::POS0, NumBit::POS2), 0b_100_u8);
+        assert_eq!(my_byte.get_bits(NumBit::POS0, NumBit::POS3), 12_u8); //0b_1100
+        assert_eq!(my_byte.get_bits(NumBit::POS2, NumBit::POS3), 3_u8);
+        assert_eq!(my_byte.get_bits(NumBit::POS2, NumBit::POS5), 0xf_u8);
     }
 }
