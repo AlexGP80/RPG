@@ -93,7 +93,7 @@ impl RustyByte {
     }
 
     pub fn get_bits(&self, bit_from: NumBit, bit_to: NumBit) -> u8 {
-        let mask: u8 = (2_u8.pow( (bit_to.pos() - bit_from.pos() + 1).into()) - 1) << bit_from.pos();
+        let mask: u8 = ((1_u8 << (bit_to.pos() - bit_from.pos() + 1)) - 1) << bit_from.pos();
         (self.bits & mask) >> bit_from.pos()
     }
 
