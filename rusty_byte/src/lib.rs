@@ -106,20 +106,12 @@ impl RustyByte {
         (self.bits & mask) >> bit_from.pos()
     }
 
-    // FIXME: Improve performance
     pub fn set_bits(&mut self, bit_from: NumBit, bit_to: NumBit, value: u8) {
-        let mask = RustyByte::new(value << bit_from.pos());
-        for i in bit_from.pos()..=bit_to.pos() {
-            if let Some(num_bit) = NumBit::get(i) {
-                if let Some(bit_value) = Bit::bit(mask.get_bit(num_bit.clone())) {
-                    self.set_bit(num_bit, bit_value);
-                }
-            }
-        }
+        let value = value << bit_from.pos();
+        self.bits = (self.bits | value) & value;
     }
 
     //TODO: overload index operator (brackets)...
-    // TODO: Check exec time for each method to see if there are bottlenecks
 }
 
 #[cfg(test)]
