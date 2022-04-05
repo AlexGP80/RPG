@@ -7,7 +7,7 @@ pub enum Bit {
 }
 
 impl Bit {
-    pub fn value(&self) -> i32 {
+    pub fn value(&self) -> u8 {
         match self {
             Bit::Zero => 0,
             Bit::One => 1,
@@ -87,14 +87,8 @@ impl RustyByte {
     }
 
     pub fn set_bit(&mut self, bit_number: NumBit, value: Bit) {
-        self.bits = match value {
-            Bit::Zero => {
-                self.bits & !(1_u8 << bit_number.pos())
-            },
-            Bit::One => {
-                self.bits | (1_u8 << bit_number.pos())
-            }
-        }
+        let value = value.value() << bit_number.pos();
+        self.bits = (self.bits | value) & value;
     }
 
     // TODO: Try to improve this to do it at once (get rid of the for loop)?
@@ -231,6 +225,15 @@ mod tests {
         let mut my_byte = RustyByte::new(0_u8);
         my_byte.set_bits(NumBit::POS0, NumBit::POS2, 0b_101_u8);
         assert_eq!(my_byte.value(), 5_u8);
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits(NumBit::POS4, NumBit::POS6, 0b_101_u8);
+        assert_eq!(my_byte.value(), 0b_0101_0000_u8);
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits(NumBit::POS1, NumBit::POS5, 0b_11111_u8);
+        assert_eq!(my_byte.value(), 0b_0011_1110_u8);
+        let mut my_byte = RustyByte::new(255_u8);
+        my_byte.set_bits(NumBit::POS1, NumBit::POS5, 0b_00000_u8);
+        assert_eq!(my_byte.value(), 0b_1100_0001_u8);
     }
 
     #[test]
@@ -263,7 +266,7 @@ mod tests {
                 }
             }
         }
-        println!("DEBUG: get_bit elapsed time: {:?}", Instant::now().duration_since(start));
+        println!("DEBUG: get_bits elapsed time: {:?}", Instant::now().duration_since(start));
     }
 
     #[test]
@@ -302,6 +305,6 @@ mod tests {
                 }
             }
         }
-        println!("DEBUG: get_bit elapsed time: {:?}", Instant::now().duration_since(start));
+        println!("DEBUG: set_bits elapsed time: {:?}", Instant::now().duration_since(start));
     }
 }
