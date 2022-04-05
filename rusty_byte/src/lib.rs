@@ -1,6 +1,5 @@
 use std::time::Instant;
 
-
 pub enum Bit {
     Zero,
     One,
@@ -98,6 +97,13 @@ impl RustyByte {
     }
 
     pub fn set_bits(&mut self, bit_from: NumBit, bit_to: NumBit, value: u8) {
+        let and_mask: u8 = (0xff << (bit_to.pos() - bit_from.pos() + 1)) + value;
+        let and_mask = and_mask.rotate_left(bit_from.pos().into());
+        let value = value << bit_from.pos();
+        self.bits = (self.bits | value) & and_mask;
+    }
+
+    pub fn set_bits_ref(&mut self, bit_from: &NumBit, bit_to: &NumBit, value: u8) {
         let and_mask: u8 = (0xff << (bit_to.pos() - bit_from.pos() + 1)) + value;
         let and_mask = and_mask.rotate_left(bit_from.pos().into());
         let value = value << bit_from.pos();
@@ -236,6 +242,29 @@ mod tests {
     }
 
     #[test]
+    fn test_set_bits_ref() {
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits_ref(&NumBit::POS0, &NumBit::POS2, 0b_101_u8);
+        assert_eq!(my_byte.value(), 5_u8);
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits_ref(&NumBit::POS4, &NumBit::POS6, 0b_101_u8);
+        assert_eq!(my_byte.value(), 0b_0101_0000_u8);
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits_ref(&NumBit::POS1, &NumBit::POS5, 0b_11111_u8);
+        assert_eq!(my_byte.value(), 0b_0011_1110_u8);
+        let mut my_byte = RustyByte::new(255_u8);
+        my_byte.set_bits_ref(&NumBit::POS1, &NumBit::POS5, 0b_00000_u8);
+        assert_eq!(my_byte.value(), 0b_1100_0001_u8);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_set_bits_overflow() {
+        let mut my_byte = RustyByte::new(0_u8);
+        my_byte.set_bits(NumBit::POS1, NumBit::POS2, 0b_111_u8); // this should panic (3 bits into 2)
+    }
+
+    #[test]
     fn test_get_bit_elapsed_time() {
         let mut my_byte = RustyByte::new(0xc3_u8);
 
@@ -305,5 +334,24 @@ mod tests {
             }
         }
         println!("DEBUG: set_bits elapsed time: {:?}", Instant::now().duration_since(start));
+    }
+
+    #[test]
+    fn test_set_bits_ref_elapsed_time() {
+        let mut my_byte = RustyByte::new(0_u8);
+
+        let start = Instant::now();
+
+        for _ in 1..1_000_000 {
+            for i in 0..=4 {
+                if let Some(from_bit) = NumBit::get(i) {
+                    if let Some(to_bit) = NumBit::get(i+3) {
+                        let value = i%8;
+                        let _ = my_byte.set_bits_ref(&from_bit, &to_bit, value);
+                    }
+                }
+            }
+        }
+        println!("DEBUG: set_bits_ref elapsed time: {:?}", Instant::now().duration_since(start));
     }
 }
