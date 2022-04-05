@@ -87,8 +87,9 @@ impl RustyByte {
     }
 
     pub fn set_bit(&mut self, bit_number: NumBit, value: Bit) {
+        let and_mask = ((0xff << 1) + value.value()).rotate_left(bit_number.pos().into());
         let value = value.value() << bit_number.pos();
-        self.bits = (self.bits | value) & value;
+        self.bits = (self.bits | value) & and_mask;
     }
 
     // TODO: Try to improve this to do it at once (get rid of the for loop)?
@@ -101,8 +102,10 @@ impl RustyByte {
     }
 
     pub fn set_bits(&mut self, bit_from: NumBit, bit_to: NumBit, value: u8) {
+        let and_mask: u8 = (0xff << (bit_to.pos() - bit_from.pos() + 1)) + value;
+        let and_mask = and_mask.rotate_left(bit_from.pos().into());
         let value = value << bit_from.pos();
-        self.bits = (self.bits | value) & value;
+        self.bits = (self.bits | value) & and_mask;
     }
 
     //TODO: overload index operator (brackets)...
