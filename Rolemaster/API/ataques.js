@@ -1,4 +1,4 @@
-const { evaluate, boolean } = require("mathjs");
+const { evaluate } = require("mathjs");
 var fs = require("fs");
 
 let dados = {
