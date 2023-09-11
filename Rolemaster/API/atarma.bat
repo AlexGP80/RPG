@@ -4,6 +4,17 @@ chcp 1252>nul
 cls
 echo ===== ATAQUE CON ARMAS =====
 
+:: MENSAJE
+echo.
+echo Introduzca un mensaje descriptivo de la acción.
+set /P "Mensaje=Mensaje: "
+
+if defined Mensaje (
+  echo. >> MERP.log
+  echo. >> MERP.log
+  echo %Mensaje% >> MERP.log
+)
+
 :: ARMADURA
 echo.
 set "Armadura="
@@ -66,7 +77,7 @@ set /P "Modificadores=Modificadores: "
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
 if defined var (
    echo Modificadores incorrectos: %Modificadores%
-   echo Sólo se permiten valores números y los caracteres "+" y "-" para los modificadores.
+   echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
    exit
 )
@@ -74,6 +85,8 @@ if defined var (
 :: RESULTADOS
 echo.
 node ataques "!atarma %Armadura%%Arma%/%Tirada%+%Modificadores%"
+node ataques "!atarma %Armadura%%Arma%/%Tirada%+%Modificadores%" >> MERP.log
+
 
 
 chcp %cp%>nul

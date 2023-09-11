@@ -4,6 +4,17 @@ chcp 1252>nul
 cls
 echo ===== CRÍTICOS =====
 
+:: MENSAJE
+echo.
+echo Introduzca un mensaje descriptivo de la acción.
+set /P "Mensaje=Mensaje: "
+
+if defined Mensaje (
+  echo. >> MERP.log
+  echo. >> MERP.log
+  echo %Mensaje% >> MERP.log
+)
+
 :: GRAVEDAD
 echo.
 set "Gravedad="
@@ -66,6 +77,7 @@ if defined var (
 :: RESULTADOS
 echo.
 node crits "!crit %Gravedad%%Tipo%%Tirada%
+node crits "!crit %Gravedad%%Tipo%%Tirada%" >> MERP.log
 
 
 chcp %cp%>nul
