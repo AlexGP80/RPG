@@ -1,6 +1,8 @@
 const { evaluate } = require("mathjs");
 var fs = require("fs");
 
+const maxTirada = 150;
+
 let dados = {
   tirardados(numdados, carasdado) {
     let resultado = 0;
@@ -1965,7 +1967,9 @@ function ataques(msg) {
     let tiradaSM = parseInt(msg.substring(iniTirada, pos));
     let modificador = parseInt(evaluate(msg.substring(pos)));
     let tiradaModificada = tiradaSM + modificador;
-
+    if (tiradaModificada > maxTirada) {
+      tiradaModificada = maxTirada;
+    }
     let armadura = msg.substring(1, 3);
     let tipoArmadura = "";
     if (armadura == "SA") tipoArmadura = "Sin Armadura";
@@ -2209,7 +2213,6 @@ function ataques(msg) {
         "ERROR - main !atarma: no se encuentra " + tipoAtaque + " en " + msg
       );
 
-    let maxTirada = 150;
     let iniTirada = pos + 1;
     let posMinus = msg.indexOf("-");
     let posPlus = msg.indexOf("+");
@@ -2235,6 +2238,9 @@ function ataques(msg) {
     // npm install mathjs
     let modificador = parseInt(evaluate(msg.substring(pos)));
     let tiradaModificada = tiradaSM + modificador;
+    if (tiradaModificada > maxTirada) {
+      tiradaModificada = maxTirada;
+    }
 
     let armadura = msg.substring(0, 2);
     let tipoArmadura = "";
