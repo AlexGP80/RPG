@@ -11,13 +11,14 @@ echo Tipos de pifia:
 echo    E=Empuñadas, P=Proyectil, S=Sortilegios, M=Maniobras de movimiento
 set /P "Tipo=Seleccione el tipo de pifia (E,P,S,M): "
 
-echo %Tipo%
 
 if %Tipo%==E goto :empuñadas
 if %Tipo%==P goto :proyectil
 if %Tipo%==S goto :sortilegios
 if %Tipo%==M goto :maniobras
 
+echo Tipo de pifia incorrecto: %Tipo%
+exit
 
 
 :empuñadas
@@ -56,7 +57,7 @@ goto :tirada
 echo.
 SET "Arma="
 echo Arma: 
-echo     1:Honda   2:Arco cort   3:Arco compuesto   4:Arco largo   5:Ballesta
+echo     1:Honda   2:Arco corto   3:Arco compuesto   4:Arco largo   5:Ballesta
 set /P "Arma=Seleccione el tipo de arma (1,2,3,4,5): "
 
 if %Arma%==1 (
