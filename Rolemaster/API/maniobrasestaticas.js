@@ -146,7 +146,7 @@ function maniobraestatica(msg) {
     //sendChat(msg.who, "Crítico " + gravedad + " de " + tipoManiobra + ":");
     // let resultado = "&{template:default}{{name=Crítico " + gravedad + " (" + strModificador + ") de " + tipoManiobra + "}}{{Tirada[" + indice + "]="+tabla.getCritico(indice)+"}}";
     let resultado = tabla.getResultado(indice);
-    let chorrazo = "\n\n===== Maniobra estática " + tipoManiobra + " =====\n";
+    let chorrazo = "\n===== Maniobra estática " + tipoManiobra + " =====\n";
     chorrazo += " - Tirada: " + tirada + strModificador + " = " + indice + "\n";
     chorrazo += " - " + resultado + "\n\n";
     return chorrazo;
