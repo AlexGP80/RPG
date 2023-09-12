@@ -588,7 +588,7 @@ function crits(msg) {
     tirada = parseInt(msg.substring(2), 10);
     indice = tirada + modificador;
     let strModificador = "";
-    if (modificador > 0) strModificador = "+" + modificador;
+    if (modificador >= 0) strModificador = "+" + modificador;
     else strModificador = modificador;
     let resultado =
       "\n===== Crítico " + gravedad + " de " + tipoCritico + " =====\n";
