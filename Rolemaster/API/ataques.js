@@ -1539,8 +1539,10 @@ function ataques(msg) {
       else objetivo -= 1;
     }
     chorrazo +=
-      "\n===== Tirada de resistencia =====\n" +
-      " - Nivel Atacante: " +
+      "\n===== Tirada de resistencia =====" +
+      "\n - " +
+      getTimestamp() +
+      "\n - Nivel Atacante: " +
       nivAt +
       "\n - Nivel Defensor: " +
       nivDef +
