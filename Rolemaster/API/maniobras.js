@@ -441,6 +441,6 @@ function getTimestamp() {
 
 let text = maniobras(process.argv[2]);
 console.log(text);
-fs.appendFile("man_mov.log", text, "latin1", function (err) {
+fs.appendFile("man_mov.log", text, function (err) {
   if (err) throw err;
 });

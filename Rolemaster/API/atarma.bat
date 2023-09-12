@@ -1,12 +1,12 @@
 @echo off
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
-chcp 1252>nul
+chcp 65001>nul
 cls
 echo ===== ATAQUE CON ARMAS =====
 
 :: MENSAJE
 echo.
-echo Introduzca un mensaje descriptivo de la acción.
+echo Introduzca un mensaje descriptivo de la acciÃ³n.
 set /P "Mensaje=Mensaje: "
 
 if defined Mensaje (
@@ -63,7 +63,7 @@ set /P "Tirada=Tirada: "
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
    echo Valor de tirada incorrecto: %Tirada%
-   echo Sólo se permiten valores numéricos para la tirada.
+   echo SÃ³lo se permiten valores numÃ©ricos para la tirada.
    echo.
    exit
 )
@@ -77,7 +77,7 @@ set /P "Modificadores=Modificadores: "
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
 if defined var (
    echo Modificadores incorrectos: %Modificadores%
-   echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
+   echo SÃ³lo se permiten valores numÃ©ricos y los caracteres "+" y "-" para los modificadores.
    echo.
    exit
 )

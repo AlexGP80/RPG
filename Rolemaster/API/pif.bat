@@ -1,6 +1,6 @@
 @echo off
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
-chcp 1252>nul
+chcp 65001>nul
 cls
 echo ===== PIFIAS =====
 
@@ -8,11 +8,11 @@ echo ===== PIFIAS =====
 echo.
 set "Tipo="
 echo Tipos de pifia: 
-echo    E=Empuñadas, P=Proyectil, S=Sortilegios, M=Maniobras de movimiento
+echo    E=EmpuÃ±adas, P=Proyectil, S=Sortilegios, M=Maniobras de movimiento
 set /P "Tipo=Seleccione el tipo de pifia (E,P,S,M): "
 
 
-if %Tipo%==E goto :empuñadas
+if %Tipo%==E goto :empuÃ±adas
 if %Tipo%==P goto :proyectil
 if %Tipo%==S goto :sortilegios
 if %Tipo%==M goto :maniobras
@@ -21,7 +21,7 @@ echo Tipo de pifia incorrecto: %Tipo%
 exit
 
 
-:empuñadas
+:empuÃ±adas
 echo.
 SET "Arma="
 echo Tipo de arma: 
@@ -115,8 +115,8 @@ goto :tirada
 echo.
 SET "Dificultad="
 echo Dificultad de la maniobra: 
-echo    1:Rutina   2:Fácil   3:Poca dificultad   4:Dificultad media   5:Difícil
-echo    6:Muy difícil   7:Extremadamente difícil   8:Locura completa   9:Absurdo
+echo    1:Rutina   2:FÃ¡cil   3:Poca dificultad   4:Dificultad media   5:DifÃ­cil
+echo    6:Muy difÃ­cil   7:Extremadamente difÃ­cil   8:Locura completa   9:Absurdo
 set /P "Dificultad=Seleccione la dificultad (1,2,3,4,5,6,7,8,9): "
 
 if %Dificultad%==1 (
@@ -165,7 +165,7 @@ set /P "Tirada=Tirada: "
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
   echo Valor de tirada incorrecto: %Tirada%
-  echo Sólo se permiten valores numéricos para la tirada.
+  echo SÃ³lo se permiten valores numÃ©ricos para la tirada.
   echo.
   exit
 )

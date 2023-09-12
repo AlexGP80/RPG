@@ -664,6 +664,6 @@ function getTimestamp() {
 
 let text = crits(process.argv[2]);
 console.log(text);
-fs.appendFile("crits.log", text, "latin1", function (err) {
+fs.appendFile("crits.log", text, function (err) {
   if (err) throw err;
 });

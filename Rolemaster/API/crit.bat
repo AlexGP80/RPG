@@ -1,12 +1,12 @@
 @echo off
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
-chcp 1252>nul
+chcp 65001>nul
 cls
-echo ===== CRÕTICOS =====
+echo ===== CR√çTICOS =====
 
 :: MENSAJE
 echo.
-echo Introduzca un mensaje descriptivo de la acciÛn.
+echo Introduzca un mensaje descriptivo de la acci√≥n.
 set /P "Mensaje=Mensaje: "
 
 if defined Mensaje (
@@ -18,7 +18,7 @@ if defined Mensaje (
 :: GRAVEDAD
 echo.
 set "Gravedad="
-set /P "Gravedad=Seleccione la gravedad del crÌtico (T, A, B, C, D, E): "
+set /P "Gravedad=Seleccione la gravedad del cr√≠tico (T, A, B, C, D, E): "
 
 if not %Gravedad%==T (
 if not %Gravedad%==A (
@@ -26,21 +26,21 @@ if not %Gravedad%==B (
 IF NOT %Gravedad%==C (
 IF NOT %Gravedad%==D (
 if not %Gravedad%==E (
-  echo Gravedad de crÌtico incorrecta: %Gravedad%
+  echo Gravedad de cr√≠tico incorrecta: %Gravedad%
   echo.
   exit
 ))))))
 
 :: echo La gravedad seleccionada es %Gravedad%
 
-:: TIPO DE CRÕTICO
+:: TIPO DE CR√çTICO
 echo.
 set "Tipo="
-echo Tipo de crÌtico: 
-echo    K:Aplastamiento   S:Tajo   P:PerforaciÛn   U:Desequilibrio   G:Presa
-echo    C:Calor   F:FrÌo   E:Electricidad   I:Impacto   L: Grandes Criaturas
+echo Tipo de cr√≠tico: 
+echo    K:Aplastamiento   S:Tajo   P:Perforaci√≥n   U:Desequilibrio   G:Presa
+echo    C:Calor   F:Fr√≠o   E:Electricidad   I:Impacto   L: Grandes Criaturas
 echo    X: Sortilegios contra Grandes Criaturas
-set /P "Tipo=Seleccione el tipo de crÌtico: "
+set /P "Tipo=Seleccione el tipo de cr√≠tico: "
 
 if not %Tipo%==K (
 if not %Tipo%==S (
@@ -53,12 +53,12 @@ if not %Tipo%==E (
 if not %Tipo%==I (
 if not %Tipo%==L (
 if not %Tipo%==X (
-  echo El tipo de crÌtico %Tipo% no existe.
+  echo El tipo de cr√≠tico %Tipo% no existe.
   echo.
   exit
 )))))))))))
 
-:: echo El tipo de crÌtico seleccionado es %Tipo%
+:: echo El tipo de cr√≠tico seleccionado es %Tipo%
 
 :: TIRADA
 echo.
@@ -68,7 +68,7 @@ set /P "Tirada=Tirada: "
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
    echo Valor de tirada incorrecto: %Tirada%
-   echo SÛlo se permiten valores numÈricos para la tirada.
+   echo S√≥lo se permiten valores num√©ricos para la tirada.
    echo.
    exit
 )

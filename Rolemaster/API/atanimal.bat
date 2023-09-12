@@ -1,12 +1,12 @@
 @echo off
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
-chcp 1252>nul
+chcp 65001>nul
 cls
 echo ===== ATAQUE SIN ARMAS =====
 
 :: MENSAJE
 echo.
-echo Introduzca un mensaje descriptivo de la acción.
+echo Introduzca un mensaje descriptivo de la acciÃ³n.
 set /P "Mensaje=Mensaje: "
 
 if defined Mensaje (
@@ -32,19 +32,19 @@ if not %Armadura%==CO (
 
 :: echo La armadura seleccionada es %ARMADURA%
 
-:: TAMAÑO
+:: TAMAÃ‘O
 echo.
 set "Tam="
-echo Seleccione el tamaño del atacante
-echo    D:Diminuto   P:Pequeño   M:Mediano   G:Grande   E:Enorme
-set /P "Tam=Seleccione el tamaño (D, P, M, G, E): "
+echo Seleccione el tamaÃ±o del atacante
+echo    D:Diminuto   P:PequeÃ±o   M:Mediano   G:Grande   E:Enorme
+set /P "Tam=Seleccione el tamaÃ±o (D, P, M, G, E): "
 
 if not %Tam%==D (
 if not %Tam%==P (
 IF NOT %Tam%==M (
 IF NOT %Tam%==G (
 if not %Tam%==E (
-  echo Tamaño no válido: %Tam%
+  echo TamaÃ±o no vÃ¡lido: %Tam%
   echo.
   exit
 )))))
@@ -54,9 +54,9 @@ if not %Tam%==E (
 echo.
 set "Tipo="
 echo Seleccione el tipo de ataque:
-echo    pi:Pico  mo:Mordisco  ga:Garra/Zarpa  cu:Cuerno  co:Colmillo  ag:Aguijón
+echo    pi:Pico  mo:Mordisco  ga:Garra/Zarpa  cu:Cuerno  co:Colmillo  ag:AguijÃ³n
 echo    apr:Apresar/Fagocitar  em:Embestida  to:Topetazo  di:Diminutos
-echo    ps:Pisotón  ca:Caída  ap:Aplastamiento  pu:Puño/Patada  lu:Lucha libre
+echo    ps:PisotÃ³n  ca:CaÃ­da  ap:Aplastamiento  pu:PuÃ±o/Patada  lu:Lucha libre
 set /P "Tipo=: "
 
 if not %Tipo%==pi (if not %Tipo%==mo (if not %Tipo%==ga (if not %Tipo%==cu (
@@ -79,7 +79,7 @@ set /P "Tirada=Tirada: "
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
    echo Valor de tirada incorrecto: %Tirada%
-   echo Sólo se permiten valores numéricos para la tirada.
+   echo SÃ³lo se permiten valores numÃ©ricos para la tirada.
    echo.
    exit
 )
@@ -93,7 +93,7 @@ set /P "Modificadores=Modificadores: "
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
 if defined var (
    echo Modificadores incorrectos: %Modificadores%
-   echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
+   echo SÃ³lo se permiten valores numÃ©ricos y los caracteres "+" y "-" para los modificadores.
    echo.
    exit
 )

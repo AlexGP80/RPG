@@ -2302,6 +2302,6 @@ function getTimestamp() {
 
 let text = ataques(process.argv[2]);
 console.log(text);
-fs.appendFile("ataques.log", text, "latin1", function (err) {
+fs.appendFile("ataques.log", text, function (err) {
   if (err) throw err;
 });
