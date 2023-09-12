@@ -41,7 +41,7 @@ exit
 :dif
 echo.
 set "Dificultad="
-echo Seleccione la dificultad de la maniobra de percepción / rastrear
+echo Seleccione la dificultad de la maniobra de influencia / interacción
 echo   1:Rutina  2:Fácil  3:Escasa Dificultad  4:Dificultad media  5:Difícil
 echo   6:Muy difícil  7:Extremadamente difícil  8:Locura completa  9:Absurda
 set /P "Dificultad=Seleccione (1-9): "
@@ -91,7 +91,7 @@ exit
 :bonif
 echo.
 set "BonifME="
-echo Introduzca el valor del Bonificador de Percepción/Rastrear aplicable
+echo Introduzca el valor del Bonificador de maniobra aplicable
 echo     (signo + 2 dígitos, ejemplos: +20, -10, -05, +00)
 set /P "BonifME=Bonificador: "
 
