@@ -1,4 +1,4 @@
-const { evaluate } = require("mathjs");
+const { evaluate, mod } = require("mathjs");
 var fs = require("fs");
 
 const maxTirada = 150;
@@ -1497,40 +1497,76 @@ let tablaSortilegiosBase = {
 function ataques(msg) {
   let chorrazo = "";
   // node ataques "!atq eaSA100"
-  // node ataques "!ttr nivAt/divDef"
+  // node ataques "!ttr nivAt/divDef.tirada:modificadores
 
   if (msg.indexOf("!ttr ") !== -1) {
     // !ttr nivAt/nivDef
+    // !ttr nivAt/divDef.tirada:modificadores
     msg = msg.replace("!ttr ", "");
     let pos = msg.indexOf("/");
     if (pos < 0) {
       console.log("ERROR - main !atanim: no se encuentra / en " + msg);
       return;
     }
+    let posDot = msg.indexOf(".");
     let nivAt = parseInt(msg.substring(0, pos));
     let nivDef = parseInt(msg.substring(pos + 1));
-    let resultado = 50;
+    let tirada = null;
+    let modificadores = null;
+    if (posDot >= 0) {
+      nivDef = parseInt(msg.substring(pos + 1, posDot));
+      let posColon = msg.indexOf(":");
+      if (posColon < 0) {
+        tirada = parseInt(msg.substring(posDot + 1));
+        modificadores = 0;
+      } else {
+        tirada = parseInt(msg.substring(posDot + 1, posColon));
+        modificadores = evaluate(msg.substring(posColon + 1));
+      }
+    }
+    let objetivo = 50;
     let i = 0;
     for (i = 1; i <= nivAt; ++i) {
-      if (i < 6) resultado += 5;
-      else if (i < 11) resultado += 3;
-      else if (i < 16) resultado += 2;
-      else resultado += 1;
+      if (i < 6) objetivo += 5;
+      else if (i < 11) objetivo += 3;
+      else if (i < 16) objetivo += 2;
+      else objetivo += 1;
     }
     for (i = 1; i <= nivDef; ++i) {
-      if (i < 6) resultado -= 5;
-      else if (i < 11) resultado -= 3;
-      else if (i < 16) resultado -= 2;
-      else resultado -= 1;
+      if (i < 6) objetivo -= 5;
+      else if (i < 11) objetivo -= 3;
+      else if (i < 16) objetivo -= 2;
+      else objetivo -= 1;
     }
     chorrazo +=
-      "Nivel Atacante = " +
+      "\n===== Tirada de resistencia =====\n" +
+      " - Nivel Atacante: " +
       nivAt +
-      "\nNivel Defensor = " +
+      "\n - Nivel Defensor: " +
       nivDef +
-      "\nResultado = " +
-      resultado +
-      "\n";
+      "\n - Objetivo: " +
+      objetivo;
+
+    if (tirada !== null) {
+      let resultado = "fallo";
+      let tiradaModificada = tirada + modificadores;
+      if (tiradaModificada >= objetivo) {
+        resultado = "éxito";
+      }
+
+      chorrazo +=
+        "\n - Tirada: " +
+        tirada +
+        (modificadores >= 0 ? "+" : "") +
+        modificadores +
+        " = " +
+        tiradaModificada +
+        " (" +
+        resultado +
+        ")";
+    }
+    chorrazo += "\n\n";
+    return chorrazo;
   } else if (msg.indexOf("!atq ") !== -1) {
     // !atq eaSA100
 
