@@ -1269,7 +1269,6 @@ let tablaBola = {
   cmSM: ["F", "", "18D", "21E"],
   coSM: ["F", "", "19D", "22E"],
   getResultado(roll, armadura) {
-    console.log(roll);
     let tabla = null;
     if (armadura == "SA") tabla = this.sa;
     else if (armadura == "CU") tabla = this.cu;
@@ -1452,7 +1451,6 @@ let tablaSortilegiosBase = {
   cmSM: ["F", "", "-65", "-90"],
   coSM: ["F", "", "-65", "-90"],
   getResultado(roll, armadura) {
-    console.log(roll);
     let tabla = null;
     if (armadura == "SA") tabla = this.sa;
     else if (armadura == "CU") tabla = this.cu;
@@ -1569,124 +1567,25 @@ function ataques(msg) {
     }
     chorrazo += "\n\n";
     return chorrazo;
-  } else if (msg.indexOf("!atq ") !== -1) {
-    // !atq eaSA100
-
-    msg = msg.replace("!atq ", "");
-    let tablaDesc = ""; //De filo, contundentes, etc.
-    let tablaAtaque = null; //tablaFilo, tablaContundentes, etc.
-    let tirada = 0;
-    let resultado = "";
-    let indice = 0;
-    if (msg.substring(0, 2) == "ea") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Espada ancha";
-    } else if (msg.substring(0, 2) == "da") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Daga";
-    } else if (msg.substring(0, 2) == "ha") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Hacha";
-    } else if (msg.substring(0, 2) == "ci") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Cimitarra";
-    } else if (msg.substring(0, 2) == "ec") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Espada corta";
-    } else if (msg.substring(0, 2) == "lt") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Látigo";
-    } else if (msg.substring(0, 2) == "ga") {
-      tablaDesc = "Contundentes";
-      tablaAtaque = tablaContundentes;
-      arma = "Garrote";
-    } else if (msg.substring(0, 2) == "ma") {
-      tablaDesc = "Contundentes";
-      tablaAtaque = tablaContundentes;
-      arma = "Maza";
-    } else if (msg.substring(0, 2) == "mc") {
-      tablaDesc = "Contundentes";
-      tablaAtaque = tablaContundentes;
-      arma = "Maza de combate";
-    } else if (msg.substring(0, 2) == "rd") {
-      tablaDesc = "Agarre y desequilibrio";
-      tablaAtaque = tablaAgarrarDesequilibrar;
-      arma = "Red";
-    } else if (msg.substring(0, 2) == "mg") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tablaContundentes;
-      arma = "Martillo de guerra";
-    } else if (msg.substring(0, 2) == "j1") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Jabalina a 1 mano";
-    } else if (msg.substring(0, 2) == "j2") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Jabalina a 2 manos";
-    } else if (msg.substring(0, 2) == "l1") {
-      tablaDesc = "De filo";
-      tablaAtaque = tablaFilo;
-      arma = "Lanza a 1 mano";
-    } else if (msg.substring(0, 2) == "l2") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Lanza a 2 manos";
-    } else if (msg.substring(0, 2) == "lc") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Lanza de caballería";
-    } else if (msg.substring(0, 2) == "ab") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Alabarda";
-    } else if (msg.substring(0, 2) == "hc") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Hacha de combate";
-    } else if (msg.substring(0, 2) == "my") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Mayal";
-    } else if (msg.substring(0, 2) == "bs") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Bastón";
-    } else if (msg.substring(0, 2) == "e2") {
-      tablaDesc = "A dos manos";
-      tablaAtaque = tabla2Manos;
-      arma = "Espadón";
-    } else if (msg.substring(0, 2) == "bo") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Boleadoras";
-    } else if (msg.substring(0, 2) == "ak") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Arco compuesto";
-    } else if (msg.substring(0, 2) == "ac") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Arco corto";
-    } else if (msg.substring(0, 2) == "al") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Arco largo";
-    } else if (msg.substring(0, 2) == "ba") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Ballesta";
-    } else if (msg.substring(0, 2) == "ho") {
-      tablaDesc = "Proyectil";
-      tablaAtaque = tablaProyectiles;
-      arma = "Honda";
-    } else return;
+  } else if (msg.indexOf("!bola ") !== -1) {
+    // !bola FUSA100+100-30+80
+    // !bola FRCE88+33-15+45
+    msg = msg.replace("!bola ", "");
+    let tipoBola = msg.substring(0, 2);
+    let tipoBolaStr = "Bola de ";
+    let critico = "";
+    if (tipoBola == "FU") {
+      tipoBolaStr += "fuego";
+      critico = "Calor";
+    } else if (tipoBola == "FR") {
+      tipoBolaStr += "frío";
+      critico = "Frío";
+    } else {
+      console.log(
+        "ERROR - ataques !bola. Tipo de bola incorrecto: " + tipoBola
+      );
+      exit;
+    }
     let armadura = msg.substring(2, 4);
     let tipoArmadura = "";
     if (armadura == "SA") tipoArmadura = "Sin Armadura";
@@ -1695,67 +1594,50 @@ function ataques(msg) {
     else if (armadura == "CM") tipoArmadura = "Cota de Malla";
     else if (armadura == "CO") tipoArmadura = "Coraza";
     else {
-      console.log("ERROR - main !atq: armadura == " + armadura);
-      return;
-    }
-    tirada = parseInt(msg.substring(4), 10);
-    // log(msg.substring(2));
-    // log(indice);
-    //sendChat(msg.who, "Crítico " + gravedad + " de " + tipoCritico + ":");
-    chorrazo +=
-      "/w GM &{template:ataque}{{tabla=" +
-      tablaDesc +
-      "}}{{arma=" +
-      arma +
-      "}}{{armadura=" +
-      tipoArmadura +
-      "}}{{tirada=" +
-      tirada +
-      "}}{{resultado=" +
-      tablaAtaque.getResultado(tirada, armadura) +
-      "}}{{personaje=}}";
-    //resultado = tabla.getCritico(indice);
-    // log(resultado);
-  } else if (msg.indexOf("!bola ") !== -1) {
-    // !bola SA100+100
-    msg = msg.replace("!bola ", "");
-    let armadura = msg.substring(0, 2);
-    let tipoArmadura = "";
-    if (armadura == "SA") tipoArmadura = "Sin Armadura";
-    else if (armadura == "CU") tipoArmadura = "Cuero";
-    else if (armadura == "CE") tipoArmadura = "Cuero Endurecido";
-    else if (armadura == "CM") tipoArmadura = "Cota de Malla";
-    else if (armadura == "CO") tipoArmadura = "Coraza";
-    else {
       console.log("ERROR - main !bola: armadura == " + armadura);
-      return;
+      exit;
     }
-    let pos = msg.lastIndexOf("-");
-    if (pos < 0) pos = msg.lastIndexOf("+");
+
+    let iniTirada = 4;
+
+    let posMinus = msg.indexOf("-");
+    let posPlus = msg.indexOf("+");
+
+    if (posMinus < 0 && posPlus < 0) {
+      pos = -1;
+    } else if (posMinus < 0 && posPlus >= 0) {
+      pos = posPlus;
+    } else if (posPlus < 0 && posMinus >= 0) {
+      pos = posMinus;
+    } else {
+      pos = Math.min(posPlus, posMinus);
+    }
+
     if (pos < 0) {
-      console.log("ERROR - main !atarma: no se encuentra +/- en " + msg);
+      console.log("ERROR - ataques !bola: no se encuentra +/- en " + msg);
       return;
     }
-    let tiradaSM = parseInt(msg.substring(2, pos));
-    let modificador = parseInt(msg.substring(pos));
+
+    let tiradaSM = parseInt(msg.substring(iniTirada, pos));
+    let modificador = evaluate(msg.substring(pos));
+    let tiradaModificada = tiradaSM + modificador;
     let modStr = (modificador > 0 ? "+" : "") + modificador.toString();
-    console.log(armadura);
-    console.log(tiradaSM);
-    console.log(modificador);
+
     let resultadoAtq = tablaBola.getResultadoSM(tiradaSM, armadura);
     let tiradaStr = tiradaSM.toString() + "SM";
     if (resultadoAtq == "") {
-      resultadoAtq = tablaBola.getResultado(tiradaSM + modificador, armadura);
-      tiradaStr = (tiradaSM + modificador).toString();
+      resultadoAtq = tablaBola.getResultado(tiradaModificada, armadura);
+      tiradaStr = "" + tiradaSM + modStr + " = " + tiradaModificada;
     }
+
     chorrazo +=
-      "/w GM &{template:ataque}{{tabla=Sortilegios de Bola}}{{arma=Bola de Fuego/Frío}}{{armadura=" +
-      tipoArmadura +
-      "}}{{tirada=" +
-      tiradaStr +
-      "}}{{resultado=" +
-      resultadoAtq +
-      "}}{{personaje=}}";
+      "\n===== Ataque de " + tipoBolaStr + " vs " + tipoArmadura + " =====\n";
+    chorrazo += " - " + getTimestamp() + "\n";
+    chorrazo += " - " + "Tirada: " + tiradaStr + "\n";
+    chorrazo += " - " + "Resultado: " + resultadoAtq + "\n";
+    chorrazo += " - Crítico principal: " + critico + "\n";
+    chorrazo += " - Crítico secundario: --\n\n";
+    return chorrazo;
   } else if (msg.indexOf("!base ") !== -1) {
     // !base (CAN/ESE)(SA/CU...)100+100
     msg = msg.replace("!base ", "");
@@ -2003,7 +1885,7 @@ function ataques(msg) {
     }
 
     let tiradaSM = parseInt(msg.substring(iniTirada, pos));
-    let modificador = parseInt(evaluate(msg.substring(pos)));
+    let modificador = evaluate(msg.substring(pos));
     let tiradaModificada = tiradaSM + modificador;
     if (tiradaModificada > maxTirada) {
       tiradaModificada = maxTirada;
