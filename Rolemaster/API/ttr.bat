@@ -72,7 +72,6 @@ if defined var (
 
 :: RESULTADOS
 echo.
-echo node ataques "!ttr %NivAt%/%NivDef%.%Tirada%:%Modificadores%"
 node ataques "!ttr %NivAt%/%NivDef%.%Tirada%:%Modificadores%"
 node ataques "!ttr %NivAt%/%NivDef%.%Tirada%:%Modificadores%" >> MERP.log
 
