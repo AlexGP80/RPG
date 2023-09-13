@@ -16,6 +16,7 @@ if defined Mensaje (
 )
 
 :: DIFICULTAD
+:dificultad
 echo.
 set "ModTiempo="
 
@@ -25,9 +26,13 @@ if %ModTiempo%==S (
     set "ModTiempo=+20"
     goto :dif
 )
+if %ModTiempo%==N (
+    set "ModTiempo=+00"
+    goto :dif
+)
 
-set "ModTiempo=+00"
-echo Valor no reconocido, se interpreta como 'N'
+echo Valor no reconocido %ModTiempo%
+goto :dificultad
 
 :: DIFICULTAD
 :dif
@@ -77,7 +82,7 @@ if %Dificultad%==9 (
 
 echo Dificultad incorrecta: %Dificultad%
 echo.
-exit
+goto :dif
 
 :: BONIF ME
 :bonif
@@ -97,11 +102,12 @@ if defined var (
    echo     -05
    echo     +00
    echo.
-   exit
+   goto :bonif
 )
 
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -111,11 +117,12 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
 
 
 :: MODIFICADORES
+:modificadores
 echo.
 set "Modificadores="
 set /P "Modificadores=Modificadores: "
@@ -125,7 +132,7 @@ if defined var (
    echo Modificadores incorrectos: %Modificadores%
    echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
-   exit
+   goto :modificadores
 )
 
 

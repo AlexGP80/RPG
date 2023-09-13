@@ -5,6 +5,7 @@ cls
 echo ===== ATAQUE SIN ARMAS =====
 
 :: MENSAJE
+
 echo.
 echo Introduzca un mensaje descriptivo de la acción.
 set /P "Mensaje=Mensaje: "
@@ -16,6 +17,7 @@ if defined Mensaje (
 )
 
 :: ARMADURA
+:armadura
 echo.
 set "Armadura="
 set /P "Armadura=Seleccione el tipo de armadura (SA, CU, CE, CM, CO): "
@@ -27,12 +29,13 @@ IF NOT %Armadura%==CM (
 if not %Armadura%==CO (
   echo La armadura %Armadura% no existe.
   echo.
-  exit
+  goto :armadura
 )))))
 
 :: echo La armadura seleccionada es %ARMADURA%
 
 :: TAMAÑO
+:tamano
 echo.
 set "Tam="
 echo Seleccione el tamaño del atacante
@@ -46,11 +49,12 @@ IF NOT %Tam%==G (
 if not %Tam%==E (
   echo Tamaño no válido: %Tam%
   echo.
-  exit
+  goto tamano
 )))))
 
 
 :: Tipo ataque
+:tipoataque
 echo.
 set "Tipo="
 echo Seleccione el tipo de ataque:
@@ -65,13 +69,13 @@ if not %Tipo%==to (if not %Tipo%==di (if not %Tipo%==ps (if not %Tipo%==ca (
 if not %Tipo%==ap (if not %Tipo%==pu (if not %Tipo%==lu (
   echo El tipo %Tipo% no es correcto.
   echo.
-  exit
+  goto :tipoataque
 )))))))))))))))
 
-rem echo El arma seleccionada es %ARMA%
 
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -81,11 +85,11 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
-rem echo La tirada es %Tirada%
 
 :: MODIFICADORES
+:modificadores
 echo.
 set "Modificadores="
 set /P "Modificadores=Modificadores: "
@@ -95,7 +99,7 @@ if defined var (
    echo Modificadores incorrectos: %Modificadores%
    echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
-   exit
+   goto :modificadores
 )
 
 :: RESULTADOS

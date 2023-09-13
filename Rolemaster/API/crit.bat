@@ -16,6 +16,7 @@ if defined Mensaje (
 )
 
 :: GRAVEDAD
+:gravedad
 echo.
 set "Gravedad="
 set /P "Gravedad=Seleccione la gravedad del crítico (T, A, B, C, D, E): "
@@ -28,12 +29,12 @@ IF NOT %Gravedad%==D (
 if not %Gravedad%==E (
   echo Gravedad de crítico incorrecta: %Gravedad%
   echo.
-  exit
+  goto :gravedad
 ))))))
 
-:: echo La gravedad seleccionada es %Gravedad%
 
 :: TIPO DE CRÍTICO
+:tipocritico
 echo.
 set "Tipo="
 echo Tipo de crítico: 
@@ -55,12 +56,12 @@ if not %Tipo%==L (
 if not %Tipo%==X (
   echo El tipo de crítico %Tipo% no existe.
   echo.
-  exit
+  goto :tipocritico
 )))))))))))
 
-:: echo El tipo de crítico seleccionado es %Tipo%
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -70,9 +71,8 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
-:: echo La tirada es %Tirada%
 
 :: RESULTADOS
 echo.

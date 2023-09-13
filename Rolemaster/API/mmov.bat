@@ -16,6 +16,7 @@ if defined Mensaje (
 )
 
 :: DIFICULTAD
+:dificultad
 echo.
 set "Dificultad="
 echo Seleccione la dificultad de la maniobra
@@ -62,7 +63,7 @@ if %Dificultad%==9 (
 
 echo Dificultad incorrecta: %Dificultad%
 echo.
-exit
+goto :dificultad
 
 
 :: BONIF MM
@@ -83,11 +84,12 @@ if defined var (
    echo     -05
    echo     +00
    echo.
-   exit
+   goto :bonif
 )
 :: echo La tirada es %Tirada%
 
 :: ATURDIDO
+:aturdido
 echo.
 set "Aturdido="
 set /P "Aturdido=¿Aturdido? (0:No  1:Sí): "
@@ -96,10 +98,11 @@ if not %Aturdido%==0 (
 if not %Aturdido%==1 (
   echo Introduzca 0 o 1
   echo.
-  exit
+  goto :aturdido
 ))
 
 :: DERRIBADO
+:derribado
 echo.
 set "Derribado="
 set /P "Derribado=¿Derribado? (0:No  1:Sí): "
@@ -108,10 +111,11 @@ if not %Derribado%==0 (
 if not %Derribado%==1 (
   echo Introduzca 0 o 1
   echo.
-  exit
+  goto :derribado
 ))
 
 :: EXTREMIDAD INUTILIZADA
+:extremidadinutilizada
 echo.
 set "ExtremidadInutilizada="
 set /P "ExtremidadInutilizada=¿Extremidad inutilizada? (0:No  1:Sí): "
@@ -120,11 +124,12 @@ if not %ExtremidadInutilizada%==0 (
 if not %ExtremidadInutilizada%==1 (
   echo Introduzca 0 o 1
   echo.
-  exit
+  goto :extremidadinutilizada
 ))
 
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -134,11 +139,12 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
 
 
 :: MODIFICADORES
+:modificadores
 echo.
 set "Modificadores="
 set /P "Modificadores=Modificadores: "
@@ -148,7 +154,7 @@ if defined var (
    echo Modificadores incorrectos: %Modificadores%
    echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
-   exit
+   goto :modificadores
 )
 :: RESULTADOS
 echo.

@@ -4,7 +4,20 @@ chcp 65001>nul
 cls
 echo ===== PIFIAS =====
 
+:: MENSAJE
+echo.
+echo Introduzca un mensaje descriptivo de la acción.
+set /P "Mensaje=Mensaje: "
+
+if defined Mensaje (
+  echo. >> MERP.log
+  echo. >> MERP.log
+  echo %Mensaje% >> MERP.log
+)
+
+
 :: TIPO DE PIFIA
+:pifia
 echo.
 set "Tipo="
 echo Tipos de pifia: 
@@ -18,7 +31,7 @@ if %Tipo%==S goto :sortilegios
 if %Tipo%==M goto :maniobras
 
 echo Tipo de pifia incorrecto: %Tipo%
-exit
+goto :pifia
 
 
 :empuñadas
@@ -46,7 +59,7 @@ if %Arma%==5 (
 
 if not defined Mod (
   echo Tipo de arma incorrecto: %Arma%
-  exit
+  goto :empuñadas
 )
 goto :tirada
 
@@ -78,7 +91,7 @@ if %Arma%==5 (
 
 if not defined Mod (
   echo Arma incorrecta: %Arma%
-  exit
+  goto :proyectil
 )
 goto :tirada
 
@@ -106,7 +119,7 @@ if %Sortilegio%==E (
 
 if not defined Mod (
   echo Clase de sortilegio incorrecta: %Sortilegio%
-  exit
+  goto :sortilegios
 )
 goto :tirada
 
@@ -149,7 +162,7 @@ if %Dificultad%==9 (
 
 if not defined Mod (
   echo Dificultad incorrecta: %Dificultad%
-  exit
+  goto :maniobras
 )
 goto :tirada
 
@@ -167,7 +180,7 @@ if defined var (
   echo Valor de tirada incorrecto: %Tirada%
   echo Sólo se permiten valores numéricos para la tirada.
   echo.
-  exit
+  goto :tirada
 )
 
 

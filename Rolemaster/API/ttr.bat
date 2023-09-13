@@ -17,6 +17,7 @@ if defined Mensaje (
 
 
 :: NIVEL ATACANTE
+:nivat
 echo.
 set "NivAt="
 set /P "NivAt=Nivel del atacante: "
@@ -26,10 +27,11 @@ if defined var (
    echo El nivel del atacante es incorrecto: %NivAt%
    echo Sólo se permiten valores numéricos.
    echo.
-   exit
+   goto :nivat
 )
 
 :: NIVEL DEFENSOR
+:nivdef
 echo.
 set "NivDef="
 set /P "NivDef=Nivel del defensor: "
@@ -39,10 +41,11 @@ if defined var (
    echo El nivel del defensor es incorrecto: %NivDef%
    echo Sólo se permiten valores numéricos.
    echo.
-   exit
+   goto :nivdef
 )
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -52,11 +55,12 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
 
 
 :: MODIFICADORES
+:modificadores
 echo.
 set "Modificadores="
 set /P "Modificadores=Modificadores: "
@@ -66,7 +70,7 @@ if defined var (
    echo Modificadores incorrectos: %Modificadores%
    echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
-   exit
+   goto :modificadores
 )
 
 
