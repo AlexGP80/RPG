@@ -1652,16 +1652,29 @@ function ataques(msg) {
       console.log("ERROR - main !base: armadura == " + armadura);
       return;
     }
-    let pos = msg.lastIndexOf("-");
-    if (pos < 0) pos = msg.lastIndexOf("+");
+    let iniTirada = 5;
+    let posMinus = msg.indexOf("-");
+    let posPlus = msg.indexOf("+");
+
+    if (posMinus < 0 && posPlus < 0) {
+      pos = -1;
+    } else if (posMinus < 0 && posPlus >= 0) {
+      pos = posPlus;
+    } else if (posPlus < 0 && posMinus >= 0) {
+      pos = posMinus;
+    } else {
+      pos = Math.min(posPlus, posMinus);
+    }
+
     if (pos < 0) {
-      console.log("ERROR - main !atarma: no se encuentra +/- en " + msg);
+      console.log("ERROR - ataques !base: no se encuentra +/- en " + msg);
       return;
     }
-    let tiradaSM = parseInt(msg.substring(5, pos));
-    let modificador = parseInt(msg.substring(pos));
-    let modStr = (modificador > 0 ? "+" : "") + modificador.toString();
+
+    let tiradaSM = parseInt(msg.substring(iniTirada, pos));
+    let modificador = evaluate(msg.substring(pos));
     let tiradaModificada = tiradaSM + modificador;
+    let modStr = (modificador > 0 ? "+" : "") + modificador.toString();
 
     let armaduraEfectiva = armadura;
     let dominio = msg.substring(0, 3);
@@ -1680,26 +1693,21 @@ function ataques(msg) {
       tiradaSM,
       armaduraEfectiva
     );
-    let tiradaStr = tiradaSM.toString() + "\uD83C\uDFB2";
-    if (resultadoAtq == "F") {
-      tiradaStr += " (pifia)";
-    } else {
+    let tiradaStr = tiradaSM.toString() + "SM";
+    if (resultadoAtq == "") {
       resultadoAtq = tablaSortilegiosBase.getResultado(
         tiradaModificada,
         armaduraEfectiva
       );
-      tiradaStr += modStr + " = " + tiradaModificada;
+      tiradaStr = "" + tiradaSM + modStr + " = " + tiradaModificada;
     }
-    chorrazo +=
-      "/w GM &{template:ataque}{{tabla=Sortilegios de base}}{{arma=Sortilegio de " +
-      dominio +
-      "}}{{armadura=" +
-      tipoArmadura +
-      "}}{{tirada=" +
-      tiradaStr +
-      "}}{{resultado=" +
-      resultadoAtq +
-      "}}{{personaje=}}";
+
+    chorrazo += "\n===== Sortilegio de base vs " + tipoArmadura + " =====\n";
+    chorrazo += " - " + getTimestamp() + "\n";
+    chorrazo += " - " + "Tirada: " + tiradaStr + "\n";
+    chorrazo += " - " + "Resultado: " + resultadoAtq + "\n";
+
+    return chorrazo;
   } else if (msg.indexOf("!rayo ") !== -1) {
     // !rayo RDDSA100+100
     msg = msg.replace("!rayo ", "");
