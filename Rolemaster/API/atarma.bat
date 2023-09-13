@@ -16,6 +16,7 @@ if defined Mensaje (
 )
 
 :: ARMADURA
+:armadura
 echo.
 set "Armadura="
 set /P "Armadura=Seleccione el tipo de armadura (SA, CU, CE, CM, CO): "
@@ -27,13 +28,14 @@ IF NOT %Armadura%==CM (
 if not %Armadura%==CO (
   echo La armadura %Armadura% no existe.
   echo.
-  exit
+  goto :armadura
 )))))
 
 :: echo La armadura seleccionada es %ARMADURA%
 
 
 :: ARMA
+:arma
 echo.
 set "Arma="
 echo Seleccione el arma (ea, da, ha, ci, ec, lt, ga, ma, mc, rd, mg, j1, j2, l1,
@@ -49,13 +51,13 @@ if not %Arma%==e2 (if not %Arma%==bo (if not %Arma%==ak (if not %Arma%==ac (
 if not %Arma%==al (if not %Arma%==ba (if not %Arma%==ho (
   echo El arma %Arma% no existe.
   echo.
-  exit
+  goto :arma
 )))))))))))))))))))))))))))
 
-rem echo El arma seleccionada es %ARMA%
 
 
 :: TIRADA
+:tirada
 echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
@@ -65,11 +67,12 @@ if defined var (
    echo Valor de tirada incorrecto: %Tirada%
    echo Sólo se permiten valores numéricos para la tirada.
    echo.
-   exit
+   goto :tirada
 )
 rem echo La tirada es %Tirada%
 
 :: MODIFICADORES
+:modificadores
 echo.
 set "Modificadores="
 set /P "Modificadores=Modificadores: "
@@ -79,7 +82,7 @@ if defined var (
    echo Modificadores incorrectos: %Modificadores%
    echo Sólo se permiten valores numéricos y los caracteres "+" y "-" para los modificadores.
    echo.
-   exit
+   goto :modificadores
 )
 
 :: RESULTADOS
