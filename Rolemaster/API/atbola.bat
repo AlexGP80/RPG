@@ -206,12 +206,12 @@ set /P "Central=El blanco se encuentra en el punto central (S/N): "
 
 if %Central%==S (
     set "ModCentral=+20"
-    goto :resultados
+    goto :modificadores
 )
 
 if %Central%==N (
     set "ModCentral=+00"
-    goto :resultados
+    goto :modificadores
 )
 
 echo Introduzca S o N
@@ -222,6 +222,11 @@ goto :central
 :modificadores
 echo.
 set "Modificadores="
+echo Introduzca otros modificadores:
+echo  - (+/- Variable) a criterio del DJ
+echo  - (-Bonif de agilidad) si se da cuenta de que el sortilegio está a punto de surtir efecto
+echo   o
+echo  - (-10 a -80) si el blanco se pone a cubierto (tirada de maniobra y decisión del DJ)
 set /P "Modificadores=Modificadores: "
 
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
@@ -237,7 +242,6 @@ if defined var (
 :: RESULTADOS
 :resultados
 echo.
-ECHO node ataques "!bola %Bola%%Armadura%%Tirada%+%Modificadores%%ModPrep%%ModDistancia%%ModCentral%+%BOSBase%%ModSort%"
 node ataques "!bola %Bola%%Armadura%%Tirada%+%Modificadores%%ModPrep%%ModDistancia%%ModCentral%+%BOSBase%%ModSort%"
 node ataques "!bola %Bola%%Armadura%%Tirada%+%Modificadores%%ModPrep%%ModDistancia%%ModCentral%+%BOSBase%%ModSort%" >> MERP.log
 
