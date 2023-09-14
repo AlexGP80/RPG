@@ -1503,7 +1503,7 @@ function ataques(msg) {
     msg = msg.replace("!ttr ", "");
     let pos = msg.indexOf("/");
     if (pos < 0) {
-      console.log("ERROR - main !atanim: no se encuentra / en " + msg);
+      console.log("ERROR - main !ttr: no se encuentra / en " + msg);
       return;
     }
     let posDot = msg.indexOf(".");
@@ -1720,10 +1720,6 @@ function ataques(msg) {
       console.log("ERROR - main !rayo: no se encuentra +/- en " + msg);
       return;
     }
-    let tiradaSM = parseInt(msg.substring(5, pos));
-    let modificador = parseInt(msg.substring(pos));
-    let modStr = (modificador > 0 ? "+" : "") + modificador.toString();
-    let tiradaModificada = tiradaSM + modificador;
 
     let armadura = msg.substring(3, 5);
     let tipoArmadura = "";
@@ -1738,50 +1734,84 @@ function ataques(msg) {
     }
     let tipoRayo = msg.substring(0, 3);
     let strRayo = "";
+    let modRayo = 0;
+    let criticoPrincipal = "--";
+    let criticoSecundario = "--";
     if (tipoRayo == "RDD") {
       strRayo = "Rayo de Descarga";
       maxTirada = 90;
-      if (armadura == "CM" || armadura == "CO") tiradaModificada += 10;
+      criticoPrincipal = "Electricidad";
+      if (armadura == "CM" || armadura == "CO") modRayo = 10;
     } else if (tipoRayo == "RDA") {
       strRayo = "Rayo de Agua";
       maxTirada = 110;
-      if (armadura == "CO" || armadura == "CE") tiradaModificada -= 10;
+      if (armadura == "CO" || armadura == "CE") modRayo = 10;
+      criticoPrincipal = "Impacto";
     } else if (tipoRayo == "RDH") {
       strRayo = "Rayo de Hielo";
       maxTirada = 130;
-      if (armadura == "CO" || armadura == "CE") tiradaModificada -= 5;
+      if (armadura == "CO" || armadura == "CE") modRayo = 5;
+      criticoPrincipal = "Impacto";
+      criticoSecundario = "Frío";
     } else if (tipoRayo == "REL") {
       strRayo = "Relámpago";
       maxTirada = 150;
-      if (armadura == "CM" || armadura == "CO") tiradaModificada += 10;
+      if (armadura == "CM" || armadura == "CO") modRayo = 10;
+      criticoPrincipal = "Electricidad";
+      criticoSecundario = "Impacto";
     } else if (tipoRayo == "RIG") {
       strRayo = "Rayo Ígneo";
       maxTirada = 150;
+      criticoPrincipal = "Calor";
     } else {
       console.log("ERROR - main !rayo: tipoRayo == " + tipoRayo);
       return;
     }
 
+    let iniTirada = 5;
+
+    let posMinus = msg.indexOf("-");
+    let posPlus = msg.indexOf("+");
+
+    if (posMinus < 0 && posPlus < 0) {
+      pos = -1;
+    } else if (posMinus < 0 && posPlus >= 0) {
+      pos = posPlus;
+    } else if (posPlus < 0 && posMinus >= 0) {
+      pos = posMinus;
+    } else {
+      pos = Math.min(posPlus, posMinus);
+    }
+
+    if (pos < 0) {
+      console.log("ERROR - ataques !rayo: no se encuentra +/- en " + msg);
+      return;
+    }
+
+    let tiradaSM = parseInt(msg.substring(iniTirada, pos));
+    let modificador = evaluate(msg.substring(pos)) + modRayo;
+    let tiradaModificada = tiradaSM + modificador;
+    let modStr = (modificador > 0 ? "+" : "") + modificador.toString();
+
     let resultadoAtq = tablaRayo.getResultadoSM(tiradaSM, armadura);
     let tiradaStr = tiradaSM.toString() + "SM";
     if (resultadoAtq == "") {
-      tiradaStr = tiradaModificada.toString();
+      tiradaStr = "" + tiradaSM + modStr + " = " + tiradaModificada;
       if (tiradaModificada > maxTirada) {
         tiradaModificada = maxTirada;
-        tiradaStr = maxTirada.toString() + "MAX";
+        tiradaStr = "" + tiradaSM + modStr + " = " + maxTirada + " (MAX)";
       }
       resultadoAtq = tablaRayo.getResultado(tiradaModificada, armadura);
     }
+
     chorrazo +=
-      "/w GM &{template:ataque}{{tabla=Sortilegios de Rayo}}{{arma=" +
-      strRayo +
-      "}}{{armadura=" +
-      tipoArmadura +
-      "}}{{tirada=" +
-      tiradaStr +
-      "}}{{resultado=" +
-      resultadoAtq +
-      "}}{{personaje=}}";
+      "\n===== Ataque de " + strRayo + " vs " + tipoArmadura + " =====\n";
+    chorrazo += " - " + getTimestamp() + "\n";
+    chorrazo += " - " + "Tirada: " + tiradaStr + "\n";
+    chorrazo += " - " + "Resultado: " + resultadoAtq + "\n";
+    chorrazo += " - Crítico principal: " + criticoPrincipal + "\n";
+    chorrazo += " - Crítico secundario: " + criticoSecundario + "\n\n";
+    return chorrazo;
   } else if (msg.indexOf("!atanim ") !== -1) {
     // !atanim (P|M|G|E)(SA|CU...)(pi|mo|ga...)/100+100
     msg = msg.replace("!atanim ", "");
