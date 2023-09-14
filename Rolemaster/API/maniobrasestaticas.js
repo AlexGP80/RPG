@@ -147,10 +147,30 @@ function maniobraestatica(msg) {
     // let resultado = "&{template:default}{{name=Crítico " + gravedad + " (" + strModificador + ") de " + tipoManiobra + "}}{{Tirada[" + indice + "]="+tabla.getCritico(indice)+"}}";
     let resultado = tabla.getResultado(indice);
     let chorrazo = "\n===== Maniobra estática " + tipoManiobra + " =====\n";
+    chorrazo += " - " + getTimestamp() + "\n";
     chorrazo += " - Tirada: " + tirada + strModificador + " = " + indice + "\n";
     chorrazo += " - " + resultado + "\n\n";
     return chorrazo;
   }
+}
+
+function getTimestamp() {
+  let currentdate = new Date();
+  return (
+    currentdate.getDate() +
+    "/" +
+    (currentdate.getMonth() + 1).toString().padStart(2, "0") +
+    "/" +
+    currentdate.getFullYear().toString().padStart(4, "0") +
+    " - " +
+    currentdate.getHours().toString().padStart(2, "0") +
+    ":" +
+    currentdate.getMinutes().toString().padStart(2, "0") +
+    ":" +
+    currentdate.getSeconds().toString().padStart(2, "0") +
+    "." +
+    currentdate.getMilliseconds().toString().padStart(3, "0")
+  );
 }
 
 let text = maniobraestatica(process.argv[2]);
