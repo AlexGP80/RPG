@@ -1576,10 +1576,10 @@ function ataques(msg) {
     let critico = "";
     if (tipoBola == "FU") {
       tipoBolaStr += "fuego";
-      critico = "Calor";
+      critico = "CA";
     } else if (tipoBola == "FR") {
       tipoBolaStr += "frío";
-      critico = "Frío";
+      critico = "FR";
     } else {
       console.log(
         "ERROR - ataques !bola. Tipo de bola incorrecto: " + tipoBola
@@ -1740,29 +1740,29 @@ function ataques(msg) {
     if (tipoRayo == "RDD") {
       strRayo = "Rayo de Descarga";
       maxTirada = 90;
-      criticoPrincipal = "Electricidad";
+      criticoPrincipal = "EL";
       if (armadura == "CM" || armadura == "CO") modRayo = 10;
     } else if (tipoRayo == "RDA") {
       strRayo = "Rayo de Agua";
       maxTirada = 110;
       if (armadura == "CO" || armadura == "CE") modRayo = 10;
-      criticoPrincipal = "Impacto";
+      criticoPrincipal = "IM";
     } else if (tipoRayo == "RDH") {
       strRayo = "Rayo de Hielo";
       maxTirada = 130;
       if (armadura == "CO" || armadura == "CE") modRayo = 5;
-      criticoPrincipal = "Impacto";
-      criticoSecundario = "Frío";
+      criticoPrincipal = "IM";
+      criticoSecundario = "FR";
     } else if (tipoRayo == "REL") {
       strRayo = "Relámpago";
       maxTirada = 150;
       if (armadura == "CM" || armadura == "CO") modRayo = 10;
-      criticoPrincipal = "Electricidad";
-      criticoSecundario = "Impacto";
+      criticoPrincipal = "EL";
+      criticoSecundario = "IM";
     } else if (tipoRayo == "RIG") {
       strRayo = "Rayo Ígneo";
       maxTirada = 150;
-      criticoPrincipal = "Calor";
+      criticoPrincipal = "CA";
     } else {
       console.log("ERROR - main !rayo: tipoRayo == " + tipoRayo);
       return;
@@ -1951,6 +1951,9 @@ function ataques(msg) {
         modificador.toString() +
         " = " +
         tiradaModificada.toString();
+      if (tiradaModificada >= maxTirada) {
+        tiradaStr += " (MAX)";
+      }
       resultadoAtq = tablaAtaque.getResultado(tiradaModificada, armadura);
     }
 
@@ -1991,7 +1994,7 @@ function ataques(msg) {
       return;
     }
 
-    let tipoAtaque = msg.substring(2, pos);
+    let tipoAtaque = msg.substring(2, pos).toLowerCase();
     let pifia = 0;
 
     if (tipoAtaque == "ea") {
@@ -2185,14 +2188,13 @@ function ataques(msg) {
       pos = Math.min(posPlus, posMinus);
     }
 
-    // pos = msg.lastIndexOf("-");
-    // if (pos<0) pos = msg.lastIndexOf("+");
     if (pos < 0) {
       console.log("ERROR - main !atarma: no se encuentra +/- en " + msg);
       return;
     }
 
     let tiradaSM = parseInt(msg.substring(iniTirada, pos));
+    // mathjs is needed for this
     // npm install mathjs
     let modificador = parseInt(evaluate(msg.substring(pos)));
     let tiradaModificada = tiradaSM + modificador;

@@ -88,6 +88,204 @@ if defined var (
    goto :tirada
 )
 
+
+:: BONIFICACIÓN OFENSIVA
+:bofensiva
+echo.
+set "BO="
+set /P "BO=Bonificación Ofensiva del atacante: "
+
+SET "var="&for /f "delims=+-0123456789" %%i in ("%BO%") do set var=%%i
+if defined var (
+   echo Valor de Bonificación Ofensiva incorrecto: %BO%
+   echo Sólo se permiten valores numéricos para la Bonificación Ofensiva.
+   echo.
+   goto :bofensiva
+)
+
+:: BONIFICACIÓN DEFENSIVA
+:bdefensiva
+echo.
+set "BD="
+set /P "BD=Bonificación Defensiva del blanco: "
+
+SET "var="&for /f "delims=+-0123456789" %%i in ("%BD%") do set var=%%i
+if defined var (
+   echo Valor de Bonificación Defensiva incorrecto: %BD%
+   echo Sólo se permiten valores numéricos para la Bonificación Defensiva.
+   echo.
+   goto :bdefensiva
+)
+
+
+:: PARADA
+:parada
+echo.
+set "Parada="
+echo Seleccione la BO del defensor utilizada para parar.
+echo  - Cuerpo a cuerpo: puede parar el ataque CC del blanco 
+echo                     que el defensor esté atacando, con toda
+echo                     o parte su bonificación ofensiva.
+echo  - A distancia: si el defensor tiene un escudo y está
+echo                 encarado al atacante, puede parar pero sólo 
+echo                 hasta la mitad de su bonificación ofensiva.
+set /P "Parada=BO del defensor destinada a parar este ataque: "
+
+SET "var="&for /f "delims=0123456789" %%i in ("%Parada%") do set var=%%i
+if defined var (
+   echo Valor de parada incorrecto: %Parada%
+   echo Sólo se permiten valores numéricos para la parada.
+   echo.
+   goto :parada
+)
+
+
+:: MODIFICADORES POSICIONALES
+:modposicionales
+echo.
+set "Encaramiento="
+echo Seleccione el encaramiento del ataque:
+echo   1:Ataque frontal
+echo   2:Ataque de flanco
+echo   3:Ataque por la espalda
+set /P "Encaramiento=Seleccione (1-3): "
+
+if %Encaramiento%==1 (
+  set "ModEncaramiento=+00"
+  goto :sorprendido 
+)
+if %Encaramiento%==2 (
+  set "ModEncaramiento=+15"
+  goto :sorprendido 
+)
+if %Encaramiento%==3 (
+  set "ModEncaramiento=+35"
+  goto :sorprendido 
+)
+
+echo Encaramiento incorrecto: %Encaramiento%
+goto :modposicionales
+
+
+
+:sorprendido
+echo.
+set "Sorprendido="
+set /P "Sorprendido=Defensor sorprendido (S/N): "
+
+if %Sorprendido%==N (
+  set "ModSorprendido=+00"
+  goto :caidoaturdido
+)
+if %Sorprendido%==S (
+  set "ModSorprendido=+20"
+  goto :caidoaturdido
+)
+
+if %Sorprendido%==n (
+  set "ModSorprendido=+00"
+  goto :caidoaturdido
+)
+if %Sorprendido%==s (
+  set "ModSorprendido=+20"
+  goto :caidoaturdido
+)
+
+echo Valor de sorprendido incorrecto: %Sorprendido%
+goto :sorprendido
+
+
+:caidoaturdido
+echo.
+set "CaidoAturdido="
+set /P "CaidoAturdido=Defensor caído o aturdido (S/N): "
+
+if %CaidoAturdido%==N (
+  set "ModCaidoAturdido=+00"
+  goto :atacanteherido
+)
+if %CaidoAturdido%==S (
+  set "ModCaidoAturdido=+20"
+  goto :atacanteherido
+)
+if %CaidoAturdido%==n (
+  set "ModCaidoAturdido=+00"
+  goto :atacanteherido
+)
+if %CaidoAturdido%==s (
+  set "ModCaidoAturdido=+20"
+  goto :atacanteherido
+)
+
+echo Valor de caído o aturdido incorrecto: %CaidoAturdido%
+goto :caidoaturdido
+
+
+:atacanteherido
+echo.
+set "AtacanteHerido="
+set /P "AtacanteHerido=El atacante ha perdido más de la mitad de sus PVs (S/N): "
+
+if %AtacanteHerido%==S (
+  set "ModAtacanteHerido=-20"
+  goto :desenvaina
+)
+if %AtacanteHerido%==N (
+  set "ModAtacanteHerido=+00"
+  goto :desenvaina
+)
+if %AtacanteHerido%==s (
+  set "ModAtacanteHerido=-20"
+  goto :desenvaina
+)
+if %AtacanteHerido%==n (
+  set "ModAtacanteHerido=+00"
+  goto :desenvaina
+)
+
+echo Respuesta errónea: %AtacanteHerido%
+goto :atacanteherido
+
+:desenvaina
+echo.
+set "Desenvaina="
+set /P "Desenvaina=El atacante desenvaina o cambia de sitio armas, o embraza un escudo (S/N): "
+
+if %Desenvaina%==S (
+  set "ModDesenvaina=-30"
+  goto :movido
+)
+if %Desenvaina%==N (
+  set "ModDesenvaina=+00"
+  goto :movido
+)
+if %Desenvaina%==s (
+  set "ModDesenvaina=-30"
+  goto :movido
+)
+if %Desenvaina%==n (
+  set "ModDesenvaina=+00"
+  goto :movido
+)
+
+echo Respuesta errónea: %Desenvaina%
+goto :desenvaina
+
+:movido
+echo.
+set "MOV="
+set /P "MOV=Número de pies que se ha movido el atacante: "
+
+SET "var="&for /f "delims=0123456789" %%i in ("%MOV%") do set var=%%i
+if defined var (
+   echo Valor de movimiento incorrecto: %MOV%
+   echo Sólo se permiten valores numéricos para el movimiento del atacante.
+   echo.
+   goto :movido
+)
+
+
+
 :: MODIFICADORES
 :modificadores
 echo.
@@ -104,8 +302,8 @@ if defined var (
 
 :: RESULTADOS
 echo.
-node ataques "!atanim %Tam%%Armadura%%Tipo%/%Tirada%+%Modificadores%"
-node ataques "!atanim %Tam%%Armadura%%Tipo%/%Tirada%+%Modificadores%" >> MERP.log
+node ataques "!atanim %Tam%%Armadura%%Tipo%/%Tirada%+%Modificadores%%ModEncaramiento%+%BO%-%BD%-%Parada%%ModSorprendido%%ModCaidoAturdido%%ModAtacanteHerido%-%MOV%%ModDesenvaina%"
+node ataques "!atanim %Tam%%Armadura%%Tipo%/%Tirada%+%Modificadores%%ModEncaramiento%+%BO%-%BD%-%Parada%%ModSorprendido%%ModCaidoAturdido%%ModAtacanteHerido%-%MOV%%ModDesenvaina%" >> MERP.log
 
 
 

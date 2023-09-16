@@ -546,46 +546,53 @@ function crits(msg) {
       return;
     }
     gravedad = msg[0];
-    if (msg[1] == "K") {
+    let tCritRaw = msg.substring(1, 3);
+    if (tCritRaw == "AP") {
       tabla = tablaAplastamiento;
       tipoCritico = "Aplastamiento";
-    } else if (msg[1] == "S") {
+    } else if (tCritRaw == "TA") {
       tabla = tablaTajo;
       tipoCritico = "Tajo";
-    } else if (msg[1] == "P") {
+    } else if (tCritRaw == "PE") {
       tabla = tablaPerforacion;
       tipoCritico = "Perforación";
-    } else if (msg[1] == "U") {
+    } else if (tCritRaw == "DE") {
       tabla = tablaDesequilibrio;
       tipoCritico = "Desequilibrio";
-    } else if (msg[1] == "G") {
+    } else if (tCritRaw == "PR") {
       tabla = tablaPresa;
       tipoCritico = "Presa";
-    } else if (msg[1] == "C") {
+    } else if (tCritRaw == "CA") {
       tabla = tablaCalor;
       tipoCritico = "Calor";
-    } else if (msg[1] == "F") {
+    } else if (tCritRaw == "FR") {
       tabla = tablaFrio;
       tipoCritico = "Frío";
-    } else if (msg[1] == "E") {
+    } else if (tCritRaw == "EL") {
       tabla = tablaElectricidad;
       tipoCritico = "Electricidad";
-    } else if (msg[1] == "I") {
+    } else if (tCritRaw == "IM") {
       tabla = tablaImpacto;
       tipoCritico = "Impacto";
-    } else if (msg[1] == "L") {
+    } else if (tCritRaw == "GR") {
       tabla = tablaGrandesCriaturas;
       tipoCritico = "Grandes Criaturas";
-    } else if (msg[1] == "X") {
+    } else if (tCritRaw == "EN") {
+      tabla = tablaGrandesCriaturas;
+      tipoCritico = "Criaturas Enormes";
+    } else if (tCritRaw == "SG") {
       tabla = tablaSortilegiosGrandesCriaturas;
       tipoCritico = "Sortilegios Grandes Criaturas";
     }
     // TBD: meter las demás tablas, y cascar aquí los else if correspondientes
     else {
-      console.log("Error de sintaxis. Formato: !crit EK100");
+      console.log("Error de sintaxis. Formato: !crit EAP100");
       return;
     }
-    tirada = parseInt(msg.substring(2), 10);
+    tirada = parseInt(msg.substring(3), 10);
+    if (tCritRaw == "EN") {
+      tirada -= 10;
+    }
     indice = tirada + modificador;
     let strModificador = "";
     if (modificador >= 0) strModificador = "+" + modificador;

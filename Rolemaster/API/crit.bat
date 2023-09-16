@@ -38,26 +38,27 @@ if not %Gravedad%==E (
 echo.
 set "Tipo="
 echo Tipo de crítico: 
-echo    K:Aplastamiento   S:Tajo   P:Perforación   U:Desequilibrio   G:Presa
-echo    C:Calor   F:Frío   E:Electricidad   I:Impacto   L: Grandes Criaturas
-echo    X: Sortilegios contra Grandes Criaturas
+echo    AP:Aplastamiento   TA:Tajo   PE:Perforación   DE:Desequilibrio   PR:Presa
+echo    CA:Calor   FR:Frío   EL:Electricidad   IM:Impacto   GR:Grandes Criaturas
+echo    EN:Criaturas Enormes   SG:Sortilegios contra Grandes Criaturas
 set /P "Tipo=Seleccione el tipo de crítico: "
 
-if not %Tipo%==K (
-if not %Tipo%==S (
-if not %Tipo%==P (
-if not %Tipo%==U (
-if not %Tipo%==G (
-if not %Tipo%==C (
-if not %Tipo%==F (
-if not %Tipo%==E (
-if not %Tipo%==I (
-if not %Tipo%==L (
-if not %Tipo%==X (
+if not %Tipo%==AP (
+if not %Tipo%==TA (
+if not %Tipo%==PE (
+if not %Tipo%==DE (
+if not %Tipo%==PR (
+if not %Tipo%==CA (
+if not %Tipo%==FR (
+if not %Tipo%==EL (
+if not %Tipo%==IM (
+if not %Tipo%==GR (
+if not %Tipo%==EN (
+if not %Tipo%==SG (
   echo El tipo de crítico %Tipo% no existe.
   echo.
   goto :tipocritico
-)))))))))))
+))))))))))))
 
 
 :: TIRADA
