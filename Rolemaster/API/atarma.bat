@@ -21,6 +21,10 @@ echo.
 set "Armadura="
 set /P "Armadura=Seleccione el tipo de armadura (SA, CU, CE, CM, CO): "
 
+if not defined Armadura (
+  goto :armadura
+)
+
 if %Armadura%==sa (
   set "Armadura=SA"
 )
@@ -58,6 +62,10 @@ echo Seleccione el arma (ea, da, ha, ci, ec, lt, ga, ma, mc, rd, mg, j1, j2, l1,
 echo                     l2, lc, ab, hc, my, bs, e2, bo, ak, ac, al, ba, ho)
 set /P "Arma=: "
 
+if not defined Arma (
+  goto :arma
+)
+
 if not %Arma%==ea (if not %Arma%==da (if not %Arma%==ha (if not %Arma%==ci (
 if not %Arma%==ec (if not %Arma%==lt (if not %Arma%==ga (if not %Arma%==ma (
 if not %Arma%==mc (if not %Arma%==rd (if not %Arma%==mg (if not %Arma%==j1 (
@@ -86,6 +94,12 @@ echo.
 set "Tirada="
 set /P "Tirada=Tirada: "
 
+
+if not defined Tirada (
+  goto :tirada
+)
+
+
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
    echo Valor de tirada incorrecto: %Tirada%
@@ -101,6 +115,10 @@ echo.
 set "BO="
 set /P "BO=Bonificación Ofensiva del atacante: "
 
+if not defined BO (
+  goto :bofensiva
+)
+
 SET "var="&for /f "delims=+-0123456789" %%i in ("%BO%") do set var=%%i
 if defined var (
    echo Valor de Bonificación Ofensiva incorrecto: %BO%
@@ -114,6 +132,10 @@ if defined var (
 echo.
 set "BD="
 set /P "BD=Bonificación Defensiva del blanco: "
+
+if not defined BD (
+  goto :bdefensiva
+)
 
 SET "var="&for /f "delims=+-0123456789" %%i in ("%BD%") do set var=%%i
 if defined var (
@@ -129,13 +151,14 @@ if defined var (
 echo.
 set "Parada="
 echo Seleccione la BO del defensor utilizada para parar.
-echo  - Cuerpo a cuerpo: puede parar el ataque CC del blanco 
-echo                     que el defensor esté atacando, con toda
-echo                     o parte su bonificación ofensiva.
-echo  - A distancia: si el defensor tiene un escudo y está
-echo                 encarado al atacante, puede parar pero sólo 
-echo                 hasta la mitad de su bonificación ofensiva.
+echo  - CC:  Sólo si el defensor está atacando a su vez al atacante.
+echo  - P/A: Sólo si el defensor tiene un escudo y está encarado al atacante.
+echo         Sólo hasta la mitad de su bonificación ofensiva.
 set /P "Parada=BO del defensor destinada a parar este ataque: "
+
+if not defined Parada (
+  goto :parada
+)
 
 SET "var="&for /f "delims=0123456789" %%i in ("%Parada%") do set var=%%i
 if defined var (
@@ -150,6 +173,10 @@ if defined var (
 echo.
 set "TipoAtaque="
 set /P "TipoAtaque=Tipo de ataque (1:Cuerpo a cuerpo   2:Proyectiles/Arrojadizas): "
+
+if not defined TipoAtaque (
+  goto :tipoataque
+)
 
 if %TipoAtaque%==1 (
   goto :modposicionales
@@ -171,6 +198,10 @@ echo   1:Ataque frontal
 echo   2:Ataque de flanco
 echo   3:Ataque por la espalda
 set /P "Encaramiento=Seleccione (1-3): "
+
+if not defined Encaramiento (
+  goto :modposicionales
+)
 
 if %Encaramiento%==1 (
   set "ModEncaramiento=+00"
@@ -194,6 +225,10 @@ goto :modposicionales
 echo.
 set "Sorprendido="
 set /P "Sorprendido=Defensor sorprendido (S/N): "
+
+if not defined Sorprendido (
+  goto :sorprendido
+)
 
 if %Sorprendido%==N (
   set "ModSorprendido=+00"
@@ -221,6 +256,10 @@ goto :sorprendido
 echo.
 set "CaidoAturdido="
 set /P "CaidoAturdido=Defensor caído o aturdido (S/N): "
+
+if not defined CaidoAturdido (
+  goto :caidoaturdido
+)
 
 if %CaidoAturdido%==N (
   set "ModCaidoAturdido=+00"
@@ -252,6 +291,10 @@ echo   3 : Largo alcance, hasta triple de Alcance Básico del arma
 echo   4 : Máximo alcance, hasta cuádruple de Alcance Básico del arma
 echo   5 : Ballesta hasta 50 pies de distancia
 set /P "Alcance=Seleccione (1-4): "
+
+if not defined Alcance (
+  goto :alcance
+)
 
 if %Alcance%==1 (
   set "ModAlcance=+00"
@@ -289,6 +332,10 @@ echo   3: Recarga(0) con arco largo
 echo   4: Ninguna de las anteriores
 set /P "Recarga=Seleccione (1-4): "
 
+if not defined Recarga (
+  goto :recarga
+)
+
 if %Recarga%==1 (
   set "ModRecarga=-25"
   goto :atacanteherido
@@ -313,6 +360,10 @@ goto :recarga
 echo.
 set "AtacanteHerido="
 set /P "AtacanteHerido=El atacante ha perdido más de la mitad de sus PVs (S/N): "
+
+if not defined AtacanteHerido (
+  goto :atacanteherido
+)
 
 if %AtacanteHerido%==S (
   set "ModAtacanteHerido=-20"
@@ -339,6 +390,10 @@ echo.
 set "Desenvaina="
 set /P "Desenvaina=El atacante desenvaina o cambia de sitio armas, o embraza un escudo (S/N): "
 
+if not defined Desenvaina (
+  goto :desenvaina
+)
+
 if %Desenvaina%==S (
   set "ModDesenvaina=-30"
   goto :movido
@@ -364,6 +419,11 @@ echo.
 set "MOV="
 set /P "MOV=Número de pies que se ha movido el atacante: "
 
+
+if not defined MOV (
+  goto :movido
+)
+
 SET "var="&for /f "delims=0123456789" %%i in ("%MOV%") do set var=%%i
 if defined var (
    echo Valor de movimiento incorrecto: %MOV%
@@ -378,6 +438,10 @@ if defined var (
 echo.
 set "Modificadores="
 set /P "Modificadores=Otros modificadores aplicables: "
+
+if not defined Modificadores (
+  goto :modificadores
+)
 
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
 if defined var (

@@ -1,4 +1,4 @@
-const { evaluate, mod } = require("mathjs");
+const { evaluate } = require("mathjs");
 var fs = require("fs");
 
 const maxTirada = 150;
@@ -1994,8 +1994,22 @@ function ataques(msg) {
       return;
     }
 
+    let armadura = msg.substring(0, 2);
+    let tipoArmadura = "";
+    if (armadura == "SA") tipoArmadura = "Sin Armadura";
+    else if (armadura == "CU") tipoArmadura = "Cuero";
+    else if (armadura == "CE") tipoArmadura = "Cuero Endurecido";
+    else if (armadura == "CM") tipoArmadura = "Cota de Malla";
+    else if (armadura == "CO") tipoArmadura = "Coraza";
+    else {
+      console.log("ERROR - main !atarma: armadura == " + armadura);
+      return;
+    }
+
     let tipoAtaque = msg.substring(2, pos).toLowerCase();
     let pifia = 0;
+    let pifiaDesc = "";
+    let modArmaVsArmadura = 0;
 
     if (tipoAtaque == "ea") {
       pifia = 3;
@@ -2009,24 +2023,40 @@ function ataques(msg) {
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Daga";
+      if (armadura == "CM" || armadura == "CO") {
+        modArmaVsArmadura = -15;
+      }
     } else if (tipoAtaque == "ha") {
       pifia = 4;
       criticoPrincipal = "TA";
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Hacha";
+      if (armadura == "CM" || armadura == "CO") {
+        modArmaVsArmadura = 5;
+      }
     } else if (tipoAtaque == "ci") {
       pifia = 4;
       criticoPrincipal = "TA";
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Cimitarra";
+      if (armadura == "CM" || armadura == "CO") {
+        modArmaVsArmadura = -5;
+      } else {
+        modArmaVsArmadura = 5;
+      }
     } else if (tipoAtaque == "ec") {
       pifia = 2;
       criticoPrincipal = "PE";
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Espada corta";
+      if (armadura == "CM" || armadura == "CO") {
+        modArmaVsArmadura = -10;
+      } else {
+        modArmaVsArmadura = 10;
+      }
     } else if (tipoAtaque == "lt") {
       pifia = 6;
       criticoPrincipal = "PR(C)";
@@ -2034,12 +2064,14 @@ function ataques(msg) {
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Látigo";
+      modArmaVsArmadura = -10;
     } else if (tipoAtaque == "ga") {
       pifia = 4;
       criticoPrincipal = "AP(D)";
       tablaDesc = "Contundentes";
       tablaAtaque = tablaContundentes;
       arma = "Garrote";
+      modArmaVsArmadura = -10;
     } else if (tipoAtaque == "ma") {
       pifia = 2;
       criticoPrincipal = "AP";
@@ -2053,6 +2085,8 @@ function ataques(msg) {
       tablaDesc = "Contundentes";
       tablaAtaque = tablaContundentes;
       arma = "Maza de combate";
+      pifiaDesc = "Crítico B";
+      modArmaVsArmadura = 10;
     } else if (tipoAtaque == "rd") {
       pifia = 6;
       criticoPrincipal = "PR";
@@ -2065,12 +2099,14 @@ function ataques(msg) {
       tablaDesc = "Contundentes";
       tablaAtaque = tablaContundentes;
       arma = "Martillo de guerra";
+      modArmaVsArmadura = 5;
     } else if (tipoAtaque == "j1") {
       pifia = 4;
       criticoPrincipal = "PE";
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Jabalina a 1 mano";
+      modArmaVsArmadura = -10;
     } else if (tipoAtaque == "j2") {
       pifia = 4;
       criticoPrincipal = "PE";
@@ -2084,6 +2120,7 @@ function ataques(msg) {
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Lanza a 1 mano";
+      modArmaVsArmadura = -5;
     } else if (tipoAtaque == "l2") {
       pifia = 5;
       criticoPrincipal = "PE";
@@ -2091,6 +2128,7 @@ function ataques(msg) {
       tablaDesc = "De filo";
       tablaAtaque = tablaFilo;
       arma = "Lanza a 2 manos";
+      modArmaVsArmadura = 5;
     } else if (tipoAtaque == "lc") {
       pifia = 7;
       criticoPrincipal = "PE";
@@ -2098,6 +2136,8 @@ function ataques(msg) {
       tablaDesc = "A dos manos";
       tablaAtaque = tabla2Manos;
       arma = "Lanza de caballería";
+      modArmaVsArmadura = +15;
+      pifiaDesc = "Crítico B";
     } else if (tipoAtaque == "ab") {
       pifia = 7;
       criticoPrincipal = "TA";
@@ -2105,6 +2145,7 @@ function ataques(msg) {
       tablaDesc = "A dos manos";
       tablaAtaque = tabla2Manos;
       arma = "Alabarda";
+      modArmaVsArmadura = -5;
     } else if (tipoAtaque == "hc") {
       pifia = 5;
       criticoPrincipal = "TA";
@@ -2112,6 +2153,11 @@ function ataques(msg) {
       tablaDesc = "A dos manos";
       tablaAtaque = tabla2Manos;
       arma = "Hacha de combate";
+      if (armadura == "CM" || armadura == "CO") {
+        modArmaVsArmadura = +5;
+      } else {
+        modArmaVsArmadura = -5;
+      }
     } else if (tipoAtaque == "my") {
       pifia = 8;
       criticoPrincipal = "AP";
@@ -2119,12 +2165,15 @@ function ataques(msg) {
       tablaDesc = "A dos manos";
       tablaAtaque = tabla2Manos;
       arma = "Mayal";
+      modArmaVsArmadura = 10;
+      pifiaDesc = "Crítico C";
     } else if (tipoAtaque == "bs") {
       pifia = 3;
       criticoPrincipal = "AP";
       tablaDesc = "A dos manos";
       tablaAtaque = tabla2Manos;
       arma = "Bastón";
+      modArmaVsArmadura = -10;
     } else if (tipoAtaque == "e2") {
       pifia = 5;
       criticoPrincipal = "TA";
@@ -2139,6 +2188,8 @@ function ataques(msg) {
       tablaDesc = "Proyectil";
       tablaAtaque = tablaProyectiles;
       arma = "Boleadoras";
+      modArmaVsArmadura = -5;
+      pifiaDesc = "Crítico B";
     } else if (tipoAtaque == "ak") {
       pifia = 4;
       criticoPrincipal = "PE";
@@ -2196,25 +2247,13 @@ function ataques(msg) {
     let tiradaSM = parseInt(msg.substring(iniTirada, pos));
     // mathjs is needed for this
     // npm install mathjs
-    let modificador = parseInt(evaluate(msg.substring(pos)));
+    let modificador = evaluate(msg.substring(pos)) + modArmaVsArmadura;
     let tiradaModificada = tiradaSM + modificador;
     if (tiradaModificada > maxTirada) {
       tiradaModificada = maxTirada;
     }
 
-    let armadura = msg.substring(0, 2);
-    let tipoArmadura = "";
-    if (armadura == "SA") tipoArmadura = "Sin Armadura";
-    else if (armadura == "CU") tipoArmadura = "Cuero";
-    else if (armadura == "CE") tipoArmadura = "Cuero Endurecido";
-    else if (armadura == "CM") tipoArmadura = "Cota de Malla";
-    else if (armadura == "CO") tipoArmadura = "Coraza";
-    else {
-      console.log("ERROR - main !atarma: armadura == " + armadura);
-      return;
-    }
-
-    let resultadoAtq = "PIFIA";
+    let resultadoAtq = "PIFIA " + pifiaDesc;
     let tiradaStr = tiradaSM.toString(); // + "SM (pifia)";
     if (tiradaSM <= pifia) {
       tiradaStr += "SM (pifia)";
