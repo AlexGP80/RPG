@@ -27,10 +27,15 @@ if not %Armadura%==CU (
 IF NOT %Armadura%==CE (
 IF NOT %Armadura%==CM (
 if not %Armadura%==CO (
+if not %Armadura%==sa (
+if not %Armadura%==cu (
+IF NOT %Armadura%==ce (
+IF NOT %Armadura%==cm (
+if not %Armadura%==co (
   echo La armadura %Armadura% no existe.
   echo.
   goto :armadura
-)))))
+))))))))))
 
 :: echo La armadura seleccionada es %ARMADURA%
 
@@ -42,7 +47,12 @@ echo Seleccione el tamaño del atacante
 echo    D:Diminuto   P:Pequeño   M:Mediano   G:Grande   E:Enorme
 set /P "Tam=Seleccione el tamaño (D, P, M, G, E): "
 
-if not %Tam%==D (
+if not %Tam%==d (
+if not %Tam%==p (
+IF NOT %Tam%==m (
+IF NOT %Tam%==g (
+if not %Tam%==e (
+if not %Tam%==d (
 if not %Tam%==P (
 IF NOT %Tam%==M (
 IF NOT %Tam%==G (
@@ -50,7 +60,7 @@ if not %Tam%==E (
   echo Tamaño no válido: %Tam%
   echo.
   goto tamano
-)))))
+))))))))))
 
 
 :: Tipo ataque
@@ -123,12 +133,8 @@ if defined var (
 echo.
 set "Parada="
 echo Seleccione la BO del defensor utilizada para parar.
-echo  - Cuerpo a cuerpo: puede parar el ataque CC del blanco 
-echo                     que el defensor esté atacando, con toda
-echo                     o parte su bonificación ofensiva.
-echo  - A distancia: si el defensor tiene un escudo y está
-echo                 encarado al atacante, puede parar pero sólo 
-echo                 hasta la mitad de su bonificación ofensiva.
+echo    El defensor puede parar el ataque CC del atacante si él mismo lo está
+echo    atacando a su vez. Puede destinar a parada toda o parte su BO.
 set /P "Parada=BO del defensor destinada a parar este ataque: "
 
 SET "var="&for /f "delims=0123456789" %%i in ("%Parada%") do set var=%%i

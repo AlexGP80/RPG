@@ -1817,7 +1817,7 @@ function ataques(msg) {
     msg = msg.replace("!atanim ", "");
     let tablaAtaque = null;
 
-    let tamano = msg.substring(0, 1);
+    let tamano = msg.substring(0, 1).toUpperCase();
     let maxTirada = 150;
     if (tamano == "P" || tamano == "D") {
       maxTirada = 105;
@@ -1928,7 +1928,7 @@ function ataques(msg) {
     if (tiradaModificada > maxTirada) {
       tiradaModificada = maxTirada;
     }
-    let armadura = msg.substring(1, 3);
+    let armadura = msg.substring(1, 3).toUpperCase();
     let tipoArmadura = "";
     if (armadura == "SA") tipoArmadura = "Sin Armadura";
     else if (armadura == "CU") tipoArmadura = "Cuero";
