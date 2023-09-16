@@ -76,23 +76,18 @@ if not %Tam%==E (
 echo.
 set "Tipo="
 echo Seleccione el tipo de ataque:
-echo    pi:Pico  mo:Mordisco  ga:Garra/Zarpa  cu:Cuerno  co:Colmillo  ag:Aguijón
-echo    apr:Apresar/Fagocitar  em:Embestida  to:Topetazo  di:Diminutos
-echo    ps:Pisotón  ca:Caída  ap:Aplastamiento  pu:Puño/Patada  lu:Lucha libre
+echo    pu:Puño/Patada  lu:Lucha libre
 set /P "Tipo=: "
 
 if not defined Tipo (
   goto :tipoataque
 )
 
-if not %Tipo%==pi (if not %Tipo%==mo (if not %Tipo%==ga (if not %Tipo%==cu (
-if not %Tipo%==co (if not %Tipo%==ag (if not %Tipo%==apr (if not %Tipo%==em (
-if not %Tipo%==to (if not %Tipo%==di (if not %Tipo%==ps (if not %Tipo%==ca (
-if not %Tipo%==ap (if not %Tipo%==pu (if not %Tipo%==lu (
+if not %Tipo%==pu (if not %Tipo%==lu (
   echo El tipo %Tipo% no es correcto.
   echo.
   goto :tipoataque
-)))))))))))))))
+))
 
 
 
@@ -119,7 +114,7 @@ if defined var (
 :bofensiva
 echo.
 set "BO="
-set /P "BO=Bonificación Ofensiva del atacante: "
+set /P "BO=Suma bonificadores de FUE y AGI del atacante: "
 
 if not defined BO (
   goto :bofensiva
@@ -278,23 +273,49 @@ if not defined AtacanteHerido (
 
 if %AtacanteHerido%==S (
   set "ModAtacanteHerido=-20"
-  goto :movido
+  goto :desenvaina
 )
 if %AtacanteHerido%==N (
   set "ModAtacanteHerido=+00"
-  goto :movido
+  goto :desenvaina
 )
 if %AtacanteHerido%==s (
   set "ModAtacanteHerido=-20"
-  goto :movido
+  goto :desenvaina
 )
 if %AtacanteHerido%==n (
   set "ModAtacanteHerido=+00"
-  goto :movido
+  goto :desenvaina
 )
 
 echo Respuesta errónea: %AtacanteHerido%
 goto :atacanteherido
+
+
+:desenvaina
+echo.
+set "Desenvaina="
+set /P "Desenvaina=El atacante desenvaina o cambia de sitio armas, o embraza un escudo (S/N): "
+
+if %Desenvaina%==S (
+  set "ModDesenvaina=-30"
+  goto :movido
+)
+if %Desenvaina%==N (
+  set "ModDesenvaina=+00"
+  goto :movido
+)
+if %Desenvaina%==s (
+  set "ModDesenvaina=-30"
+  goto :movido
+)
+if %Desenvaina%==n (
+  set "ModDesenvaina=+00"
+  goto :movido
+)
+
+echo Respuesta errónea: %Desenvaina%
+goto :desenvaina
 
 :movido
 echo.
