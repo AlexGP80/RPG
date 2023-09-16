@@ -1,19 +1,17 @@
 @echo off
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
 chcp 65001>nul
-cls
+:: cls
+echo.
+echo.
 echo ===== ATAQUE CON ARMAS =====
 
 :: MENSAJE
+:mensaje
 echo.
 echo Introduzca un mensaje descriptivo de la acción.
 set /P "Mensaje=Mensaje: "
 
-if defined Mensaje (
-  echo. >> MERP.log
-  echo. >> MERP.log
-  echo %Mensaje% >> MERP.log
-)
 
 :: ARMADURA
 :armadura
@@ -23,6 +21,16 @@ set /P "Armadura=Seleccione el tipo de armadura (SA, CU, CE, CM, CO): "
 
 if not defined Armadura (
   goto :armadura
+)
+
+if %Armadura%==ret (
+  goto :mensaje
+)
+if %Armadura%==RET (
+  goto :mensaje
+)
+if %Armadura%==Ret (
+  goto :mensaje
 )
 
 if %Armadura%==sa (
@@ -66,6 +74,16 @@ if not defined Arma (
   goto :arma
 )
 
+if %Arma%==ret (
+  goto :armadura
+)
+if %Arma%==RET (
+  goto :armadura
+)
+if %Arma%==Ret (
+  goto :armadura
+)
+
 if not %Arma%==ea (if not %Arma%==da (if not %Arma%==ha (if not %Arma%==ci (
 if not %Arma%==ec (if not %Arma%==lt (if not %Arma%==ga (if not %Arma%==ma (
 if not %Arma%==mc (if not %Arma%==rd (if not %Arma%==mg (if not %Arma%==j1 (
@@ -99,6 +117,16 @@ if not defined Tirada (
   goto :tirada
 )
 
+if %Tirada%==ret (
+  goto :arma
+)
+if %Tirada%==RET (
+  goto :arma
+)
+if %Tirada%==Ret (
+  goto :arma
+)
+
 
 SET "var="&for /f "delims=0123456789" %%i in ("%Tirada%") do set var=%%i
 if defined var (
@@ -119,6 +147,16 @@ if not defined BO (
   goto :bofensiva
 )
 
+if %BO%==ret (
+  goto :tirada
+)
+if %BO%==RET (
+  goto :tirada
+)
+if %BO%==Ret (
+  goto :tirada
+)
+
 SET "var="&for /f "delims=+-0123456789" %%i in ("%BO%") do set var=%%i
 if defined var (
    echo Valor de Bonificación Ofensiva incorrecto: %BO%
@@ -137,6 +175,16 @@ if not defined BD (
   goto :bdefensiva
 )
 
+if %BD%==ret (
+  goto :bofensiva
+)
+if %BD%==RET (
+  goto :bofensiva
+)
+if %BD%==Ret (
+  goto :bofensiva
+)
+
 SET "var="&for /f "delims=+-0123456789" %%i in ("%BD%") do set var=%%i
 if defined var (
    echo Valor de Bonificación Defensiva incorrecto: %BD%
@@ -150,14 +198,26 @@ if defined var (
 :parada
 echo.
 set "Parada="
-echo Seleccione la BO del defensor utilizada para parar.
-echo  - CC:  Sólo si el defensor está atacando a su vez al atacante.
-echo  - P/A: Sólo si el defensor tiene un escudo y está encarado al atacante.
-echo         Sólo hasta la mitad de su bonificación ofensiva.
-set /P "Parada=BO del defensor destinada a parar este ataque: "
+:: echo Seleccione la BO del defensor utilizada para parar.
+:: echo  - CC:  Sólo si el defensor está atacando a su vez al atacante.
+:: echo  - P/A: Sólo si el defensor tiene un escudo y está encarado al atacante.
+:: echo         Sólo hasta la mitad de su bonificación ofensiva.
+set /P "Parada=BO del defensor destinada a parar este ataque (por defecto 0): "
 
 if not defined Parada (
-  goto :parada
+  echo 0
+  set "Parada=0"
+  goto :tipoataque
+)
+
+if %Parada%==ret (
+  goto :bdefensiva
+)
+if %Parada%==RET (
+  goto :bdefensiva
+)
+if %Parada%==Ret (
+  goto :bdefensiva
 )
 
 SET "var="&for /f "delims=0123456789" %%i in ("%Parada%") do set var=%%i
@@ -172,10 +232,24 @@ if defined var (
 :tipoataque
 echo.
 set "TipoAtaque="
-set /P "TipoAtaque=Tipo de ataque (1:Cuerpo a cuerpo   2:Proyectiles/Arrojadizas): "
+echo Tipo de ataque:
+echo   1:Cuerpo a cuerpo
+echo   2:Proyectiles/Arrojadizas
+set /P "TipoAtaque=Tipo de ataque (1-2, por defecto 1): "
 
 if not defined TipoAtaque (
-  goto :tipoataque
+  echo 1
+  goto :modposicionales
+)
+
+if %TipoAtaque%==ret (
+  goto :parada
+)
+if %TipoAtaque%==RET (
+  goto :parada
+)
+if %TipoAtaque%==Ret (
+  goto :parada
 )
 
 if %TipoAtaque%==1 (
@@ -197,10 +271,22 @@ echo Seleccione el encaramiento del ataque:
 echo   1:Ataque frontal
 echo   2:Ataque de flanco
 echo   3:Ataque por la espalda
-set /P "Encaramiento=Seleccione (1-3): "
+set /P "Encaramiento=Seleccione (1-3, por defecto 1): "
 
 if not defined Encaramiento (
-  goto :modposicionales
+  echo 1
+  set "ModEncaramiento=+00"
+  goto :sorprendido
+)
+
+if %Encaramiento%==ret (
+  goto :tipoataque
+)
+if %Encaramiento%==RET (
+  goto :tipoataque
+)
+if %Encaramiento%==Ret (
+  goto :tipoataque
 )
 
 if %Encaramiento%==1 (
@@ -224,10 +310,22 @@ goto :modposicionales
 :sorprendido
 echo.
 set "Sorprendido="
-set /P "Sorprendido=Defensor sorprendido (S/N): "
+set /P "Sorprendido=Defensor sorprendido (s/N): "
 
 if not defined Sorprendido (
-  goto :sorprendido
+  echo N
+  set "ModSorprendido=+00"
+  goto :caidoaturdido
+)
+
+if %Sorprendido%==ret (
+  goto :modposicionales
+)
+if %Sorprendido%==RET (
+  goto :modposicionales
+)
+if %Sorprendido%==Ret (
+  goto :modposicionales
 )
 
 if %Sorprendido%==N (
@@ -255,10 +353,22 @@ goto :sorprendido
 :caidoaturdido
 echo.
 set "CaidoAturdido="
-set /P "CaidoAturdido=Defensor caído o aturdido (S/N): "
+set /P "CaidoAturdido=Defensor caído o aturdido (s/N): "
 
 if not defined CaidoAturdido (
-  goto :caidoaturdido
+  echo N
+  set "ModCaidoAturdido=+00"
+  goto :atacanteherido
+)
+
+if %CaidoAturdido%==ret (
+  goto :sorprendido
+)
+if %CaidoAturdido%==RET (
+  goto :sorprendido
+)
+if %CaidoAturdido%==Ret (
+  goto :sorprendido
 )
 
 if %CaidoAturdido%==N (
@@ -290,10 +400,22 @@ echo   2 : Medio alcance, hasta doble de Alcance Básico del arma
 echo   3 : Largo alcance, hasta triple de Alcance Básico del arma
 echo   4 : Máximo alcance, hasta cuádruple de Alcance Básico del arma
 echo   5 : Ballesta hasta 50 pies de distancia
-set /P "Alcance=Seleccione (1-4): "
+set /P "Alcance=Seleccione (1-4, por defecto 1): "
 
 if not defined Alcance (
-  goto :alcance
+  echo 1
+  set "ModAlcance=+00"
+  goto :recarga
+)
+
+if %Alcance%==ret (
+  goto :tipoataque
+)
+if %Alcance%==RET (
+  goto :tipoataque
+)
+if %Alcance%==Ret (
+  goto :tipoataque
 )
 
 if %Alcance%==1 (
@@ -326,14 +448,26 @@ goto :alcance
 echo.
 set "Recarga="
 echo Seleccione una de las siguientes opciones
+echo   0: Sin recarga
 echo   1: Recarga(0) con arco compuesto
 echo   2: Recarga(0) con arco corto
 echo   3: Recarga(0) con arco largo 
-echo   4: Ninguna de las anteriores
-set /P "Recarga=Seleccione (1-4): "
+set /P "Recarga=Seleccione (0-3, por defecto 0): "
 
 if not defined Recarga (
-  goto :recarga
+  echo 0
+  set "ModRecarga=+00"
+  goto :atacanteherido
+)
+
+if %Recarga%==ret (
+  goto :alcance
+)
+if %Recarga%==RET (
+  goto :alcance
+)
+if %Recarga%==Ret (
+  goto :alcance
 )
 
 if %Recarga%==1 (
@@ -348,7 +482,7 @@ if %Recarga%==3 (
   set "ModRecarga=-35"
   goto :atacanteherido
 )
-if %Recarga%==4 (
+if %Recarga%==0 (
   set "ModRecarga=+00"
   goto :atacanteherido
 )
@@ -359,10 +493,22 @@ goto :recarga
 :atacanteherido
 echo.
 set "AtacanteHerido="
-set /P "AtacanteHerido=El atacante ha perdido más de la mitad de sus PVs (S/N): "
+set /P "AtacanteHerido=El atacante ha perdido más de la mitad de sus PVs (s/N): "
 
 if not defined AtacanteHerido (
-  goto :atacanteherido
+  echo N
+  set "ModAtacanteHerido=+00"
+  goto :desenvaina
+)
+
+if %AtacanteHerido%==ret (
+  goto :tipoataque
+)
+if %AtacanteHerido%==RET (
+  goto :tipoataque
+)
+if %AtacanteHerido%==Ret (
+  goto :tipoataque
 )
 
 if %AtacanteHerido%==S (
@@ -388,10 +534,22 @@ goto :atacanteherido
 :desenvaina
 echo.
 set "Desenvaina="
-set /P "Desenvaina=El atacante desenvaina o cambia de sitio armas, o embraza un escudo (S/N): "
+set /P "Desenvaina=El atacante desenvaina o cambia de sitio armas, o embraza un escudo (s/N): "
 
 if not defined Desenvaina (
-  goto :desenvaina
+  echo N
+  set "ModDesenvaina=+00"
+  goto :movido
+)
+
+if %Desenvaina%==ret (
+  goto :atacanteherido
+)
+if %Desenvaina%==RET (
+  goto :atacanteherido
+)
+if %Desenvaina%==Ret (
+  goto :atacanteherido
 )
 
 if %Desenvaina%==S (
@@ -417,11 +575,23 @@ goto :desenvaina
 :movido
 echo.
 set "MOV="
-set /P "MOV=Número de pies que se ha movido el atacante: "
+set /P "MOV=Número de pies que se ha movido el atacante, por defecto 0: "
 
 
 if not defined MOV (
-  goto :movido
+  echo 0
+  set "MOV=0"
+  goto :modificadores
+)
+
+if %MOV%==ret (
+  goto :desenvaina
+)
+if %MOV%==RET (
+  goto :desenvaina
+)
+if %MOV%==Ret (
+  goto :desenvaina
 )
 
 SET "var="&for /f "delims=0123456789" %%i in ("%MOV%") do set var=%%i
@@ -437,10 +607,22 @@ if defined var (
 :modificadores
 echo.
 set "Modificadores="
-set /P "Modificadores=Otros modificadores aplicables: "
+set /P "Modificadores=Otros modificadores aplicables (por defecto 0): "
 
 if not defined Modificadores (
-  goto :modificadores
+  echo 0
+  set "Modificadores=00"
+  goto :resultados
+)
+
+if %Modificadores%==ret (
+  goto :movido
+)
+if %Modificadores%==RET (
+  goto :movido
+)
+if %Modificadores%==Ret (
+  goto :movido
 )
 
 SET "var="&for /f "delims=+-0123456789" %%i in ("%Modificadores%") do set var=%%i
@@ -452,7 +634,13 @@ if defined var (
 )
 
 :: RESULTADOS
+:resultados
 echo.
+if defined Mensaje (
+  echo. >> MERP.log
+  echo. >> MERP.log
+  echo %Mensaje% >> MERP.log
+)
 node ataques "!atarma %Armadura%%Arma%/%Tirada%+%Modificadores%%ModEncaramiento%+%BO%-%BD%-%Parada%%ModSorprendido%%ModCaidoAturdido%%ModAlcance%%ModRecarga%%ModAtacanteHerido%-%MOV%%ModDesenvaina%"
 node ataques "!atarma %Armadura%%Arma%/%Tirada%+%Modificadores%%ModEncaramiento%+%BO%-%BD%-%Parada%%ModSorprendido%%ModCaidoAturdido%%ModAlcance%%ModRecarga%%ModAtacanteHerido%-%MOV%%ModDesenvaina%" >> MERP.log
 
